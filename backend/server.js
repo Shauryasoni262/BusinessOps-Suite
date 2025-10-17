@@ -8,6 +8,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
 const googleAuthRoutes = require('./routes/googleAuth');
+const aiRoutes = require('./routes/ai');
 
 // Import database initialization
 const { initializeDatabase, createDefaultAdmin } = require('./config/initDatabase');
@@ -39,7 +40,8 @@ app.get('/', (req, res) => {
     endpoints: {
       health: '/api/health',
       auth: '/api/auth',
-      dashboard: '/api/dashboard'
+      dashboard: '/api/dashboard',
+      ai: '/api/ai'
     }
   });
 });
@@ -57,6 +59,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/auth', googleAuthRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Initialize Message model
 const messageModel = new Message();
