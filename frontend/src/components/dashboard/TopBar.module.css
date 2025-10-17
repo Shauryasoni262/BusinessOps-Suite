@@ -1,0 +1,230 @@
+.topBar {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topBarContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  max-width: none;
+}
+
+/* Search Container */
+.searchContainer {
+  flex: 1;
+  max-width: 500px;
+}
+
+.searchInput {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  color: #9ca3af;
+  z-index: 1;
+}
+
+.searchField {
+  width: 100%;
+  padding: 0.75rem 0.75rem 0.75rem 2.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #f8fafc;
+  transition: border-color 0.2s ease;
+}
+
+.searchField:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.searchField::placeholder {
+  color: #9ca3af;
+}
+
+/* Right Section */
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Notifications */
+.notifications {
+  position: relative;
+}
+
+.notificationButton {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 6px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.notificationButton:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.notificationBadge {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* User Profile */
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.userProfile:hover {
+  background: #f9fafb;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  background: #2563eb;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.userName {
+  font-weight: 600;
+  color: #111827;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userEmail {
+  color: #6b7280;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Logout Button */
+.logoutButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 1px solid #d1d5db;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logoutButton:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .topBarContent {
+    padding: 0 1.5rem;
+  }
+  
+  .searchContainer {
+    max-width: 400px;
+  }
+  
+  .rightSection {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .topBarContent {
+    padding: 0 1rem;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .searchContainer {
+    max-width: none;
+  }
+  
+  .rightSection {
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  
+  .userInfo {
+    display: none;
+  }
+  
+  .logoutButton span {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .topBar {
+    padding: 0.75rem 0;
+  }
+  
+  .topBarContent {
+    padding: 0 0.75rem;
+  }
+  
+  .rightSection {
+    gap: 0.75rem;
+  }
+  
+  .avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+  }
+}

@@ -1,0 +1,88 @@
+.container {
+  min-height: 100vh;
+  background-color: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.content {
+  width: 100%;
+  max-width: 400px;
+}
+
+.errorCard {
+  background: white;
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.errorIcon {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
+}
+
+.message {
+  color: #666;
+  font-size: 0.875rem;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.retryButton, .homeButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.retryButton {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.retryButton:hover {
+  background-color: #2563eb;
+}
+
+.homeButton {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.homeButton:hover {
+  background-color: #e5e7eb;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .errorCard {
+    padding: 2rem 1.5rem;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+}
