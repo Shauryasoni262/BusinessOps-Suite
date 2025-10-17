@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/common/Navbar';
 import styles from './google-success.module.css';
 
-export default function GoogleSuccess() {
+function GoogleSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -82,5 +82,13 @@ export default function GoogleSuccess() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function GoogleSuccess() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <GoogleSuccessContent />
+    </Suspense>
   );
 }
