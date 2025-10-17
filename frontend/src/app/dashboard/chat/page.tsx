@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
 import Sidebar from '@/components/dashboard/Sidebar';
@@ -46,7 +46,7 @@ export default function ChatPage() {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   // Start with General Chat room always available
-  const initialConversations: Conversation[] = [
+  const initialConversations: Conversation[] = useMemo(() => [
     {
       id: 'general',
       name: 'General Chat',
@@ -56,7 +56,7 @@ export default function ChatPage() {
       avatar: 'GC',
       isActive: true
     }
-  ];
+  ], []);
 
   useEffect(() => {
     console.log('🔍 Chat Page - Checking authentication...');

@@ -4,8 +4,9 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/common/Navbar';
 import styles from './google-error.module.css';
+import { Suspense } from 'react';
 
-export default function GoogleError() {
+function GoogleErrorContent() {
   const searchParams = useSearchParams();
   const message = searchParams.get('message') || 'An error occurred during Google login';
 
@@ -36,5 +37,13 @@ export default function GoogleError() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function GoogleError() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <GoogleErrorContent />
+    </Suspense>
   );
 }
