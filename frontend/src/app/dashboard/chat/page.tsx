@@ -88,7 +88,7 @@ export default function ChatPage() {
     } finally {
       setLoading(false);
     }
-  }, [router]);
+  }, [router, initialConversations]);
 
   // Initialize Socket.IO connection
   useEffect(() => {

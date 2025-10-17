@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 
 interface Message {
@@ -18,7 +17,6 @@ interface Model {
 }
 
 const AIAssistantPage: React.FC = () => {
-  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -248,7 +246,7 @@ const AIAssistantPage: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <p>Ask me anything! I'm here to help with your questions and tasks.</p>
+                  <p>Ask me anything! I&apos;m here to help with your questions and tasks.</p>
                   <div className={styles.suggestions}>
                     <button
                       onClick={() => setInputMessage("What can you help me with?")}

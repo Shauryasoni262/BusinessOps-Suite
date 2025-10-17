@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import styles from './TopBar.module.css';
 
 interface User {
@@ -18,7 +17,6 @@ interface TopBarProps {
 
 export default function TopBar({ user, onLogout }: TopBarProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

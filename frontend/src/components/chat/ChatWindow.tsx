@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import MessageInput from './MessageInput';
 import styles from './ChatWindow.module.css';
 
@@ -29,7 +29,6 @@ interface ChatWindowProps {
 }
 
 export default function ChatWindow({ messages, currentRoom, onSendMessage, user, messagesEndRef }: ChatWindowProps) {
-  const [isTyping, setIsTyping] = useState(false);
 
   const formatTime = (timestamp: string) => {
     const date = new Date(timestamp);

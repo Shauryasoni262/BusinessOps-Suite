@@ -1,13 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/common/Navbar';
 import styles from './google-error.module.css';
 
 export default function GoogleError() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const message = searchParams.get('message') || 'An error occurred during Google login';
 

@@ -54,7 +54,7 @@ export default function LoginPage() {
       } else {
         setError(data.message || 'Login failed');
       }
-    } catch (error) {
+    } catch (err) {
       setError('Network error. Please try again.');
     } finally {
       setLoading(false);
@@ -209,7 +209,7 @@ export default function LoginPage() {
 
             {/* Sign Up Link */}
             <div className={styles.signUpLink}>
-              <span className={styles.signUpText}>Don't have an account? </span>
+              <span className={styles.signUpText}>Don&apos;t have an account? </span>
               <Link href="/auth/register" className={styles.signUpButton}>
                 Sign up
               </Link>
