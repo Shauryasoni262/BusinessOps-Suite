@@ -15,17 +15,8 @@ router.get('/analytics', (req, res) => {
     message: 'Analytics endpoint - coming soon!',
     data: {
       totalUsers: 0,
-      totalProjects: 0,
       totalRevenue: 0
     }
-  });
-});
-
-// Projects route (placeholder)
-router.get('/projects', (req, res) => {
-  res.json({
-    message: 'Projects endpoint - coming soon!',
-    projects: []
   });
 });
 

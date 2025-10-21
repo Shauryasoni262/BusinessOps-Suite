@@ -50,7 +50,6 @@ http://localhost:5000
 #### Dashboard
 - `GET /api/dashboard/test` - Test dashboard routes
 - `GET /api/dashboard/analytics` - Analytics data (placeholder)
-- `GET /api/dashboard/projects` - Projects data (placeholder)
 
 ## 🏗️ Project Structure
 
