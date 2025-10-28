@@ -1,0 +1,90 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║                   RAZORPAY SETUP - QUICK START                           ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ STEP 1: GET RAZORPAY CREDENTIALS                                         │
+└──────────────────────────────────────────────────────────────────────────┘
+
+1. Go to: https://razorpay.com/
+2. Sign Up → Verify Email
+3. Login to: https://dashboard.razorpay.com/
+4. Settings → API Keys → Generate Test Keys
+5. Copy:
+   ✓ Key ID     (rzp_test_XXXX)
+   ✓ Key Secret (YYYY)
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ STEP 2: BACKEND .ENV FILE                                                │
+└──────────────────────────────────────────────────────────────────────────┘
+
+File: backend/.env
+
+PORT=5000
+NODE_ENV=development
+JWT_SECRET=your-secret-key
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+FRONTEND_URL=http://localhost:3000
+
+RAZORPAY_KEY_ID=rzp_test_YOUR_KEY_ID_HERE
+RAZORPAY_KEY_SECRET=YOUR_KEY_SECRET_HERE
+RAZORPAY_WEBHOOK_SECRET=
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ STEP 3: FRONTEND .ENV.LOCAL FILE                                         │
+└──────────────────────────────────────────────────────────────────────────┘
+
+File: frontend/.env.local
+
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_test_YOUR_KEY_ID_HERE
+
+⚠️  IMPORTANT: Only Key ID in frontend, NOT Key Secret!
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ STEP 4: START SERVERS                                                    │
+└──────────────────────────────────────────────────────────────────────────┘
+
+Terminal 1:
+cd backend
+npm start
+→ Look for: ✅ "Razorpay initialized successfully"
+
+Terminal 2:
+cd frontend
+npm run dev
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ STEP 5: TEST PAYMENT                                                     │
+└──────────────────────────────────────────────────────────────────────────┘
+
+Test Card Details (Always works in test mode):
+
+Card Number: 4111 1111 1111 1111
+CVV:         123
+Expiry:      12/25
+Name:        Test User
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                            KEY POINTS                                    ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+✓ Use rzp_test_ keys for development
+✓ Use rzp_live_ keys only after KYC approval
+✓ Key Secret = Backend only (NEVER in frontend)
+✓ Key ID = Both backend and frontend
+✓ Never commit .env files to Git
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                      NEED MORE DETAILS?                                  ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+📖 Full Guide: RAZORPAY_SETUP_GUIDE.md
+⚡ Quick Setup: QUICK_ENV_SETUP.md
+
+═══════════════════════════════════════════════════════════════════════════
+
+That's it! You're ready to accept payments! 🎉
+

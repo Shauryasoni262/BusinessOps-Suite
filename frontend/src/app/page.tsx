@@ -1,5 +1,5 @@
-import Navbar from '@/components/common/Navbar';
-import '@/components/common/Navbar.css';
+import { Navbar } from '@/components/layout';
+import '@/components/layout/Navbar.css';
 import styles from './page.module.css';
 
 export default function Home() {

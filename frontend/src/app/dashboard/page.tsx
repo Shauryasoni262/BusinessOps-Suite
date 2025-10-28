@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Sidebar from '@/components/dashboard/Sidebar';
-import TopBar from '@/components/dashboard/TopBar';
+import { Sidebar, TopBar } from '@/components/layout';
+import { DashboardStats, RecentProjects, QuickActions } from '@/components/features/dashboard';
+import { useProjects } from '@/contexts/ProjectContext';
 import styles from './page.module.css';
 
 interface User {
@@ -17,41 +18,95 @@ export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { projects } = useProjects();
 
   useEffect(() => {
-    console.log('🔍 Dashboard - Checking authentication...');
-    
     // Check if user is logged in
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
 
-    console.log('🔍 Token exists:', token ? 'Yes' : 'No');
-    console.log('🔍 User data exists:', userData ? 'Yes' : 'No');
-
     if (!token || !userData) {
-      console.log('❌ Missing token or user data, redirecting to login');
       router.push('/auth/login');
       return;
     }
 
     try {
       if (userData === 'undefined' || userData === null || userData === '') {
-        console.log('❌ User data is undefined/null/empty, redirecting to login');
         router.push('/auth/login');
         return;
       }
       
       const parsedUser = JSON.parse(userData);
-      console.log('✅ User data parsed successfully:', parsedUser);
       setUser(parsedUser);
     } catch (error) {
-      console.error('❌ Error parsing user data:', error);
-      console.error('❌ Raw userData:', userData);
+      console.error('Error parsing user data:', error);
       router.push('/auth/login');
     } finally {
       setLoading(false);
     }
   }, [router]);
+
+  if (loading) {
+    return (
+      <div className={styles.dashboardLayout}>
+        <Sidebar />
+        <div className={styles.mainContent}>
+          <div className={styles.loading}>
+            <div className={styles.spinner}></div>
+            <p>Loading dashboard...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  // Calculate dashboard stats from projects
+  const activeProjects = projects.filter(p => 
+    p.status === 'in_progress' || p.status === 'planning'
+  ).length;
+
+  const totalTasks = projects.reduce((sum, p) => 
+    sum + (p.stats?.tasks.total || 0), 0
+  );
+
+  const completedTasks = projects.reduce((sum, p) => 
+    sum + (p.stats?.tasks.completed || 0), 0
+  );
+
+  // Get unique team members count
+  const allMembers = new Set<string>();
+  projects.forEach(project => {
+    project.members?.forEach(member => {
+      allMembers.add(member.user_id);
+    });
+  });
+
+  // Format recent projects
+  const recentProjects = projects.slice(0, 4).map(project => ({
+    id: project.id,
+    name: project.name,
+    status: project.status.replace('_', ' '),
+    teamMembers: project.members?.length || 0,
+    progress: project.stats?.tasks.total 
+      ? Math.round((project.stats.tasks.completed / project.stats.tasks.total) * 100)
+      : 0
+  }));
+
+  const dashboardStats = {
+    revenue: 45231,
+    revenueChange: '+20.1% from last month',
+    projects: activeProjects,
+    projectsChange: '+12% from last month',
+    teamMembers: allMembers.size || 45,
+    teamChange: '+5 from last month',
+    tasksCompleted: completedTasks,
+    tasksChange: '-3% from last month',
+    tasksChangeType: 'negative' as const
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -59,85 +114,22 @@ export default function DashboardPage() {
     router.push('/');
   };
 
-  if (loading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loading}>Loading...</div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return null; // Will redirect to login
-  }
-
   return (
-    <div className={styles.container}>
+    <div className={styles.dashboardLayout}>
       <Sidebar />
       <div className={styles.mainContent}>
         <TopBar user={user} onLogout={handleLogout} />
         <div className={styles.content}>
-        <div className={styles.statsGrid}>
-          <div className={styles.statCard}>
-            <h3>Projects</h3>
-            <p className={styles.statNumber}>12</p>
-            <p className={styles.statLabel}>Active Projects</p>
+          <div className={styles.pageHeader}>
+            <h1 className={styles.pageTitle}>Dashboard</h1>
+            <p className={styles.pageSubtitle}>Welcome back! Here&apos;s what&apos;s happening with your projects.</p>
           </div>
-          
-          <div className={styles.statCard}>
-            <h3>Tasks</h3>
-            <p className={styles.statNumber}>47</p>
-            <p className={styles.statLabel}>Completed This Week</p>
-          </div>
-          
-          <div className={styles.statCard}>
-            <h3>Team</h3>
-            <p className={styles.statNumber}>8</p>
-            <p className={styles.statLabel}>Team Members</p>
-          </div>
-          
-          <div className={styles.statCard}>
-            <h3>Revenue</h3>
-            <p className={styles.statNumber}>$24,500</p>
-            <p className={styles.statLabel}>This Month</p>
-          </div>
-        </div>
 
-        <div className={styles.userDetails}>
-          <h2>User Information</h2>
-          <div className={styles.detailsGrid}>
-            <div className={styles.detailItem}>
-              <strong>Name:</strong> {user.name}
-            </div>
-            <div className={styles.detailItem}>
-              <strong>Email:</strong> {user.email}
-            </div>
-            <div className={styles.detailItem}>
-              <strong>Role:</strong> {user.role}
-            </div>
-            <div className={styles.detailItem}>
-              <strong>User ID:</strong> {user.id}
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.actions}>
-          <h2>Quick Actions</h2>
-          <div className={styles.actionButtons}>
-            <button className={styles.actionButton}>
-              Create Project
-            </button>
-            <button className={styles.actionButton}>
-              View Analytics
-            </button>
-            <button className={styles.actionButton}>
-              Manage Team
-            </button>
-            <button className={styles.actionButton}>
-              Settings
-            </button>
-          </div>
-        </div>
+          <DashboardStats stats={dashboardStats} />
+          
+          <RecentProjects projects={recentProjects} />
+          
+          <QuickActions />
         </div>
       </div>
     </div>

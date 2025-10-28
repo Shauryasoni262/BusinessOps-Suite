@@ -1,0 +1,40 @@
+.filterContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.icon {
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.select {
+  background: transparent;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  outline: none;
+  min-width: 120px;
+}
+
+.select:focus {
+  outline: none;
+}
+
+@media (max-width: 640px) {
+  .filterContainer {
+    width: 100%;
+  }
+  
+  .select {
+    flex: 1;
+  }
+}
+

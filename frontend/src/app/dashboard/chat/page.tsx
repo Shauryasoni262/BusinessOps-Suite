@@ -3,10 +3,8 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
-import Sidebar from '@/components/dashboard/Sidebar';
-import TopBar from '@/components/dashboard/TopBar';
-import ConversationList from '@/components/chat/ConversationList';
-import ChatWindow from '@/components/chat/ChatWindow';
+import { Sidebar, TopBar } from '@/components/layout';
+import { ConversationList, ChatWindow } from '@/components/features/chat';
 import styles from './page.module.css';
 
 interface User {

@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import Navbar from '@/components/common/Navbar';
+import { Navbar } from '@/components/layout';
 import styles from './google-error.module.css';
 import { Suspense } from 'react';
 

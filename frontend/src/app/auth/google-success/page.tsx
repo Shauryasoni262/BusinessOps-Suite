@@ -2,7 +2,7 @@
 
 import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Navbar from '@/components/common/Navbar';
+import { Navbar } from '@/components/layout';
 import styles from './google-success.module.css';
 
 function GoogleSuccessContent() {
