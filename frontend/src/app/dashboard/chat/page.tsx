@@ -91,7 +91,7 @@ export default function ChatPage() {
   // Initialize Socket.IO connection
   useEffect(() => {
     if (user) {
-      const newSocket = io('http://localhost:5000');
+      const newSocket = io(process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000');
       setSocket(newSocket);
 
       // Join the default room

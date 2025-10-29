@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Navbar } from '@/components/layout';
+import { API_ROUTES } from '@/lib/constants/routes';
 import '@/components/layout/Navbar.css';
 import styles from './page.module.css';
 
@@ -52,7 +53,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch(`${API_ROUTES.BASE}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -89,7 +90,7 @@ export default function RegisterPage() {
     if (provider.toLowerCase() === 'google') {
       // Redirect to Google OAuth
       console.log('Redirecting to Google OAuth...');
-      window.location.href = 'http://localhost:5000/api/auth/google';
+      window.location.href = `${API_ROUTES.BASE}/auth/google`;
     } else if (provider.toLowerCase() === 'github') {
       // TODO: Implement GitHub OAuth
       console.log('GitHub login not implemented yet');
