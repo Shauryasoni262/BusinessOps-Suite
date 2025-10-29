@@ -59,13 +59,16 @@ router.get('/google/callback', async (req, res) => {
     console.log('✅ Generated token:', token.substring(0, 50) + '...');
 
     // Redirect to frontend with token
-    const frontendURL = `http://localhost:3000/auth/google-success?token=${token}`;
-    console.log('✅ Redirecting to:', frontendURL);
-    res.redirect(frontendURL);
+    const frontendURL = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const successURL = `${frontendURL}/auth/google-success?token=${token}`;
+    console.log('✅ Redirecting to:', successURL);
+    res.redirect(successURL);
 
   } catch (error) {
     console.error('Google OAuth callback error:', error);
-    res.redirect(`http://localhost:3000/auth/google-error?message=${encodeURIComponent(error.message)}`);
+    const frontendURL = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const errorURL = `${frontendURL}/auth/google-error?message=${encodeURIComponent(error.message)}`;
+    res.redirect(errorURL);
   }
 });
 
