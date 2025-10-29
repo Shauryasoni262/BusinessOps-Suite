@@ -115,14 +115,15 @@ const startServer = async () => {
       // Create default admin user
       await createDefaultAdmin();
       
-      // Start server
-      server.listen(PORT, () => {
+      // Start server - listen on 0.0.0.0 for Railway deployment
+      const HOST = process.env.HOST || '0.0.0.0';
+      server.listen(PORT, HOST, () => {
         console.log(`\n${'='.repeat(60)}`);
-        console.log(`🚀 Server is running on port ${PORT}`);
+        console.log(`🚀 Server is running on ${HOST}:${PORT}`);
         console.log(`${'='.repeat(60)}`);
-        console.log(`📡 API available at http://localhost:${PORT}`);
+        console.log(`📡 API available at http://${HOST}:${PORT}`);
         console.log(`🔌 Socket.IO server ready for real-time updates`);
-        console.log(`🏥 Health check at http://localhost:${PORT}/api/health`);
+        console.log(`🏥 Health check at http://${HOST}:${PORT}/api/health`);
         console.log(`\n📚 Available Routes:`);
         console.log(`   🔐 Auth:        /api/auth`);
         console.log(`   📊 Dashboard:   /api/dashboard`);
