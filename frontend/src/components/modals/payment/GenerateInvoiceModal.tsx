@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { invoiceService, type CreateInvoiceData } from '@/services/invoiceService';
 import styles from './GenerateInvoiceModal.module.css';
 
@@ -18,10 +18,21 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
     amount: 0,
     currency: 'USD',
     tax_rate: 0,
-    invoice_date: new Date().toISOString().split('T')[0],
-    due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    invoice_date: '',
+    due_date: '',
     notes: ''
   });
+
+  // Initialize dates only on client side to avoid hydration mismatch
+  useEffect(() => {
+    const today = new Date();
+    const dueDate = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+    setFormData(prev => ({
+      ...prev,
+      invoice_date: today.toISOString().split('T')[0],
+      due_date: dueDate.toISOString().split('T')[0]
+    }));
+  }, []);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

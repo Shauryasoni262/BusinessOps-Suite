@@ -21,7 +21,7 @@ export default function RootLayout({
           async
         />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <ProjectProvider>
           <ProjectSocketProvider>
             {children}

@@ -6,8 +6,11 @@
 
 .mainContent {
   flex: 1;
+  margin-left: 280px;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #f9fafb;
   overflow-x: hidden;
 }
 
@@ -17,6 +20,7 @@
   max-width: 1400px;
   width: 100%;
   margin: 0 auto;
+  overflow-y: auto;
 }
 
 .pageHeader {

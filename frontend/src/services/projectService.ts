@@ -65,21 +65,33 @@ interface ApiResponse<T> {
 
 class ProjectService {
   private getAuthHeaders(): HeadersInit {
-    const token = localStorage.getItem('token');
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     return {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      ...(token && { 'Authorization': `Bearer ${token}` })
     };
   }
 
   async getProjects(): Promise<Project[]> {
     try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
       const response = await fetch(`${API_BASE_URL}/projects`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          // Clear invalid token
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+          }
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 

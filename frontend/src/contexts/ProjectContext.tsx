@@ -23,11 +23,25 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastFetched, setLastFetched] = useState<number | null>(null);
+  const [isStale, setIsStale] = useState<boolean>(true);
 
   // Cache duration: 5 minutes
   const CACHE_DURATION = 5 * 60 * 1000;
   
-  const isStale = lastFetched ? Date.now() - lastFetched > CACHE_DURATION : true;
+  // Calculate isStale only on client side to avoid hydration mismatch
+  useEffect(() => {
+    if (lastFetched) {
+      const checkStale = () => {
+        setIsStale(Date.now() - lastFetched > CACHE_DURATION);
+      };
+      checkStale();
+      // Check every minute
+      const interval = setInterval(checkStale, 60 * 1000);
+      return () => clearInterval(interval);
+    } else {
+      setIsStale(true);
+    }
+  }, [lastFetched, CACHE_DURATION]);
 
   const loadProjects = useCallback(async (forceRefresh = false) => {
     // Don't reload if we have fresh data and not forcing refresh
@@ -57,9 +71,15 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     } catch (error: any) {
       console.error('❌ Error loading projects:', error);
       
-      // If it's a 401 error, clear the invalid token
-      if (error.message?.includes('401')) {
-        console.log('🔐 Authentication error - token may be invalid');
+      // If it's a 401 error, clear the invalid token and redirect to login
+      if (error.message?.includes('401') || error.message?.includes('status: 401')) {
+        console.log('🔐 Authentication error - clearing invalid token');
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          // Redirect to login page
+          window.location.href = '/auth/login';
+        }
         setError('Authentication failed. Please login again.');
       } else {
         setError('Failed to load projects');
@@ -115,13 +135,16 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Auto-load projects on mount if not cached and user is authenticated
   useEffect(() => {
-    // Check if user is authenticated before auto-loading
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    // Only run on client side
+    if (typeof window === 'undefined') return;
     
-    if (token && projects.length === 0) {
+    // Check if user is authenticated before auto-loading
+    const token = localStorage.getItem('token');
+    
+    if (token && projects.length === 0 && !loading) {
       loadProjects();
     }
-  }, [loadProjects, projects.length]);
+  }, [loadProjects, projects.length, loading]);
 
   const value: ProjectContextType = {
     projects,
