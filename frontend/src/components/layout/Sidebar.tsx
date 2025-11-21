@@ -13,6 +13,7 @@ interface NavItem {
 const navigationItems: NavItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: 'grid' },
   { name: 'Projects', href: '/dashboard/projects', icon: 'folder' },
+  { name: 'Offer Letters', href: '/dashboard/offer-letters', icon: 'letter' },
   { name: 'Chat', href: '/dashboard/chat', icon: 'chat' },
   { name: 'Payments', href: '/dashboard/payments', icon: 'payment' },
   { name: 'Analytics', href: '/dashboard/analytics', icon: 'analytics' },
@@ -42,6 +43,13 @@ export default function Sidebar() {
         return (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>
+        );
+      case 'letter':
+        return (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
           </svg>
         );
       case 'chat':
@@ -105,6 +113,9 @@ export default function Sidebar() {
           let isActive = pathname === item.href;
           if (item.name === 'Projects') {
             isActive = pathname === item.href || pathname.startsWith('/dashboard/projects/');
+          }
+          if (item.name === 'Offer Letters') {
+            isActive = pathname === item.href || pathname.startsWith('/dashboard/offer-letters/');
           }
           
           return (

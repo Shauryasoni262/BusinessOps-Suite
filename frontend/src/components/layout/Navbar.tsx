@@ -47,7 +47,12 @@ export default function Navbar() {
         {/* Left side - Brand */}
         <div className="navbar-brand">
           <Link href="/" className="brand-link">
-            BusinessOps
+            <img 
+              src="/images/Logo/businesslogo.svg" 
+              alt="BusinessOps Logo" 
+              className="brand-logo"
+            />
+            <span>BusinessOps</span>
           </Link>
         </div>
 
