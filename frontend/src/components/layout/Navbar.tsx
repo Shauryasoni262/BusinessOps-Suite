@@ -42,22 +42,23 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="navbar">
-      <div className="navbar-container">
+    <nav className="navbar" suppressHydrationWarning>
+      <div className="navbar-container" suppressHydrationWarning>
         {/* Left side - Brand */}
-        <div className="navbar-brand">
+        <div className="navbar-brand" suppressHydrationWarning>
           <Link href="/" className="brand-link">
             <img 
               src="/images/Logo/businesslogo.svg" 
               alt="BusinessOps Logo" 
               className="brand-logo"
+              suppressHydrationWarning
             />
             <span>BusinessOps</span>
           </Link>
         </div>
 
         {/* Center - Navigation Links */}
-        <div className="navbar-links">
+        <div className="navbar-links" suppressHydrationWarning>
           <Link href="#features" className="nav-link">Features</Link>
           <Link href="#pricing" className="nav-link">Pricing</Link>
           <Link href="#about" className="nav-link">About</Link>
@@ -65,7 +66,7 @@ export default function Navbar() {
         </div>
 
         {/* Right side - Auth Buttons */}
-        <div className="navbar-auth">
+        <div className="navbar-auth" suppressHydrationWarning>
           {loading ? (
             <span className="auth-link">Loading...</span>
           ) : user ? (

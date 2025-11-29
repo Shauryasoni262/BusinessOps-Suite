@@ -65,10 +65,10 @@ function GoogleSuccessContent() {
   return (
     <>
       <Navbar />
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <div className={styles.successCard}>
-            <div className={styles.successIcon}>
+      <div className={styles.container} suppressHydrationWarning>
+        <div className={styles.content} suppressHydrationWarning>
+          <div className={styles.successCard} suppressHydrationWarning>
+            <div className={styles.successIcon} suppressHydrationWarning>
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
@@ -77,7 +77,7 @@ function GoogleSuccessContent() {
             <p className={styles.message}>
               You have successfully logged in with Google. Redirecting to dashboard...
             </p>
-            <div className={styles.spinner}></div>
+            <div className={styles.spinner} suppressHydrationWarning></div>
           </div>
         </div>
       </div>

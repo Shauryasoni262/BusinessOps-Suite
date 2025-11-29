@@ -75,8 +75,7 @@ export default function OfferLettersPage() {
             <button 
               className={styles.createButton}
               onClick={() => {
-                // TODO: Implement create offer letter functionality
-                console.log('Create offer letter');
+                router.push('/dashboard/offer-letters/create');
               }}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

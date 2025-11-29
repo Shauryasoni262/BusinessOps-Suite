@@ -17,6 +17,7 @@ const invoiceRoutes = require('./routes/invoices');
 const paymentRoutes = require('./routes/payments');
 const pdfRoutes = require('./routes/pdf');
 const analyticsRoutes = require('./routes/analytics');
+const offerLetterRoutes = require('./routes/offerLetters');
 
 // Import database initialization
 const { initializeDatabase, createDefaultAdmin } = require('./config/initDatabase');
@@ -60,7 +61,8 @@ app.get('/', (req, res) => {
       files: '/api/files',
       invoices: '/api/invoices',
       payments: '/api/payments',
-      analytics: '/api/analytics'
+      analytics: '/api/analytics',
+      offerLetters: '/api/offer-letters'
     }
   });
 });
@@ -87,6 +89,7 @@ app.use('/api/invoices', invoiceRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/pdf', pdfRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/offer-letters', offerLetterRoutes);
 
 // 404 handler
 app.use((req, res) => {
