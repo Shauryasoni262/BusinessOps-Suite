@@ -1,0 +1,19 @@
+.container { max-width: 1400px; margin: 0 auto; }
+.header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+.title { font-size: 2rem; font-weight: 800; margin: 0; }
+.subtitle { color: #64748b; margin-top: 0.25rem; }
+.filters { display: flex; gap: 0.5rem; }
+.filterBtn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #94a3b8; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-size: 0.8125rem; text-transform: capitalize; transition: all 0.2s; }
+.filterBtn:hover { border-color: rgba(255,255,255,0.15); color: white; }
+.activeFilter { background: rgba(59,130,246,0.1); border-color: #3b82f6; color: #3b82f6; }
+.tableWrap { background: #1e293b; border: 1px solid rgba(255,255,255,0.05); border-radius: 1rem; overflow: hidden; }
+.table { width: 100%; border-collapse: collapse; }
+.table th { text-align: left; padding: 1rem 1.25rem; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-weight: 800; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.table td { padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.8125rem; vertical-align: top; }
+.projectName { font-weight: 600; color: #e2e8f0; }
+.projectDesc { font-size: 0.75rem; color: #475569; margin-top: 0.2rem; }
+.ownerName { font-weight: 600; }
+.ownerEmail { font-size: 0.6875rem; color: #64748b; }
+.badge { padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.6875rem; font-weight: 700; text-transform: capitalize; }
+.mono { font-family: monospace; color: #64748b; font-size: 0.75rem; }
+.empty { text-align: center; padding: 4rem !important; color: #475569; }

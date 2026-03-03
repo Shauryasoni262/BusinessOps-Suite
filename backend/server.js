@@ -19,6 +19,9 @@ const pdfRoutes = require('./routes/pdf');
 const analyticsRoutes = require('./routes/analytics');
 const offerLetterRoutes = require('./routes/offerLetters');
 
+const adminRoutes = require('./routes/admin');
+const apiLogger = require('./middleware/apiLogger');
+
 // Import database initialization
 const { initializeDatabase, createDefaultAdmin } = require('./config/initDatabase');
 
@@ -44,6 +47,9 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Global API Logging Middleware (runs before all routes)
+app.use(apiLogger);
+
 // Basic route
 app.get('/', (req, res) => {
   res.json({
@@ -53,6 +59,7 @@ app.get('/', (req, res) => {
     endpoints: {
       health: '/api/health',
       auth: '/api/auth',
+      admin: '/api/admin',
       dashboard: '/api/dashboard',
       ai: '/api/ai',
       projects: '/api/projects',
@@ -79,6 +86,7 @@ app.get('/api/health', (req, res) => {
 // Use routes
 app.use('/api/auth', authRoutes);
 app.use('/api/auth', googleAuthRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/projects', projectRoutes);

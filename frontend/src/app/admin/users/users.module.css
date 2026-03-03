@@ -1,0 +1,158 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.errorBanner {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.subtitle {
+  color: #94a3b8;
+  margin-top: 0.5rem;
+}
+
+.headerActions {
+  display: flex;
+  gap: 1rem;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 1rem;
+  border-radius: 0.75rem;
+  width: 320px;
+}
+
+.searchBox input {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 0.75rem;
+  width: 100%;
+  outline: none;
+  font-size: 0.875rem;
+}
+
+.searchBox svg {
+  color: #475569;
+}
+
+.refreshBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 0 1.25rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tableWrapper {
+  background: #1e293b;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.userTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.userTable th {
+  text-align: left;
+  padding: 1.25rem 1.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #64748b;
+  font-weight: 800;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.userTable td {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  vertical-align: middle;
+}
+
+.userMeta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.userName {
+  font-weight: 600;
+}
+
+.userEmail {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.roleBadge {
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.roleBadge.admin { background: rgba(234, 179, 8, 0.1); color: #eab308; }
+.roleBadge.user { background: rgba(148, 163, 184, 0.1); color: #94a3b8; }
+
+.dateCell {
+  color: #64748b;
+  font-family: monospace;
+}
+
+.roleSelect {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 4rem !important;
+  color: #475569;
+}

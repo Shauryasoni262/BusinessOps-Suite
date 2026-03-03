@@ -1,0 +1,46 @@
+.container { max-width: 1400px; margin: 0 auto; }
+.pageHeader { margin-bottom: 2rem; }
+.pageTitle { font-size: 2rem; font-weight: 800; margin: 0; }
+.pageSubtitle { color: #64748b; margin-top: 0.25rem; }
+
+.loading { height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; gap: 1rem; }
+.spinner { width: 32px; height: 32px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* KPI Grid */
+.kpiGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+.kpiCard { background: #1e293b; border: 1px solid rgba(255,255,255,0.05); padding: 1.25rem; border-radius: 1rem; transition: transform 0.2s, border-color 0.2s; }
+.kpiCard:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.1); }
+.kpiTop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+.kpiLabel { color: #94a3b8; font-size: 0.8125rem; font-weight: 600; }
+.kpiIcon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; }
+.kpiValue { font-size: 1.625rem; font-weight: 800; margin-bottom: 0.25rem; }
+.kpiSub { font-size: 0.6875rem; color: #475569; }
+
+/* Charts Row */
+.chartsRow { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
+.chartCard { background: #1e293b; border: 1px solid rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 1rem; }
+.chartTitle { font-size: 0.9375rem; font-weight: 700; margin: 0 0 1.25rem 0; color: #e2e8f0; }
+
+/* Bar Chart */
+.barChart { display: flex; align-items: flex-end; gap: 0.5rem; height: 180px; }
+.barGroup { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; }
+.barTrack { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+.bar { width: 70%; min-height: 4px; border-radius: 4px 4px 0 0; position: relative; transition: height 0.6s ease; }
+.barLabel { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 0.625rem; color: #94a3b8; white-space: nowrap; }
+.barMonth { font-size: 0.6875rem; color: #64748b; margin-top: 0.5rem; }
+
+/* Distribution List */
+.distList { display: flex; flex-direction: column; gap: 1rem; }
+.distItem { display: flex; flex-direction: column; gap: 0.35rem; }
+.distHeader { display: flex; align-items: center; gap: 0.5rem; }
+.distDot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.distName { flex: 1; font-size: 0.8125rem; text-transform: capitalize; color: #cbd5e1; }
+.distCount { font-size: 0.8125rem; font-weight: 700; color: #e2e8f0; }
+.distBarTrack { height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
+.distBar { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+
+@media (max-width: 1024px) {
+  .kpiGrid { grid-template-columns: repeat(2, 1fr); }
+  .chartsRow { grid-template-columns: 1fr; }
+}

@@ -8,6 +8,8 @@ export const API_CONFIG = {
   },
 };
 
+export const API_BASE_URL = API_CONFIG.baseURL;
+
 // API helper to get auth headers
 export const getAuthHeaders = (): Record<string, string> => {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;

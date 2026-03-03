@@ -1,0 +1,20 @@
+.container { max-width: 1400px; margin: 0 auto; }
+.header { margin-bottom: 2rem; }
+.title { font-size: 2rem; font-weight: 800; margin: 0; }
+.subtitle { color: #64748b; margin-top: 0.25rem; }
+
+.tableWrap { background: #1e293b; border: 1px solid rgba(255,255,255,0.05); border-radius: 1rem; overflow: hidden; }
+.table { width: 100%; border-collapse: collapse; }
+.table th { text-align: left; padding: 1rem 1.25rem; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-weight: 800; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.table td { padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.8125rem; }
+.mono { font-family: monospace; color: #94a3b8; font-size: 0.75rem; }
+.bold { font-weight: 600; }
+.sub { font-size: 0.6875rem; color: #64748b; }
+.badge { padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.6875rem; font-weight: 700; }
+.details { font-size: 0.6875rem; color: #475569; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace; }
+.empty { text-align: center; padding: 4rem !important; color: #475569; }
+
+.pagination { margin-top: 1.5rem; display: flex; justify-content: center; align-items: center; gap: 1.5rem; }
+.pageBtn { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; font-size: 0.8125rem; }
+.pageBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+.pageInfo { font-size: 0.8125rem; color: #64748b; }
