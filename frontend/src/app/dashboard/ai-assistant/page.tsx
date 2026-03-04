@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Sidebar, TopBar } from '@/components/layout';
+import ReactMarkdown from 'react-markdown';
 import styles from './page.module.css';
 
 interface Message {
@@ -33,7 +34,7 @@ const AIAssistantPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [availableModels, setAvailableModels] = useState<Model[]>([]);
-  const [selectedModel, setSelectedModel] = useState('llama2');
+  const [selectedModel, setSelectedModel] = useState('arcee-ai/trinity-large-preview:free');
   const [error, setError] = useState<string | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -85,7 +86,7 @@ const AIAssistantPage: React.FC = () => {
     }
   }, [router]);
 
-  // Check Ollama connection and load models on component mount
+  // Check AI connection and load models on component mount
   useEffect(() => {
     if (user) {
       checkConnection();
@@ -107,7 +108,7 @@ const AIAssistantPage: React.FC = () => {
       setIsConnected(data.success);
       
       if (!data.success) {
-        setError('Failed to connect to Ollama. Please make sure Ollama is running.');
+        setError('Failed to connect to AI service. Please check your configuration.');
       }
     } catch (error) {
       console.error('Connection test failed:', error);
@@ -132,7 +133,7 @@ const AIAssistantPage: React.FC = () => {
         if (data.models.length > 0) {
           setSelectedModel(data.models[0].name);
         } else {
-          setError('No AI models available. Please install a model first using: ollama pull llama2');
+          setError('No AI models available. Please check your OpenRouter configuration.');
         }
       }
     } catch (error) {
@@ -255,7 +256,7 @@ const AIAssistantPage: React.FC = () => {
           <div className={styles.header}>
             <div className={styles.headerContent}>
               <h1>AI Assistant</h1>
-              <p>Chat with your AI assistant powered by Ollama</p>
+              <p>Chat with your AI assistant powered by OpenRouter</p>
             </div>
             
             <div className={styles.controls}>
@@ -288,7 +289,7 @@ const AIAssistantPage: React.FC = () => {
           <div className={styles.statusBar}>
             <div className={styles.status}>
               <div className={`${styles.statusIndicator} ${isConnected ? styles.connected : styles.disconnected}`}></div>
-              <span>{isConnected ? 'Connected to Ollama' : 'Disconnected'}</span>
+              <span>{isConnected ? 'Connected to AI' : 'Disconnected'}</span>
             </div>
             {error && (
               <div className={styles.error}>
@@ -310,8 +311,8 @@ const AIAssistantPage: React.FC = () => {
                       <div className={styles.installInstructions}>
                         <h4>To get started:</h4>
                         <ol>
-                          <li>Make sure Ollama is installed and running</li>
-                          <li>Install a model: <code>ollama pull llama2</code></li>
+                          <li>Make sure the backend server is running</li>
+                          <li>Check your OpenRouter API key in the .env file</li>
                           <li>Refresh this page</li>
                         </ol>
                       </div>
@@ -358,7 +359,7 @@ const AIAssistantPage: React.FC = () => {
                         </span>
                       </div>
                       <div className={styles.messageText}>
-                        {message.content}
+                        <ReactMarkdown>{message.content}</ReactMarkdown>
                       </div>
                     </div>
                   </div>

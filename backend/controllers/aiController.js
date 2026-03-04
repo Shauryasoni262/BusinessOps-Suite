@@ -1,27 +1,48 @@
-const axios = require('axios');
+const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const DEFAULT_MODEL = 'arcee-ai/trinity-large-preview:free';
+let currentModel = DEFAULT_MODEL;
 
-const ollamaUrl = 'http://localhost:11434';
-let currentModel = 'llama2'; // Default model, can be changed
+// Helper to get auth headers
+const getHeaders = () => ({
+  'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+  'Content-Type': 'application/json'
+});
 
-// Test Ollama connection
+// Test OpenRouter connection
 const testConnection = async (req, res) => {
   try {
-    const response = await axios.get(`${ollamaUrl}/api/tags`);
-    res.json({
-      success: true,
-      message: 'Ollama connection successful',
-      models: response.data.models || []
+    const response = await fetch(OPENROUTER_API_URL, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        model: currentModel,
+        messages: [{ role: 'user', content: 'Hi' }],
+        max_tokens: 5
+      })
     });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      res.json({
+        success: true,
+        message: 'AI service connected successfully',
+        models: [{ name: currentModel }]
+      });
+    } else {
+      throw new Error(data.error?.message || 'Connection failed');
+    }
   } catch (error) {
+    console.error('OpenRouter connection test failed:', error.message);
     res.status(500).json({
       success: false,
-      message: 'Failed to connect to Ollama',
+      message: 'Failed to connect to AI service',
       error: error.message
     });
   }
 };
 
-// Chat with AI
+// Chat with AI (non-streaming)
 const chat = async (req, res) => {
   try {
     const { message, model = currentModel } = req.body;
@@ -33,50 +54,44 @@ const chat = async (req, res) => {
       });
     }
 
-    // First check if the model exists
-    const modelsResponse = await axios.get(`${ollamaUrl}/api/tags`);
-    const availableModels = modelsResponse.data.models || [];
-    
-    if (availableModels.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'No AI models available. Please install a model first using: ollama pull llama2',
-        availableModels: []
-      });
+    const modelToUse = model || currentModel;
+
+    const response = await fetch(OPENROUTER_API_URL, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        model: modelToUse,
+        messages: [
+          {
+            role: 'user',
+            content: message
+          }
+        ]
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error?.message || 'Failed to get AI response');
     }
 
-    // Use the first available model if the requested one doesn't exist
-    const modelToUse = availableModels.find(m => m.name === model) ? model : availableModels[0].name;
-
-    // Call Ollama API
-    const response = await axios.post(`${ollamaUrl}/api/generate`, {
-      model: modelToUse,
-      prompt: message,
-      stream: false
-    });
+    const aiResponse = data.choices?.[0]?.message?.content || 'No response generated.';
 
     res.json({
       success: true,
-      response: response.data.response,
+      response: aiResponse,
       model: modelToUse,
       timestamp: new Date().toISOString()
     });
 
   } catch (error) {
     console.error('AI Chat Error:', error.message);
-    
-    if (error.response?.status === 404) {
-      res.status(400).json({
-        success: false,
-        message: 'Model not found. Please install a model first using: ollama pull llama2'
-      });
-    } else {
-      res.status(500).json({
-        success: false,
-        message: 'Failed to get AI response',
-        error: error.message
-      });
-    }
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get AI response',
+      error: error.message
+    });
   }
 };
 
@@ -92,7 +107,7 @@ const streamChat = async (req, res) => {
       });
     }
 
-    // Set up streaming response
+    // Set up streaming response headers
     res.writeHead(200, {
       'Content-Type': 'text/plain',
       'Transfer-Encoding': 'chunked',
@@ -100,57 +115,87 @@ const streamChat = async (req, res) => {
       'Connection': 'keep-alive'
     });
 
-    // Call Ollama with streaming
-    const response = await axios.post(`${ollamaUrl}/api/generate`, {
-      model: model,
-      prompt: message,
-      stream: true
-    }, {
-      responseType: 'stream'
+    const response = await fetch(OPENROUTER_API_URL, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        model: model || currentModel,
+        messages: [
+          {
+            role: 'user',
+            content: message
+          }
+        ],
+        stream: true
+      })
     });
 
-    response.data.on('data', (chunk) => {
-      try {
-        const lines = chunk.toString().split('\n');
-        for (const line of lines) {
-          if (line.trim()) {
-            const data = JSON.parse(line);
-            if (data.response) {
-              res.write(data.response);
+    if (!response.ok) {
+      const errorData = await response.json();
+      res.write(errorData.error?.message || 'Error getting AI response');
+      res.end();
+      return;
+    }
+
+    // Read the streaming response
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n');
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === '[DONE]') continue;
+
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content;
+            if (content) {
+              res.write(content);
             }
+          } catch (e) {
+            // Skip invalid JSON lines
           }
         }
-      } catch (err) {
-        // Skip invalid JSON lines
       }
-    });
+    }
 
-    response.data.on('end', () => {
-      res.end();
-    });
-
-    response.data.on('error', (error) => {
-      console.error('Stream error:', error);
-      res.end();
-    });
+    res.end();
 
   } catch (error) {
     console.error('Stream Chat Error:', error.message);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to stream AI response',
-      error: error.message
-    });
+    if (!res.headersSent) {
+      res.status(500).json({
+        success: false,
+        message: 'Failed to stream AI response',
+        error: error.message
+      });
+    } else {
+      res.end();
+    }
   }
 };
 
 // Get available models
 const getModels = async (req, res) => {
   try {
-    const response = await axios.get(`${ollamaUrl}/api/tags`);
+    const models = [
+      {
+        name: DEFAULT_MODEL,
+        size: 0,
+        modified_at: new Date().toISOString()
+      }
+    ];
+
     res.json({
       success: true,
-      models: response.data.models || []
+      models: models
     });
   } catch (error) {
     res.status(500).json({
@@ -165,7 +210,7 @@ const getModels = async (req, res) => {
 const changeModel = async (req, res) => {
   try {
     const { model } = req.body;
-    
+
     if (!model) {
       return res.status(400).json({
         success: false,
@@ -174,7 +219,7 @@ const changeModel = async (req, res) => {
     }
 
     currentModel = model;
-    
+
     res.json({
       success: true,
       message: `Model changed to ${model}`,

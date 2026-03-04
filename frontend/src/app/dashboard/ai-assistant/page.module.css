@@ -321,9 +321,72 @@
 }
 
 .messageText {
-  line-height: 1.5;
-  white-space: pre-wrap;
+  line-height: 1.6;
+  white-space: normal; /* Changed from pre-wrap for markdown */
   word-wrap: break-word;
+  font-size: 0.95rem;
+}
+
+.messageText p {
+  margin: 0 0 0.75rem 0;
+}
+
+.messageText p:last-child {
+  margin-bottom: 0;
+}
+
+.messageText h1,
+.messageText h2,
+.messageText h3,
+.messageText h4,
+.messageText h5,
+.messageText h6 {
+  margin: 1rem 0 0.5rem 0;
+  font-weight: 600;
+  color: inherit;
+}
+
+.messageText h1 { font-size: 1.25rem; }
+.messageText h2 { font-size: 1.15rem; }
+.messageText h3 { font-size: 1.05rem; }
+
+.messageText ul,
+.messageText ol {
+  margin: 0.5rem 0 1rem 0;
+  padding-left: 1.5rem; /* Fix list bullets touching edge */
+}
+
+.messageText li {
+  margin-bottom: 0.25rem;
+}
+
+.messageText pre {
+  background: #f1f5f9;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+
+.message.user .messageText pre {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.messageText code {
+  background: #f1f5f9;
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.85em;
+}
+
+.message.user .messageText code {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.messageText pre code {
+  background: transparent;
+  padding: 0;
 }
 
 .typingIndicator {

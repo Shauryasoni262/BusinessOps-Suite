@@ -3,7 +3,7 @@ const router = express.Router();
 const aiController = require('../controllers/aiController');
 const { authenticateToken } = require('../middleware/auth');
 
-// Test Ollama connection
+// Test AI connection
 router.get('/test', authenticateToken, aiController.testConnection);
 
 // Chat with AI
