@@ -1,44 +1,34 @@
 .container { max-width: 1400px; margin: 0 auto; }
-.pageHeader { margin-bottom: 2rem; }
-.pageTitle { font-size: 2rem; font-weight: 800; margin: 0; }
-.pageSubtitle { color: #64748b; margin-top: 0.25rem; }
+.pageHeader { margin-bottom: 1.5rem; }
+.pageTitle { font-size: 1.375rem; font-weight: 700; margin: 0; color: #e2e8f0; letter-spacing: -0.01em; }
+.pageSub { color: #475569; margin-top: 0.125rem; font-size: 0.8125rem; }
 
-.loading { height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; gap: 1rem; }
-.spinner { width: 32px; height: 32px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
+.loading { height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #64748b; gap: 0.75rem; font-size: 0.8125rem; }
+.spinner { width: 24px; height: 24px; border: 2px solid rgba(255,255,255,0.06); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* KPI Grid */
-.kpiGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
-.kpiCard { background: #1e293b; border: 1px solid rgba(255,255,255,0.05); padding: 1.25rem; border-radius: 1rem; transition: transform 0.2s, border-color 0.2s; }
-.kpiCard:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.1); }
-.kpiTop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
-.kpiLabel { color: #94a3b8; font-size: 0.8125rem; font-weight: 600; }
-.kpiIcon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; }
-.kpiValue { font-size: 1.625rem; font-weight: 800; margin-bottom: 0.25rem; }
-.kpiSub { font-size: 0.6875rem; color: #475569; }
+.kpiGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.875rem; margin-bottom: 1.5rem; }
+.kpiCard { background: #111827; border: 1px solid rgba(255,255,255,0.04); padding: 1rem 1.125rem; border-radius: 0.75rem; transition: border-color 0.2s; }
+.kpiCard:hover { border-color: rgba(255,255,255,0.08); }
+.kpiTop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.625rem; }
+.kpiLabel { color: #64748b; font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.kpiIcon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.kpiValue { font-size: 1.375rem; font-weight: 700; margin-bottom: 0.125rem; color: #e2e8f0; letter-spacing: -0.02em; }
+.kpiSub { font-size: 0.625rem; color: #475569; }
 
 /* Charts Row */
-.chartsRow { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
-.chartCard { background: #1e293b; border: 1px solid rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 1rem; }
-.chartTitle { font-size: 0.9375rem; font-weight: 700; margin: 0 0 1.25rem 0; color: #e2e8f0; }
+.chartsRow { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.875rem; }
+.chartCard { background: #111827; border: 1px solid rgba(255,255,255,0.04); padding: 1.125rem; border-radius: 0.75rem; }
+.chartTitle { font-size: 0.75rem; font-weight: 600; margin: 0 0 0.875rem 0; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.04em; }
 
-/* Bar Chart */
-.barChart { display: flex; align-items: flex-end; gap: 0.5rem; height: 180px; }
-.barGroup { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; }
-.barTrack { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
-.bar { width: 70%; min-height: 4px; border-radius: 4px 4px 0 0; position: relative; transition: height 0.6s ease; }
-.barLabel { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 0.625rem; color: #94a3b8; white-space: nowrap; }
-.barMonth { font-size: 0.6875rem; color: #64748b; margin-top: 0.5rem; }
-
-/* Distribution List */
-.distList { display: flex; flex-direction: column; gap: 1rem; }
-.distItem { display: flex; flex-direction: column; gap: 0.35rem; }
-.distHeader { display: flex; align-items: center; gap: 0.5rem; }
-.distDot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.distName { flex: 1; font-size: 0.8125rem; text-transform: capitalize; color: #cbd5e1; }
-.distCount { font-size: 0.8125rem; font-weight: 700; color: #e2e8f0; }
-.distBarTrack { height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
-.distBar { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+/* Pie Chart */
+.pieWrap { display: flex; flex-direction: column; gap: 0.75rem; }
+.pieLegend { display: flex; flex-direction: column; gap: 0.375rem; }
+.legendItem { display: flex; align-items: center; gap: 0.5rem; }
+.legendDot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.legendLabel { flex: 1; font-size: 0.75rem; text-transform: capitalize; color: #94a3b8; }
+.legendVal { font-size: 0.75rem; font-weight: 600; color: #cbd5e1; }
 
 @media (max-width: 1024px) {
   .kpiGrid { grid-template-columns: repeat(2, 1fr); }

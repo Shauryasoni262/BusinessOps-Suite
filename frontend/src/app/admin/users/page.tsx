@@ -3,124 +3,97 @@
 import { useState, useEffect } from 'react';
 import { adminService } from '@/services/adminService';
 import { User } from '@/types/user';
+import { Search, RefreshCw } from 'lucide-react';
 import styles from './users.module.css';
 
-export default function UserManagementPage() {
+export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [currentAdmin, setCurrentAdmin] = useState<any>(null);
-
-  useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setCurrentAdmin(JSON.parse(userData));
-    }
-    fetchUsers();
-  }, []);
+  const [search, setSearch] = useState('');
+  const [error, setError] = useState('');
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
       const data = await adminService.getUsers();
       setUsers(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load users');
-    } finally {
-      setLoading(false);
-    }
+    } catch (err: any) { setError(err.message); }
+    finally { setLoading(false); }
   };
+
+  useEffect(() => { fetchUsers(); }, []);
 
   const handleRoleChange = async (userId: string, newRole: string) => {
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    if (currentUser.id === userId) return;
     try {
       await adminService.updateUser(userId, { role: newRole });
-      setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole as 'admin' | 'user' } : u));
-    } catch (err: any) {
-      alert(err.message || 'Failed to update user role');
-    }
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole as User['role'] } : u));
+    } catch (err: any) { setError(err.message); }
   };
 
-  const filteredUsers = users.filter(user => 
-    user.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filtered = users.filter(u =>
+    u.name.toLowerCase().includes(search.toLowerCase()) ||
+    u.email.toLowerCase().includes(search.toLowerCase())
   );
+
+  const adminCount = users.filter(u => u.role === 'admin').length;
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>User Management</h1>
-          <p className={styles.subtitle}>Audit access levels and system privileges</p>
+          <p className={styles.subtitle}>{users.length} users · {adminCount} admins</p>
         </div>
-        <div className={styles.headerActions}>
+        <div className={styles.actions}>
           <div className={styles.searchBox}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input 
-              type="text" 
-              placeholder="Search by name or email..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <Search size={14} color="#475569" />
+            <input placeholder="Search users..." value={search} onChange={e => setSearch(e.target.value)} />
           </div>
-          <button className={styles.refreshBtn} onClick={fetchUsers}>Refresh</button>
+          <button className={styles.refreshBtn} onClick={fetchUsers}><RefreshCw size={14} /></button>
         </div>
       </div>
 
       {error && <div className={styles.errorBanner}>{error}</div>}
 
-      <div className={styles.tableWrapper}>
-        <table className={styles.userTable}>
+      <div className={styles.tableWrap}>
+        <table className={styles.table}>
           <thead>
-            <tr>
-              <th>Identity</th>
-              <th>Status / Role</th>
-              <th>Persistence</th>
-              <th>Management</th>
-            </tr>
+            <tr><th>User</th><th>Role</th><th>Joined</th><th>Actions</th></tr>
           </thead>
           <tbody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map(user => (
-                <tr key={user.id}>
-                  <td>
-                    <div className={styles.userMeta}>
-                      <div className={styles.avatar}>
-                        {user.name?.charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <div className={styles.userName}>{user.name}</div>
-                        <div className={styles.userEmail}>{user.email}</div>
-                      </div>
+            {filtered.length > 0 ? filtered.map(u => (
+              <tr key={u.id}>
+                <td>
+                  <div className={styles.userMeta}>
+                    <div className={styles.avatar}>{u.name.charAt(0).toUpperCase()}</div>
+                    <div>
+                      <div className={styles.userName}>{u.name}</div>
+                      <div className={styles.userEmail}>{u.email}</div>
                     </div>
-                  </td>
-                  <td>
-                    <span className={`${styles.roleBadge} ${user.role === 'admin' ? styles.admin : styles.user}`}>
-                      {user.role}
-                    </span>
-                  </td>
-                  <td className={styles.dateCell}>
-                    {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
-                  </td>
-                  <td>
-                    <select 
-                      className={styles.roleSelect}
-                      value={user.role}
-                      onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                      disabled={user.id === currentAdmin?.id}
-                    >
-                      <option value="user">Assign User Role</option>
-                      <option value="admin">Promote to Admin</option>
-                    </select>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={4} className={styles.emptyState}>
-                  {loading ? 'Fetching users...' : 'No users match your criteria'}
+                  </div>
+                </td>
+                <td>
+                  <span className={`${styles.roleBadge} ${u.role === 'admin' ? styles.adminBadge : styles.userBadge}`}>
+                    {u.role}
+                  </span>
+                </td>
+                <td className={styles.mono}>{u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}</td>
+                <td>
+                  <select
+                    value={u.role}
+                    onChange={e => handleRoleChange(u.id, e.target.value)}
+                    className={styles.roleSelect}
+                    disabled={JSON.parse(localStorage.getItem('user') || '{}').id === u.id}
+                  >
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                  </select>
                 </td>
               </tr>
+            )) : (
+              <tr><td colSpan={4} className={styles.empty}>{loading ? 'Loading...' : 'No users found'}</td></tr>
             )}
           </tbody>
         </table>
