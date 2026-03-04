@@ -13,7 +13,7 @@ interface RevenueChartProps {
 }
 
 const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
-  const formatCurrency = (value: number) => `$${value.toLocaleString()}`;
+  const formatCurrency = (value: number | undefined) => `$${(value ?? 0).toLocaleString()}`;
 
   return (
     <div className={styles.chartCard}>

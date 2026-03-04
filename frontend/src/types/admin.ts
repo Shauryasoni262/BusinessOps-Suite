@@ -120,7 +120,7 @@ export interface AdminActivityLog {
   action: string;
   target_id: string;
   target_type: string;
-  details: any;
+  details: Record<string, unknown>;
   created_at: string;
   users?: { name: string; email: string };
 }

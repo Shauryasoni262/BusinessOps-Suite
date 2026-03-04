@@ -17,7 +17,7 @@ export default function AdminUsersPage() {
       setLoading(true);
       const data = await adminService.getUsers();
       setUsers(data);
-    } catch (err: any) { setError(err.message); }
+    } catch (err: unknown) { setError(err instanceof Error ? err.message : 'An error occurred'); }
     finally { setLoading(false); }
   };
 
@@ -29,7 +29,7 @@ export default function AdminUsersPage() {
     try {
       await adminService.updateUser(userId, { role: newRole });
       setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole as User['role'] } : u));
-    } catch (err: any) { setError(err.message); }
+    } catch (err: unknown) { setError(err instanceof Error ? err.message : 'An error occurred'); }
   };
 
   const filtered = users.filter(u =>

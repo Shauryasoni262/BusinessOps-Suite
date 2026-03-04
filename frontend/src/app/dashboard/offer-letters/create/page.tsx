@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Sidebar, TopBar } from '@/components/layout';
+import { ModernTemplate, ClassicFormalTemplate, StartupFriendlyTemplate, CompanySettings } from '@/components/offer-letters/OfferLetterTemplates';
 import styles from './page.module.css';
 
 interface User {
@@ -36,9 +37,12 @@ export default function CreateOfferLetterPage() {
     benefits: [] as string[],
     additionalTerms: '',
     enableAiAssistance: false,
+    companySettings: undefined as CompanySettings | undefined,
   });
 
   const [currentBenefit, setCurrentBenefit] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState<'modern' | 'classic' | 'startup'>('modern');
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -52,6 +56,17 @@ export default function CreateOfferLetterPage() {
     try {
       const parsedUser = JSON.parse(userData);
       setUser(parsedUser);
+      
+      const savedSettings = localStorage.getItem('companySettings');
+      if (savedSettings) {
+        const parsedSettings = JSON.parse(savedSettings);
+        setFormData(prev => ({
+          ...prev,
+          companySettings: parsedSettings,
+          // Pre-populate benefits if the list is currently empty
+          benefits: prev.benefits.length === 0 && parsedSettings.defaultBenefits ? parsedSettings.defaultBenefits : prev.benefits
+        }));
+      }
     } catch (error) {
       console.error('Error parsing user data:', error);
       router.push('/auth/login');
@@ -129,6 +144,53 @@ export default function CreateOfferLetterPage() {
 
   const handleCancel = () => {
     router.push('/dashboard/offer-letters');
+  };
+
+  const handleGenerate = async () => {
+    try {
+      setIsGenerating(true);
+      
+      // 1. Generate PDF locally and download
+      const element = document.getElementById('offer-letter-preview');
+      if (element) {
+        // Dynamically import to prevent SSR issues with browser APIs
+        const html2pdf = (await import('html2pdf.js')).default;
+        const opt = {
+          margin:       0,
+          filename:     `${formData.candidateName.replace(/\s+/g, '_')}_Offer_Letter.pdf`,
+          image:        { type: 'jpeg' as const, quality: 0.98 },
+          html2canvas:  { scale: 2, useCORS: true },
+          jsPDF:        { unit: 'px', format: [element.offsetWidth, element.offsetHeight] as [number, number], orientation: 'portrait' as const }
+        };
+        await html2pdf().set(opt).from(element).save();
+      }
+
+      // 2. Save metadata to Backend
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/offer-letters`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          ...formData,
+          status: 'draft'
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to save to database');
+      }
+      
+      router.push('/dashboard/offer-letters');
+    } catch (error) {
+      console.error('Error generating offer letter:', error);
+      alert('Error generating offer letter. Check console for details.');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   if (loading) {
@@ -588,25 +650,116 @@ export default function CreateOfferLetterPage() {
             )}
 
             {currentStep === 'template' && (
-              <div className={styles.formSection}>
-                <div className={styles.sectionHeader}>
-                  <div className={styles.sectionIcon}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                      <polyline points="14,2 14,8 20,8"/>
-                      <line x1="16" y1="13" x2="8" y2="13"/>
-                      <line x1="16" y1="17" x2="8" y2="17"/>
-                      <polyline points="10,9 9,9 8,9"/>
-                    </svg>
+              <div className={styles.jobDetailsContainer}>
+                {/* Section 1: Template Selection */}
+                <div className={styles.formCard}>
+                  <div className={styles.cardHeader} style={{ justifyContent: 'space-between', width: '100%' }}>
+                    <div>
+                      <h3>Choose Template</h3>
+                      <p>Select a professional template for your offer letter</p>
+                    </div>
+                    <Link href="/dashboard/offer-letters/settings" className={styles.editSettingsButton}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 20h9"></path>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                      </svg>
+                      Edit Company Settings
+                    </Link>
                   </div>
-                  <div>
-                    <h2>Template & Preview</h2>
-                    <p>Select a template and preview your offer letter</p>
+
+                  <div className={styles.templateGrid}>
+                    <div 
+                      className={`${styles.templateCard} ${selectedTemplate === 'modern' ? styles.templateCardActive : ''}`}
+                      onClick={() => setSelectedTemplate('modern')}
+                    >
+                      <div className={styles.templateCardHeader}>
+                        <h4>Modern Professional</h4>
+                        <div className={styles.radioBlock}>
+                          {selectedTemplate === 'modern' && <div className={styles.radioInner} />}
+                        </div>
+                      </div>
+                      <p>Clean and contemporary design with clear sections</p>
+                      
+                      <div className={styles.templatePreviewBox}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <polyline points="14 2 14 8 20 8"></polyline>
+                          <line x1="16" y1="13" x2="8" y2="13"></line>
+                          <line x1="16" y1="17" x2="8" y2="17"></line>
+                          <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <span>A modern, sleek template with blue accents and structured layout</span>
+                      </div>
+                    </div>
+
+                    <div 
+                      className={`${styles.templateCard} ${selectedTemplate === 'classic' ? styles.templateCardActive : ''}`}
+                      onClick={() => setSelectedTemplate('classic')}
+                    >
+                      <div className={styles.templateCardHeader}>
+                        <h4>Classic Formal</h4>
+                        <div className={styles.radioBlock}>
+                          {selectedTemplate === 'classic' && <div className={styles.radioInner} />}
+                        </div>
+                      </div>
+                      <p>Traditional business letter format</p>
+                      
+                      <div className={styles.templatePreviewBox}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <polyline points="14 2 14 8 20 8"></polyline>
+                          <line x1="16" y1="13" x2="8" y2="13"></line>
+                          <line x1="16" y1="17" x2="8" y2="17"></line>
+                          <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <span>Traditional formal business letter with conservative styling</span>
+                      </div>
+                    </div>
+
+                    <div 
+                      className={`${styles.templateCard} ${selectedTemplate === 'startup' ? styles.templateCardActive : ''}`}
+                      onClick={() => setSelectedTemplate('startup')}
+                    >
+                      <div className={styles.templateCardHeader}>
+                        <h4>Startup Friendly</h4>
+                        <div className={styles.radioBlock}>
+                          {selectedTemplate === 'startup' && <div className={styles.radioInner} />}
+                        </div>
+                      </div>
+                      <p>Casual yet professional tone</p>
+                      
+                      <div className={styles.templatePreviewBox}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <polyline points="14 2 14 8 20 8"></polyline>
+                          <line x1="16" y1="13" x2="8" y2="13"></line>
+                          <line x1="16" y1="17" x2="8" y2="17"></line>
+                          <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <span>Friendly and approachable template with modern elements</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className={styles.placeholderSection}>
-                  <p>Template & Preview section will be implemented here</p>
+
+                {/* Section 2: Live Preview */}
+                <div className={styles.formCard}>
+                  <div className={styles.cardHeader}>
+                    <div>
+                      <h3>Live Preview</h3>
+                      <p>Review how your offer letter will look to the candidate</p>
+                    </div>
+                  </div>
+                  
+                  <div className={styles.documentPreviewWrapper}>
+                    <div className={styles.documentPaper} id="offer-letter-preview">
+                      {selectedTemplate === 'modern' && <ModernTemplate data={formData} />}
+                      {selectedTemplate === 'classic' && <ClassicFormalTemplate data={formData} />}
+                      {selectedTemplate === 'startup' && <StartupFriendlyTemplate data={formData} />}
+                    </div>
+                  </div>
                 </div>
+
               </div>
             )}
 
@@ -626,6 +779,7 @@ export default function CreateOfferLetterPage() {
                     type="button"
                     onClick={handlePrevious}
                     className={styles.previousButton}
+                    disabled={isGenerating}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -636,11 +790,13 @@ export default function CreateOfferLetterPage() {
                 )}
                 <button
                   type="button"
-                  onClick={handleNext}
+                  onClick={currentStep === 'template' ? handleGenerate : handleNext}
                   className={styles.nextButton}
-                  disabled={currentStep === 'template'}
+                  disabled={isGenerating}
                 >
-                  {currentStep === 'template' ? 'Generate Offer Letter' : (
+                  {currentStep === 'template' ? (
+                    isGenerating ? 'Generating...' : 'Generate Offer Letter'
+                  ) : (
                     <>
                       Next
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

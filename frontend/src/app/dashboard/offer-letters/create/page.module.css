@@ -372,11 +372,31 @@
 
 .cardHeader {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.75rem;
   margin-bottom: 1.5rem;
   padding-bottom: 1.25rem;
   border-bottom: 1px solid #f1f5f9;
+}
+
+.editSettingsButton {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  transition: all 0.2s;
+  height: max-content;
+}
+
+.editSettingsButton:hover {
+  background-color: #dbeafe;
 }
 
 .cardHeader svg {
@@ -540,6 +560,121 @@
 
 .checkboxLabel svg {
   color: #64748b;
+}
+
+/* Template Selection Grid */
+.templateGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.templateCard {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: #ffffff;
+}
+
+.templateCard:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.templateCardActive {
+  border: 2px solid #0f172a;
+  background-color: #f8fafc;
+}
+
+.templateCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.templateCardHeader h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.radioBlock {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.templateCardActive .radioBlock {
+  border-color: #0f172a;
+}
+
+.radioInner {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #0f172a;
+}
+
+.templateCard p {
+  margin: 0 0 1rem 0;
+  font-size: 0.85rem;
+  color: #64748b;
+  min-height: 2.5rem; /* helps align boxes if descriptions vary */
+}
+
+.templatePreviewBox {
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1rem;
+  min-height: 120px;
+}
+
+.templatePreviewBox svg {
+  color: #64748b;
+}
+
+.templatePreviewBox span {
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.templateCardActive .templatePreviewBox {
+  background-color: #f1f5f9; /* keep same, just parent border changes */
+}
+
+/* Document Live Preview Container */
+.documentPreviewWrapper {
+  background-color: #f8fafc;
+  padding: 2rem;
+  border-radius: 8px;
+  overflow-y: auto;
+  max-height: 800px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: center;
+}
+
+.documentPaper {
+  width: 100%;
+  max-width: 800px;
+  /* Actual component handles the white background, padding, and shadow */
 }
 
 /* Action Buttons */

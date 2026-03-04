@@ -1,17 +1,25 @@
 // Offer Letter Controller
 // This controller handles all offer letter related operations
+const { supabase } = require('../config/database');
 
 const offerLetterController = {
+
   // Get all offer letters for the user
   getOfferLetters: async (req, res) => {
     try {
       const userId = req.user.id;
       
-      // TODO: Implement database query to get offer letters
-      // For now, return empty array
+      const { data, error } = await supabase
+        .from('offer_letters')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
       res.json({
         success: true,
-        data: [],
+        data: data || [],
         message: 'Offer letters retrieved successfully'
       });
     } catch (error) {
@@ -30,18 +38,29 @@ const offerLetterController = {
       const userId = req.user.id;
       const offerLetterData = req.body;
 
-      // TODO: Implement database insert
-      // For now, return success
+      // Extract top-level fields for the table, store the rest in offer_data
+      const newOfferLetter = {
+        user_id: userId,
+        candidate_name: offerLetterData.candidateName,
+        candidate_email: offerLetterData.candidateEmail,
+        job_title: offerLetterData.jobTitle,
+        status: offerLetterData.status || 'draft',
+        pdf_url: offerLetterData.pdf_url || null,
+        offer_data: offerLetterData
+      };
+
+      const { data, error } = await supabase
+        .from('offer_letters')
+        .insert([newOfferLetter])
+        .select()
+        .single();
+        
+      if (error) throw error;
+
       res.status(201).json({
         success: true,
         message: 'Offer letter created successfully',
-        data: {
-          id: 'temp-id',
-          ...offerLetterData,
-          status: 'draft',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }
+        data: data
       });
     } catch (error) {
       console.error('Error creating offer letter:', error.message);
@@ -59,10 +78,18 @@ const offerLetterController = {
       const { id } = req.params;
       const userId = req.user.id;
 
-      // TODO: Implement database query
+      const { data, error } = await supabase
+        .from('offer_letters')
+        .select('*')
+        .eq('id', id)
+        .eq('user_id', userId)
+        .single();
+
+      if (error) throw error;
+
       res.json({
         success: true,
-        data: null,
+        data: data,
         message: 'Offer letter retrieved successfully'
       });
     } catch (error) {
@@ -82,15 +109,33 @@ const offerLetterController = {
       const userId = req.user.id;
       const updateData = req.body;
 
-      // TODO: Implement database update
+      // Prepare fields dynamically depending on what is updated
+      const payload = { updated_at: new Date().toISOString() };
+      if (updateData.candidateName) payload.candidate_name = updateData.candidateName;
+      if (updateData.candidateEmail) payload.candidate_email = updateData.candidateEmail;
+      if (updateData.jobTitle) payload.job_title = updateData.jobTitle;
+      if (updateData.status) payload.status = updateData.status;
+      if (updateData.pdf_url) payload.pdf_url = updateData.pdf_url;
+      
+      // Update offer_data only if we have full object, otherwise keep existing
+      if (updateData.offerTitle) {
+        payload.offer_data = updateData;
+      }
+
+      const { data, error } = await supabase
+        .from('offer_letters')
+        .update(payload)
+        .eq('id', id)
+        .eq('user_id', userId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
       res.json({
         success: true,
         message: 'Offer letter updated successfully',
-        data: {
-          id,
-          ...updateData,
-          updated_at: new Date().toISOString()
-        }
+        data: data
       });
     } catch (error) {
       console.error('Error updating offer letter:', error.message);
@@ -108,7 +153,14 @@ const offerLetterController = {
       const { id } = req.params;
       const userId = req.user.id;
 
-      // TODO: Implement database delete
+      const { error } = await supabase
+        .from('offer_letters')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', userId);
+
+      if (error) throw error;
+
       res.json({
         success: true,
         message: 'Offer letter deleted successfully'
