@@ -18,6 +18,8 @@
   "license": "ISC",
   "description": "BusinessOps Suite Backend API",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@pinecone-database/pinecone": "^7.1.0",
     "@supabase/supabase-js": "^2.75.0",
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
@@ -35,6 +37,7 @@
     "mysql2": "^3.15.2",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
+    "pdf-parse": "^1.1.1",
     "pdfkit": "^0.17.2",
     "razorpay": "^2.9.6",
     "recharts": "^3.3.0",

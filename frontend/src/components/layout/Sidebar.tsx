@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import styles from './Sidebar.module.css';
 
 interface NavItem {
@@ -25,8 +26,16 @@ const bottomNavigationItems: NavItem[] = [
   { name: 'Settings', href: '/settings', icon: 'settings' },
 ];
 
+const toolsItems: NavItem[] = [
+  { name: 'Resume Analyzer', href: '/dashboard/tools/resume-analyzer', icon: 'fileSearch' },
+];
+
 export default function Sidebar() {
   const pathname = usePathname();
+  const [isToolsExpanded, setIsToolsExpanded] = useState(false);
+  
+  // Check if any tool path is active to keep the section expanded
+  const isToolsActive = pathname.startsWith('/dashboard/tools');
 
   const renderIcon = (iconName: string) => {
     switch (iconName) {
@@ -94,6 +103,21 @@ export default function Sidebar() {
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg>
         );
+      case 'tools':
+        return (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+          </svg>
+        );
+      case 'fileSearch':
+        return (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+            <path d="M10.15 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v1"/>
+            <circle cx="16.5" cy="17.5" r="2.5"/>
+            <path d="m22 23-2.5-2.5"/>
+          </svg>
+        );
       default:
         return null;
     }
@@ -130,6 +154,39 @@ export default function Sidebar() {
           );
         })}
       </nav>
+
+      {/* Tools & Utilities Section */}
+      <div className={styles.toolsSection}>
+        <div 
+          className={`${styles.toolsHeader} ${isToolsActive ? styles.active : ''}`}
+          onClick={() => setIsToolsExpanded(!isToolsExpanded)}
+        >
+          <span className={styles.toolsHeaderIcon}>{renderIcon('tools')}</span>
+          <span className={styles.toolsHeaderText}>Tools & Utilities</span>
+          <span className={`${styles.expandIcon} ${(isToolsExpanded || isToolsActive) ? styles.expanded : ''}`}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+        </div>
+        
+        <div className={`${styles.toolsContent} ${(isToolsExpanded || isToolsActive) ? styles.expanded : ''}`}>
+          {toolsItems.map((item) => {
+            let isActive = pathname === item.href;
+            
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`${styles.toolItem} ${isActive ? styles.active : ''}`}
+              >
+                <span className={styles.toolIcon}>{renderIcon(item.icon)}</span>
+                <span className={styles.toolText}>{item.name}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Bottom Navigation */}
       <div className={styles.bottomNavigation}>

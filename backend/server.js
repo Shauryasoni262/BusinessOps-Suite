@@ -18,6 +18,7 @@ const paymentRoutes = require('./routes/payments');
 const pdfRoutes = require('./routes/pdf');
 const analyticsRoutes = require('./routes/analytics');
 const offerLetterRoutes = require('./routes/offerLetters');
+const resumeAnalyzerRoutes = require('./routes/resumeAnalyzer');
 
 const adminRoutes = require('./routes/admin');
 const apiLogger = require('./middleware/apiLogger');
@@ -98,6 +99,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/pdf', pdfRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/offer-letters', offerLetterRoutes);
+app.use('/api/resume-analyzer', resumeAnalyzerRoutes);
 
 // 404 handler
 app.use((req, res) => {
