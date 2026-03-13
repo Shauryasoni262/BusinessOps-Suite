@@ -194,11 +194,11 @@ export default function ResumeAnalyzerPage() {
         <div className={dashboardStyles.content}>
           <div className={styles.container}>
             <div className={styles.header}>
-              <h1>RAG Resume Analyzer</h1>
-              <p>Upload a resume PDF and chat with an AI that understands its context completely.</p>
+              <h1>Resume Intelligence</h1>
+              <p>AI-powered semantic analysis for your professional documents.</p>
             </div>
 
-            {/* View 1: Upload State */}
+            {/* View 1: Initial Upload State */}
             {!uploadResult && (
               <div 
                 className={`${styles.uploadSection} ${isDragging ? styles.isDragging : ''}`}
@@ -209,19 +209,20 @@ export default function ResumeAnalyzerPage() {
                 {isUploading ? (
                   <div className={styles.loadingContainer}>
                     <div className={styles.spinner}></div>
-                    <h3>Analyzing Resume...</h3>
-                    <p>Extracting text, chunking, and generating vector embeddings.</p>
+                    <h3>Processing Resume</h3>
+                    <p>Securing context and generating semantic embeddings...</p>
                   </div>
                 ) : (
                   <>
-                    <svg className={styles.uploadIcon} width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
-                      <polyline points="14 2 14 8 20 8"/>
-                      <path d="M12 18v-6"/>
-                      <path d="m9 15 3-3 3 3"/>
-                    </svg>
-                    <h3>Upload Resume PDF</h3>
-                    <p>Drag and drop your PDF here, or click to browse (Max 10MB)</p>
+                    <div className={styles.uploadIcon}>
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                      </svg>
+                    </div>
+                    <h3>Analyze your Career</h3>
+                    <p>Upload your PDF resume to unlock deep insights, skill gap analysis, and personalized career coaching.</p>
                     <input 
                       type="file" 
                       accept=".pdf" 
@@ -233,95 +234,115 @@ export default function ResumeAnalyzerPage() {
                       className={styles.uploadButton}
                       onClick={() => fileInputRef.current?.click()}
                     >
-                      Browse Files
+                      Select PDF Document
                     </button>
                     
-                    {uploadError && <div className={styles.error}>{uploadError}</div>}
+                    {uploadError && (
+                      <div className={styles.error}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        {uploadError}
+                      </div>
+                    )}
                   </>
                 )}
               </div>
             )}
 
-            {/* View 2: Chat State */}
+            {/* View 2: Split View Post-Analysis */}
             {uploadResult && (
-              <div className={styles.chatContainer}>
-                <div className={styles.chatHeader}>
-                  <div className={styles.resumeInfo}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <polyline points="14 2 14 8 20 8"></polyline>
-                      <line x1="16" y1="13" x2="8" y2="13"></line>
-                      <line x1="16" y1="17" x2="8" y2="17"></line>
-                      <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                    <div>
-                      <h4 style={{ color: 'white', fontSize: '1rem', fontWeight: 500 }}>{uploadResult.fileName}</h4>
-                      <div className={styles.fileStats}>
-                        <span className={styles.statBadge}>{uploadResult.chunksCreated} context chunks created</span>
-                      </div>
+              <div className={styles.mainLayout}>
+                {/* Left Panel: Document Metadata */}
+                <div className={styles.infoPanel}>
+                  <div className={styles.fileCard}>
+                    <div className={styles.fileIcon}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                      </svg>
+                    </div>
+                    <span className={styles.fileName}>{uploadResult.fileName}</span>
+                  </div>
+
+                  <div className={styles.statsGrid}>
+                    <div className={styles.statItem}>
+                      <span className={styles.statLabel}>Semantic Chunks</span>
+                      <span className={styles.statValue}>{uploadResult.chunksCreated}</span>
+                    </div>
+                    <div className={styles.statItem}>
+                      <span className={styles.statLabel}>Document Pages</span>
+                      <span className={styles.statValue}>{uploadResult.pageCount || 1}</span>
                     </div>
                   </div>
+
+                  <div className={styles.contextCard}>
+                    <span className={styles.statLabel}>AI Insights Ready</span>
+                    <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.5rem' }}>
+                      Our AI has indexed your professional background and is ready to answer specific questions regarding your experience and skills.
+                    </p>
+                  </div>
+
                   <button className={styles.changeResumeBtn} onClick={resetUpload}>
-                    Upload Different Resume
+                    Analyze New Resume
                   </button>
                 </div>
 
-                <div className={styles.chatMessages}>
-                  {messages.map((msg) => (
-                    <div key={msg.id} className={`${styles.messageWrapper} ${styles[msg.role]}`}>
-                      <div className={styles.avatar}>
-                        {msg.role === 'ai' ? (
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-                        ) : (
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        )}
+                {/* Right Panel: Interactive Chat */}
+                <div className={styles.chatContainer}>
+                  <div className={styles.chatMessages}>
+                    {messages.map((msg) => (
+                      <div key={msg.id} className={`${styles.messageWrapper} ${styles[msg.role]}`}>
+                        <div className={styles.avatar}>
+                          {msg.role === 'ai' ? 'AI' : 'YOU'}
+                        </div>
+                        <div className={styles.messageContent}>
+                          <ReactMarkdown>{msg.content}</ReactMarkdown>
+                          {msg.sourcesUsed && msg.sourcesUsed > 0 && (
+                            <div className={styles.sourcesBadge}>
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                <polyline points="20 6 9 17 4 12"/>
+                              </svg>
+                              Grounded in {msg.sourcesUsed} resume sections
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <div className={styles.messageContent}>
-                        <ReactMarkdown>{msg.content}</ReactMarkdown>
-                        {msg.sourcesUsed && msg.sourcesUsed > 0 && (
-                          <div className={styles.sourcesBadge}>
-                            ✨ Answer generated using {msg.sourcesUsed} resume sections
-                          </div>
-                        )}
+                    ))}
+                    
+                    {isTyping && (
+                      <div className={`${styles.messageWrapper} ${styles.ai}`}>
+                        <div className={styles.avatar}>AI</div>
+                        <div className={`${styles.messageContent} ${styles.typingIndicator}`}>
+                          <div className={styles.dot}></div>
+                          <div className={styles.dot}></div>
+                          <div className={styles.dot}></div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                  
-                  {isTyping && (
-                    <div className={`${styles.messageWrapper} ${styles.ai}`}>
-                      <div className={styles.avatar}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-                      </div>
-                      <div className={`${styles.messageContent} ${styles.typingIndicator}`}>
-                        <div className={styles.dot}></div>
-                        <div className={styles.dot}></div>
-                        <div className={styles.dot}></div>
-                      </div>
-                    </div>
-                  )}
-                  <div ref={chatEndRef} />
-                </div>
+                    )}
+                    <div ref={chatEndRef} />
+                  </div>
 
-                <div className={styles.chatInputContainer}>
-                  <div className={styles.inputWrapper}>
-                    <textarea
-                      className={styles.chatInput}
-                      value={inputMessage}
-                      onChange={(e) => setInputMessage(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      placeholder="Ask a question about the resume..."
-                      disabled={isTyping}
-                    />
-                    <button 
-                      className={styles.sendButton}
-                      onClick={handleSendMessage}
-                      disabled={!inputMessage.trim() || isTyping}
-                    >
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                      </svg>
-                    </button>
+                  <div className={styles.chatInputContainer}>
+                    <div className={styles.inputWrapper}>
+                      <textarea
+                        className={styles.chatInput}
+                        value={inputMessage}
+                        onChange={(e) => setInputMessage(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Ask me anything about this resume..."
+                        disabled={isTyping}
+                        rows={1}
+                      />
+                      <button 
+                        className={styles.sendButton}
+                        onClick={handleSendMessage}
+                        disabled={!inputMessage.trim() || isTyping}
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
