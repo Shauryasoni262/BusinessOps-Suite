@@ -45,7 +45,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const loadProjects = useCallback(async (forceRefresh = false) => {
     // Don't reload if we have fresh data and not forcing refresh
-    if (!forceRefresh && projects.length > 0 && !isStale && !loading) {
+    if (!forceRefresh && lastFetched !== null && !isStale && !loading) {
       console.log('🚀 Using cached projects data');
       return;
     }
@@ -139,12 +139,12 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (typeof window === 'undefined') return;
     
     // Check if user is authenticated before auto-loading
-    const token = localStorage.getItem('token');
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     
-    if (token && projects.length === 0 && !loading) {
+    if (token && lastFetched === null && !loading) {
       loadProjects();
     }
-  }, [loadProjects, projects.length, loading]);
+  }, [loadProjects, lastFetched, loading]);
 
   const value: ProjectContextType = {
     projects,

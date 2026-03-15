@@ -15,22 +15,23 @@
 
 .content {
   flex: 1;
-  padding: 32px;
+  padding: 24px;
 }
 
 .pageHeader {
-  margin-bottom: 32px;
+  margin-bottom: 20px;
 }
 
 .pageTitle {
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 700;
-  color: #1f2937;
-  margin: 0 0 8px 0;
+  color: #111827;
+  letter-spacing: -0.025em;
+  margin: 0 0 4px 0;
 }
 
 .pageSubtitle {
-  font-size: 16px;
+  font-size: 14px;
   color: #6b7280;
   margin: 0;
 }

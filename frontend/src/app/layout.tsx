@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ProjectSocketProvider } from "@/contexts/ProjectSocketContext";
 import { ProjectProvider } from "@/contexts/ProjectContext";
+import { AnalyticsProvider } from "@/contexts/AnalyticsContext";
 
 export const metadata: Metadata = {
   title: "BusinessOps Suite",
@@ -24,7 +25,9 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <ProjectProvider>
           <ProjectSocketProvider>
-            {children}
+            <AnalyticsProvider>
+              {children}
+            </AnalyticsProvider>
           </ProjectSocketProvider>
         </ProjectProvider>
       </body>

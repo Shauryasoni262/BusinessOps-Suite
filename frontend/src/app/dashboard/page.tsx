@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Sidebar, TopBar } from '@/components/layout';
 import { DashboardStats, RecentProjects, QuickActions } from '@/components/features/dashboard';
 import { useProjects } from '@/contexts/ProjectContext';
+import { useAnalytics } from '@/contexts/AnalyticsContext';
 import styles from './page.module.css';
 
 interface User {
@@ -19,6 +20,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { projects } = useProjects();
+  const { stats, loading: statsLoading } = useAnalytics();
 
   useEffect(() => {
     // Check if user is logged in
@@ -46,14 +48,14 @@ export default function DashboardPage() {
     }
   }, [router]);
 
-  if (loading) {
+  if (loading || (statsLoading && !stats)) {
     return (
       <div className={styles.dashboardLayout}>
         <Sidebar />
         <div className={styles.mainContent}>
           <div className={styles.loading}>
             <div className={styles.spinner}></div>
-            <p>Loading dashboard...</p>
+            <p>Loading dashboard stats...</p>
           </div>
         </div>
       </div>
@@ -97,14 +99,14 @@ export default function DashboardPage() {
   }));
 
   const dashboardStats = {
-    revenue: 45231,
-    revenueChange: '+20.1% from last month',
-    projects: activeProjects,
-    projectsChange: '+12% from last month',
-    teamMembers: allMembers.size || 45,
-    teamChange: '+5 from last month',
+    revenue: stats?.revenue || 0,
+    revenueChange: stats?.revenueGrowth ? `${stats.revenueGrowth >= 0 ? '+' : ''}${stats.revenueGrowth}% from last month` : 'No data',
+    projects: stats?.activeProjects || activeProjects,
+    projectsChange: stats?.projectGrowth ? `${stats.projectGrowth >= 0 ? '+' : ''}${stats.projectGrowth}% from last month` : 'No data',
+    teamMembers: stats?.totalUsers || allMembers.size || 0,
+    teamChange: stats?.userGrowth ? `${stats.userGrowth >= 0 ? '+' : ''}${stats.userGrowth}% from last month` : 'No data',
     tasksCompleted: completedTasks,
-    tasksChange: '-3% from last month',
+    tasksChange: '-3% from last month', // Static for now as it's not in overviewStats
     tasksChangeType: 'negative' as const
   };
 
