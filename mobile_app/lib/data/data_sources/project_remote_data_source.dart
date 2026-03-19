@@ -26,4 +26,32 @@ class ProjectRemoteDataSource {
       throw Exception(response.data['message'] ?? 'Failed to fetch project');
     }
   }
+
+  Future<ProjectModel> createProject(Map<String, dynamic> data) async {
+    final response = await _apiClient.dio.post('/projects', data: data);
+    
+    if (response.data['success'] == true) {
+      return ProjectModel.fromJson(response.data['data']);
+    } else {
+      throw Exception(response.data['message'] ?? 'Failed to create project');
+    }
+  }
+
+  Future<ProjectModel> updateProject(String id, Map<String, dynamic> data) async {
+    final response = await _apiClient.dio.put('/projects/$id', data: data);
+    
+    if (response.data['success'] == true) {
+      return ProjectModel.fromJson(response.data['data']);
+    } else {
+      throw Exception(response.data['message'] ?? 'Failed to update project');
+    }
+  }
+
+  Future<void> deleteProject(String id) async {
+    final response = await _apiClient.dio.delete('/projects/$id');
+    
+    if (response.data['success'] != true) {
+      throw Exception(response.data['message'] ?? 'Failed to delete project');
+    }
+  }
 }

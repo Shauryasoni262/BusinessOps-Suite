@@ -12,6 +12,9 @@ class ProjectModel with _$ProjectModel {
     required String name,
     required String description,
     required String status,
+    @Default('medium') String priority,
+    @JsonKey(name: 'deadline') DateTime? deadline,
+    @JsonKey(name: 'owner_id') String? ownerId,
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
   }) = _ProjectModel;

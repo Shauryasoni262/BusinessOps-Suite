@@ -10,7 +10,8 @@ class ResumeAnalyzerScreen extends ConsumerStatefulWidget {
   const ResumeAnalyzerScreen({super.key});
 
   @override
-  ConsumerState<ResumeAnalyzerScreen> createState() => _ResumeAnalyzerScreenState();
+  ConsumerState<ResumeAnalyzerScreen> createState() =>
+      _ResumeAnalyzerScreenState();
 }
 
 class _ResumeAnalyzerScreenState extends ConsumerState<ResumeAnalyzerScreen> {
@@ -25,7 +26,9 @@ class _ResumeAnalyzerScreenState extends ConsumerState<ResumeAnalyzerScreen> {
 
     if (result != null && result.files.single.path != null) {
       final file = result.files.single;
-      ref.read(resumeAnalyzerNotifierProvider.notifier).uploadResume(file.path!, file.name);
+      ref
+          .read(resumeAnalyzerNotifierProvider.notifier)
+          .uploadResume(file.path!, file.name);
     }
   }
 
@@ -56,16 +59,24 @@ class _ResumeAnalyzerScreenState extends ConsumerState<ResumeAnalyzerScreen> {
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF0F172A) : AppColors.background,
       appBar: AppBar(
-        title: Text('Resume Intelligence', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Resume Intelligence',
+          style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+        ),
         actions: [
           if (state.uploadData != null)
             IconButton(
               icon: const Icon(Icons.refresh_rounded),
-              onPressed: () => ref.read(resumeAnalyzerNotifierProvider.notifier).reset(),
+              onPressed:
+                  () =>
+                      ref.read(resumeAnalyzerNotifierProvider.notifier).reset(),
             ),
         ],
       ),
-      body: state.uploadData == null ? _buildUploadView(state, isDark) : _buildChatView(state, isDark),
+      body:
+          state.uploadData == null
+              ? _buildUploadView(state, isDark)
+              : _buildChatView(state, isDark),
     );
   }
 
@@ -81,7 +92,11 @@ class _ResumeAnalyzerScreenState extends ConsumerState<ResumeAnalyzerScreen> {
               const SizedBox(height: 24),
               Text(
                 'Analyzing Document...',
-                style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold, color: isDark ? Colors.white : AppColors.textPrimary),
+                style: GoogleFonts.outfit(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : AppColors.textPrimary,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
@@ -96,12 +111,20 @@ class _ResumeAnalyzerScreenState extends ConsumerState<ResumeAnalyzerScreen> {
                   color: AppColors.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.description_rounded, size: 64, color: AppColors.primary),
+                child: const Icon(
+                  Icons.description_rounded,
+                  size: 64,
+                  color: AppColors.primary,
+                ),
               ),
               const SizedBox(height: 32),
               Text(
                 'Analyze your Career',
-                style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: isDark ? Colors.white : AppColors.textPrimary),
+                style: GoogleFonts.outfit(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : AppColors.textPrimary,
+                ),
               ),
               const SizedBox(height: 12),
               Text(
@@ -131,7 +154,12 @@ class _ResumeAnalyzerScreenState extends ConsumerState<ResumeAnalyzerScreen> {
                     children: [
                       const Icon(Icons.error_outline, color: Colors.red),
                       const SizedBox(width: 12),
-                      Expanded(child: Text(state.error!, style: const TextStyle(color: Colors.red))),
+                      Expanded(
+                        child: Text(
+                          state.error!,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -182,7 +210,11 @@ class _ResumeAnalyzerScreenState extends ConsumerState<ResumeAnalyzerScreen> {
               color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(Icons.picture_as_pdf_outlined, color: AppColors.primary, size: 24),
+            child: const Icon(
+              Icons.picture_as_pdf_outlined,
+              color: AppColors.primary,
+              size: 24,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -193,7 +225,10 @@ class _ResumeAnalyzerScreenState extends ConsumerState<ResumeAnalyzerScreen> {
                   data.fileName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
                 ),
                 Text(
                   '${data.chunksCreated} semantic chunks indexed',
@@ -220,7 +255,10 @@ class _ResumeAnalyzerScreenState extends ConsumerState<ResumeAnalyzerScreen> {
           CircleAvatar(
             radius: 14,
             backgroundColor: AppColors.primary,
-            child: const Text('AI', style: TextStyle(fontSize: 10, color: Colors.white)),
+            child: const Text(
+              'AI',
+              style: TextStyle(fontSize: 10, color: Colors.white),
+            ),
           ),
           const SizedBox(width: 8),
           Container(
@@ -231,7 +269,11 @@ class _ResumeAnalyzerScreenState extends ConsumerState<ResumeAnalyzerScreen> {
             ),
             child: const Row(
               children: [
-                SizedBox(width: 4, height: 4, child: CircularProgressIndicator(strokeWidth: 2)),
+                SizedBox(
+                  width: 4,
+                  height: 4,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
                 SizedBox(width: 8),
                 Text('AI is thinking...', style: TextStyle(fontSize: 12)),
               ],
@@ -244,10 +286,17 @@ class _ResumeAnalyzerScreenState extends ConsumerState<ResumeAnalyzerScreen> {
 
   Widget _buildInputArea(bool isDark) {
     return Container(
-      padding: EdgeInsets.fromLTRB(20, 12, 20, MediaQuery.of(context).padding.bottom + 12),
+      padding: EdgeInsets.fromLTRB(
+        20,
+        12,
+        20,
+        MediaQuery.of(context).padding.bottom + 12,
+      ),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : Colors.white,
-        border: Border(top: BorderSide(color: AppColors.border.withValues(alpha: 0.5))),
+        border: Border(
+          top: BorderSide(color: AppColors.border.withValues(alpha: 0.5)),
+        ),
       ),
       child: Row(
         children: [
@@ -255,9 +304,12 @@ class _ResumeAnalyzerScreenState extends ConsumerState<ResumeAnalyzerScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+                color:
+                    isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: AppColors.border.withValues(alpha: 0.5)),
+                border: Border.all(
+                  color: AppColors.border.withValues(alpha: 0.5),
+                ),
               ),
               child: TextField(
                 controller: _messageController,
@@ -281,7 +333,11 @@ class _ResumeAnalyzerScreenState extends ConsumerState<ResumeAnalyzerScreen> {
                 color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+              child: const Icon(
+                Icons.send_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
             ),
           ),
         ],
@@ -289,4 +345,3 @@ class _ResumeAnalyzerScreenState extends ConsumerState<ResumeAnalyzerScreen> {
     );
   }
 }
-

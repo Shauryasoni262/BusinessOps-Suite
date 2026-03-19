@@ -24,6 +24,11 @@ mixin _$ProjectModel {
   String get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
+  String get priority => throw _privateConstructorUsedError;
+  @JsonKey(name: 'deadline')
+  DateTime? get deadline => throw _privateConstructorUsedError;
+  @JsonKey(name: 'owner_id')
+  String? get ownerId => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   DateTime get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
@@ -50,6 +55,9 @@ abstract class $ProjectModelCopyWith<$Res> {
       String name,
       String description,
       String status,
+      String priority,
+      @JsonKey(name: 'deadline') DateTime? deadline,
+      @JsonKey(name: 'owner_id') String? ownerId,
       @JsonKey(name: 'created_at') DateTime createdAt,
       @JsonKey(name: 'updated_at') DateTime updatedAt});
 }
@@ -73,6 +81,9 @@ class _$ProjectModelCopyWithImpl<$Res, $Val extends ProjectModel>
     Object? name = null,
     Object? description = null,
     Object? status = null,
+    Object? priority = null,
+    Object? deadline = freezed,
+    Object? ownerId = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -93,6 +104,18 @@ class _$ProjectModelCopyWithImpl<$Res, $Val extends ProjectModel>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as String,
+      priority: null == priority
+          ? _value.priority
+          : priority // ignore: cast_nullable_to_non_nullable
+              as String,
+      deadline: freezed == deadline
+          ? _value.deadline
+          : deadline // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      ownerId: freezed == ownerId
+          ? _value.ownerId
+          : ownerId // ignore: cast_nullable_to_non_nullable
+              as String?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -118,6 +141,9 @@ abstract class _$$ProjectModelImplCopyWith<$Res>
       String name,
       String description,
       String status,
+      String priority,
+      @JsonKey(name: 'deadline') DateTime? deadline,
+      @JsonKey(name: 'owner_id') String? ownerId,
       @JsonKey(name: 'created_at') DateTime createdAt,
       @JsonKey(name: 'updated_at') DateTime updatedAt});
 }
@@ -139,6 +165,9 @@ class __$$ProjectModelImplCopyWithImpl<$Res>
     Object? name = null,
     Object? description = null,
     Object? status = null,
+    Object? priority = null,
+    Object? deadline = freezed,
+    Object? ownerId = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -159,6 +188,18 @@ class __$$ProjectModelImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as String,
+      priority: null == priority
+          ? _value.priority
+          : priority // ignore: cast_nullable_to_non_nullable
+              as String,
+      deadline: freezed == deadline
+          ? _value.deadline
+          : deadline // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      ownerId: freezed == ownerId
+          ? _value.ownerId
+          : ownerId // ignore: cast_nullable_to_non_nullable
+              as String?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -179,6 +220,9 @@ class _$ProjectModelImpl extends _ProjectModel {
       required this.name,
       required this.description,
       required this.status,
+      this.priority = 'medium',
+      @JsonKey(name: 'deadline') this.deadline,
+      @JsonKey(name: 'owner_id') this.ownerId,
       @JsonKey(name: 'created_at') required this.createdAt,
       @JsonKey(name: 'updated_at') required this.updatedAt})
       : super._();
@@ -195,6 +239,15 @@ class _$ProjectModelImpl extends _ProjectModel {
   @override
   final String status;
   @override
+  @JsonKey()
+  final String priority;
+  @override
+  @JsonKey(name: 'deadline')
+  final DateTime? deadline;
+  @override
+  @JsonKey(name: 'owner_id')
+  final String? ownerId;
+  @override
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
   @override
@@ -203,7 +256,7 @@ class _$ProjectModelImpl extends _ProjectModel {
 
   @override
   String toString() {
-    return 'ProjectModel(id: $id, name: $name, description: $description, status: $status, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ProjectModel(id: $id, name: $name, description: $description, status: $status, priority: $priority, deadline: $deadline, ownerId: $ownerId, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -216,6 +269,11 @@ class _$ProjectModelImpl extends _ProjectModel {
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.priority, priority) ||
+                other.priority == priority) &&
+            (identical(other.deadline, deadline) ||
+                other.deadline == deadline) &&
+            (identical(other.ownerId, ownerId) || other.ownerId == ownerId) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -224,8 +282,8 @@ class _$ProjectModelImpl extends _ProjectModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, description, status, createdAt, updatedAt);
+  int get hashCode => Object.hash(runtimeType, id, name, description, status,
+      priority, deadline, ownerId, createdAt, updatedAt);
 
   /// Create a copy of ProjectModel
   /// with the given fields replaced by the non-null parameter values.
@@ -249,6 +307,9 @@ abstract class _ProjectModel extends ProjectModel {
           required final String name,
           required final String description,
           required final String status,
+          final String priority,
+          @JsonKey(name: 'deadline') final DateTime? deadline,
+          @JsonKey(name: 'owner_id') final String? ownerId,
           @JsonKey(name: 'created_at') required final DateTime createdAt,
           @JsonKey(name: 'updated_at') required final DateTime updatedAt}) =
       _$ProjectModelImpl;
@@ -265,6 +326,14 @@ abstract class _ProjectModel extends ProjectModel {
   String get description;
   @override
   String get status;
+  @override
+  String get priority;
+  @override
+  @JsonKey(name: 'deadline')
+  DateTime? get deadline;
+  @override
+  @JsonKey(name: 'owner_id')
+  String? get ownerId;
   @override
   @JsonKey(name: 'created_at')
   DateTime get createdAt;

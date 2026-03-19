@@ -4,9 +4,10 @@ import 'dashboard_screen.dart';
 import 'chat_screen.dart';
 import 'offer_letter_screen.dart';
 import 'more_screen.dart';
+import 'projects_screen.dart';
 import '../../core/theme/app_theme.dart';
 
-// Provider to manage the current bottom nav index
+// Provides the current bottom nav index
 final navigationIndexProvider = StateProvider<int>((ref) => 0);
 
 class MainScreen extends ConsumerWidget {
@@ -19,7 +20,7 @@ class MainScreen extends ConsumerWidget {
 
     final screens = [
       const DashboardScreen(),
-      const _PlaceholderScreen(title: 'Projects', icon: Icons.rocket_launch_rounded),
+      const ProjectsScreen(),
       const OfferLetterScreen(),
       const ChatScreen(), // This will be "Community Chat" or "Global Chat"
       const MoreScreen(),
@@ -28,9 +29,12 @@ class MainScreen extends ConsumerWidget {
     return Scaffold(
       body: Stack(
         children: [
-          IndexedStack(
-            index: currentIndex,
-            children: screens,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 95), // Height of _PremiumNavBar
+            child: IndexedStack(
+              index: currentIndex,
+              children: screens,
+            ),
           ),
           
           // Premium Docked Navigation Bar
@@ -84,31 +88,31 @@ class _PremiumNavBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _NavBarItem(
-              icon: Icons.grid_view_rounded,
+              icon: currentIndex == 0 ? Icons.grid_view_rounded : Icons.grid_view_outlined,
               label: 'Dashboard',
               isActive: currentIndex == 0,
               onTap: () => onTap(0),
             ),
             _NavBarItem(
-              icon: Icons.rocket_launch_rounded,
+              icon: currentIndex == 1 ? Icons.rocket_launch_rounded : Icons.rocket_launch_outlined,
               label: 'Projects',
               isActive: currentIndex == 1,
               onTap: () => onTap(1),
             ),
             _NavBarFloatingItem(
-              icon: Icons.description_rounded,
+              icon: currentIndex == 2 ? Icons.description_rounded : Icons.description_outlined,
               label: 'Offers',
               isActive: currentIndex == 2,
               onTap: () => onTap(2),
             ),
             _NavBarItem(
-              icon: Icons.chat_bubble_outline_rounded,
+              icon: currentIndex == 3 ? Icons.chat_bubble_rounded : Icons.chat_bubble_outline_rounded,
               label: 'Chat',
               isActive: currentIndex == 3,
               onTap: () => onTap(3),
             ),
             _NavBarItem(
-              icon: Icons.more_horiz_rounded,
+              icon: currentIndex == 4 ? Icons.more_horiz_rounded : Icons.more_horiz,
               label: 'More',
               isActive: currentIndex == 4,
               onTap: () => onTap(4),
@@ -218,27 +222,3 @@ class _NavBarItem extends StatelessWidget {
   }
 }
 
-class _PlaceholderScreen extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  const _PlaceholderScreen({required this.title, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 64, color: AppColors.textMuted.withValues(alpha: 0.3)),
-            const SizedBox(height: 16),
-            Text(
-              '$title coming soon',
-              style: TextStyle(color: AppColors.textMuted, fontSize: 16),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

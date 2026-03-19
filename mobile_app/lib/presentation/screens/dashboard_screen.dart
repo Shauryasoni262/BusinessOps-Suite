@@ -204,8 +204,8 @@ class DashboardScreen extends ConsumerWidget {
               error: (err, stack) => const SliverToBoxAdapter(child: SizedBox()),
             ),
 
-            // Bottom Spacing for Floating Nav
-            const SliverToBoxAdapter(child: SizedBox(height: 120)),
+            // Padding handled by global MainScreen layout
+            const SliverToBoxAdapter(child: SizedBox(height: 16)),
           ],
         ),
       ),
