@@ -4,7 +4,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 require('dotenv').config();
 
-// Import routes
+// Import route
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
 const googleAuthRoutes = require('./routes/googleAuth');
