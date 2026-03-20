@@ -3,6 +3,22 @@
 import { useState, useEffect } from 'react';
 import { milestoneService, type Milestone } from '@/services/milestoneService';
 import { MilestoneModal } from '@/components/modals/project';
+import { 
+  Flag, 
+  Calendar, 
+  Edit3, 
+  Trash2, 
+  CheckCircle2, 
+  Clock, 
+  AlertCircle, 
+  Plus,
+  MessageSquare,
+  Video,
+  FileText,
+  Activity,
+  History,
+  Target
+} from 'lucide-react';
 import styles from './MilestoneTimeline.module.css';
 
 interface MilestoneTimelineProps {
@@ -70,45 +86,21 @@ export default function MilestoneTimeline({ projectId }: MilestoneTimelineProps)
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'numeric',
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
       day: 'numeric',
       year: 'numeric'
     });
   };
 
-  const getEventTypeColor = (eventType: string) => {
+  const getEventInfo = (eventType: string) => {
     switch (eventType) {
-      case 'milestone':
-        return '#3b82f6'; // Blue
-      case 'update':
-        return '#10b981'; // Green
-      case 'meeting':
-        return '#f59e0b'; // Orange
-      case 'deadline':
-        return '#ef4444'; // Red
-      case 'review':
-        return '#8b5cf6'; // Purple
-      default:
-        return '#6b7280'; // Gray
-    }
-  };
-
-  const getEventTypeLabel = (eventType: string) => {
-    switch (eventType) {
-      case 'milestone':
-        return 'Milestone';
-      case 'update':
-        return 'Update';
-      case 'meeting':
-        return 'Meeting';
-      case 'deadline':
-        return 'Deadline';
-      case 'review':
-        return 'Review';
-      default:
-        return 'Event';
+      case 'milestone': return { color: '#3b82f6', icon: <Target size={14} />, label: 'Milestone' };
+      case 'update': return { color: '#10b981', icon: <Activity size={14} />, label: 'Update' };
+      case 'meeting': return { color: '#f59e0b', icon: <Video size={14} />, label: 'Meeting' };
+      case 'deadline': return { color: '#ef4444', icon: <Clock size={14} />, label: 'Deadline' };
+      case 'review': return { color: '#8b5cf6', icon: <FileText size={14} />, label: 'Review' };
+      default: return { color: '#6b7280', icon: <History size={14} />, label: 'Event' };
     }
   };
 
@@ -117,7 +109,7 @@ export default function MilestoneTimeline({ projectId }: MilestoneTimelineProps)
       <div className={styles.container}>
         <div className={styles.loading}>
           <div className={styles.spinner}></div>
-          <p>Loading timeline events...</p>
+          <p style={{ fontWeight: 600, color: '#64748b' }}>Refreshing timeline...</p>
         </div>
       </div>
     );
@@ -127,6 +119,7 @@ export default function MilestoneTimeline({ projectId }: MilestoneTimelineProps)
     return (
       <div className={styles.container}>
         <div className={styles.error}>
+          <AlertCircle size={40} />
           <p>{error}</p>
           <button onClick={loadMilestones} className={styles.retryButton}>
             Try Again
@@ -141,9 +134,10 @@ export default function MilestoneTimeline({ projectId }: MilestoneTimelineProps)
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <h2 className={styles.title}>Project Timeline</h2>
-          <p className={styles.subtitle}>Key milestones and events</p>
+          <p className={styles.subtitle}>Strategize and track key project beats</p>
         </div>
         <button onClick={handleAddEvent} className={styles.addButton}>
+          <Plus size={18} />
           Add Event
         </button>
       </div>
@@ -151,28 +145,29 @@ export default function MilestoneTimeline({ projectId }: MilestoneTimelineProps)
       {milestones.length === 0 ? (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12,6 12,12 16,14"/>
-            </svg>
+            <History size={64} strokeWidth={1} color="#cbd5e1" />
           </div>
-          <h3>No timeline events yet</h3>
-          <p>Add your first milestone, update, or meeting to get started.</p>
+          <h3>Timeline is empty</h3>
+          <p>Chart the course of your project by adding milestones, updates, or meeting notes.</p>
           <button onClick={handleAddEvent} className={styles.addFirstButton}>
             Add First Event
           </button>
         </div>
       ) : (
         <div className={styles.timeline}>
-          {milestones.map((milestone, index) => (
+          {milestones.map((milestone) => (
             <div key={milestone.id} className={styles.timelineItem}>
-              <div className={styles.timelineDot} style={{ backgroundColor: getEventTypeColor(milestone.event_type || 'milestone') }}>
+              <div 
+                className={styles.timelineDot} 
+                style={{ color: getEventInfo(milestone.event_type || 'milestone').color }}
+              >
                 <div className={styles.timelineDotInner}></div>
               </div>
               
               <div className={styles.timelineContent}>
                 <div className={styles.timelineHeader}>
                   <div className={styles.timelineDate}>
+                    <Calendar size={12} />
                     {formatDate(milestone.deadline)}
                   </div>
                   <div className={styles.timelineActions}>
@@ -181,22 +176,14 @@ export default function MilestoneTimeline({ projectId }: MilestoneTimelineProps)
                       className={styles.editButton}
                       title="Edit event"
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                      </svg>
+                      <Edit3 size={14} />
                     </button>
                     <button
                       onClick={() => handleDeleteEvent(milestone.id)}
                       className={styles.deleteButton}
                       title="Delete event"
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="3,6 5,6 21,6"/>
-                        <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"/>
-                        <line x1="10" y1="11" x2="10" y2="17"/>
-                        <line x1="14" y1="11" x2="14" y2="17"/>
-                      </svg>
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 </div>
@@ -209,13 +196,20 @@ export default function MilestoneTimeline({ projectId }: MilestoneTimelineProps)
                   <div className={styles.timelineMeta}>
                     <span 
                       className={styles.eventTypeBadge}
-                      style={{ backgroundColor: getEventTypeColor(milestone.event_type || 'milestone') }}
+                      style={{ backgroundColor: getEventInfo(milestone.event_type || 'milestone').color }}
                     >
-                      {getEventTypeLabel(milestone.event_type || 'milestone')}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        {getEventInfo(milestone.event_type || 'milestone').icon}
+                        {getEventInfo(milestone.event_type || 'milestone').label}
+                      </div>
                     </span>
                     <span className={styles.statusBadge} data-status={milestone.status}>
-                      {milestone.status === 'completed' ? 'Completed' : 
-                       milestone.status === 'overdue' ? 'Overdue' : 'Pending'}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        {milestone.status === 'completed' ? <CheckCircle2 size={12} /> : 
+                         milestone.status === 'overdue' ? <AlertCircle size={12} /> : <Clock size={12} />}
+                        {milestone.status === 'completed' ? 'Completed' : 
+                         milestone.status === 'overdue' ? 'Overdue' : 'Pending'}
+                      </div>
                     </span>
                   </div>
                 </div>

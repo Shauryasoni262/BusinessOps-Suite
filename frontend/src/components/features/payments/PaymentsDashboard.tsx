@@ -6,6 +6,7 @@ import { RevenueChart } from '@/components/analytics/charts';
 import FinancialStatsCards from './FinancialStatsCards';
 import RecentInvoices from './RecentInvoices';
 import { GenerateInvoiceModal } from '@/components/modals/payment';
+import { Plus, RefreshCcw, AlertTriangle, Loader2 } from 'lucide-react';
 import styles from './PaymentsDashboard.module.css';
 
 export default function PaymentsDashboard() {
@@ -46,8 +47,8 @@ export default function PaymentsDashboard() {
   if (loading) {
     return (
       <div className={styles.loading}>
-        <div className={styles.spinner}></div>
-        <p>Loading dashboard...</p>
+        <Loader2 className={styles.spinner} size={40} />
+        <p style={{ fontWeight: 600, color: '#64748b' }}>Refreshing financial vault...</p>
       </div>
     );
   }
@@ -55,8 +56,10 @@ export default function PaymentsDashboard() {
   if (error) {
     return (
       <div className={styles.error}>
+        <AlertTriangle size={48} color="#ef4444" style={{ marginBottom: '1rem' }} />
         <p>{error}</p>
         <button onClick={handleRefresh} className={styles.retryButton}>
+          <RefreshCcw size={16} />
           Try Again
         </button>
       </div>
@@ -67,14 +70,15 @@ export default function PaymentsDashboard() {
     <div className={styles.dashboardContainer}>
       <div className={styles.header}>
         <div className={styles.headerContent}>
-          <h1 className={styles.title}>Payments & Invoices</h1>
-          <p className={styles.subtitle}>Manage your invoices and track payments</p>
+          <h1 className={styles.title}>Financial Dashboard</h1>
+          <p className={styles.subtitle}>Track revenue, manage invoices, and monitor growth</p>
         </div>
         <button 
           className={styles.generateButton}
           onClick={() => setShowInvoiceModal(true)}
         >
-          + Generate Invoice
+          <Plus size={18} />
+          Generate Invoice
         </button>
       </div>
 

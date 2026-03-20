@@ -2,6 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import { invoiceService, type CreateInvoiceData } from '@/services/invoiceService';
+import { 
+  X, 
+  User, 
+  Mail, 
+  MapPin, 
+  Calendar, 
+  FileText, 
+  DollarSign, 
+  Percent, 
+  StickyNote,
+  Send,
+  Loader2,
+  AlertCircle
+} from 'lucide-react';
 import styles from './GenerateInvoiceModal.module.css';
 
 interface GenerateInvoiceModalProps {
@@ -11,8 +25,8 @@ interface GenerateInvoiceModalProps {
 
 export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInvoiceModalProps) {
   const [formData, setFormData] = useState<CreateInvoiceData>({
-    client_name: 'Acme Corp',
-    client_email: 'client@example.com',
+    client_name: '',
+    client_email: '',
     client_address: '',
     description: '',
     amount: 0,
@@ -94,19 +108,17 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
         <div className={styles.header}>
           <div className={styles.headerContent}>
             <h2 className={styles.title}>Generate Invoice</h2>
-            <p className={styles.subtitle}>Create a new invoice for your client. Fill in the details below.</p>
+            <p className={styles.subtitle}>Create a professional invoice for your client.</p>
           </div>
           <button className={styles.closeButton} onClick={onClose}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
+            <X size={20} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           {error && (
             <div className={styles.error}>
+              <AlertCircle size={16} />
               {error}
             </div>
           )}
@@ -116,7 +128,7 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
             
             <div className={styles.field}>
               <label htmlFor="client_name" className={styles.label}>
-                Client Name *
+                <User size={14} /> Client Name *
               </label>
               <input
                 type="text"
@@ -125,7 +137,7 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
                 value={formData.client_name}
                 onChange={handleInputChange}
                 className={styles.input}
-                placeholder="Enter client name"
+                placeholder="e.g. Acme Corp"
                 required
                 disabled={loading}
               />
@@ -133,7 +145,7 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
 
             <div className={styles.field}>
               <label htmlFor="client_email" className={styles.label}>
-                Client Email *
+                <Mail size={14} /> Client Email *
               </label>
               <input
                 type="email"
@@ -142,7 +154,7 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
                 value={formData.client_email}
                 onChange={handleInputChange}
                 className={styles.input}
-                placeholder="Enter client email"
+                placeholder="client@company.com"
                 required
                 disabled={loading}
               />
@@ -150,7 +162,7 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
 
             <div className={styles.field}>
               <label htmlFor="client_address" className={styles.label}>
-                Client Address
+                <MapPin size={14} /> Client Address
               </label>
               <textarea
                 id="client_address"
@@ -158,20 +170,20 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
                 value={formData.client_address}
                 onChange={handleInputChange}
                 className={styles.textarea}
-                placeholder="Enter client address"
-                rows={3}
+                placeholder="123 Business Rd, Suite 100"
+                rows={2}
                 disabled={loading}
               />
             </div>
           </div>
 
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Invoice Details</h3>
+            <h3 className={styles.sectionTitle}>Invoice Terms</h3>
             
             <div className={styles.row}>
               <div className={styles.field}>
                 <label htmlFor="invoice_date" className={styles.label}>
-                  Invoice Date *
+                  <Calendar size={14} /> Issue Date *
                 </label>
                 <input
                   type="date"
@@ -187,7 +199,7 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
 
               <div className={styles.field}>
                 <label htmlFor="due_date" className={styles.label}>
-                  Due Date *
+                  <Calendar size={14} /> Due Date *
                 </label>
                 <input
                   type="date"
@@ -204,7 +216,7 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
 
             <div className={styles.field}>
               <label htmlFor="description" className={styles.label}>
-                Description
+                <FileText size={14} /> Description
               </label>
               <textarea
                 id="description"
@@ -212,8 +224,8 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
                 value={formData.description}
                 onChange={handleInputChange}
                 className={styles.textarea}
-                placeholder="Services provided"
-                rows={3}
+                placeholder="Product design services - Q1 2024"
+                rows={2}
                 disabled={loading}
               />
             </div>
@@ -221,7 +233,7 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
             <div className={styles.row}>
               <div className={styles.field}>
                 <label htmlFor="amount" className={styles.label}>
-                  Amount *
+                  <DollarSign size={14} /> Subtotal *
                 </label>
                 <input
                   type="number"
@@ -240,7 +252,7 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
 
               <div className={styles.field}>
                 <label htmlFor="currency" className={styles.label}>
-                  Currency
+                   Currency
                 </label>
                 <select
                   id="currency"
@@ -261,7 +273,7 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
 
             <div className={styles.field}>
               <label htmlFor="tax_rate" className={styles.label}>
-                Tax Rate (%)
+                <Percent size={14} /> Tax Rate (%)
               </label>
               <input
                 type="number"
@@ -280,11 +292,11 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
           </div>
 
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Additional Information</h3>
+            <h3 className={styles.sectionTitle}>Notes</h3>
             
             <div className={styles.field}>
               <label htmlFor="notes" className={styles.label}>
-                Notes (Optional)
+                <StickyNote size={14} /> Additional Notes
               </label>
               <textarea
                 id="notes"
@@ -292,8 +304,8 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
                 value={formData.notes}
                 onChange={handleInputChange}
                 className={styles.textarea}
-                placeholder="Payment terms, additional information..."
-                rows={3}
+                placeholder="Payment via bank transfer only..."
+                rows={2}
                 disabled={loading}
               />
             </div>
@@ -315,13 +327,14 @@ export default function GenerateInvoiceModal({ onClose, onSuccess }: GenerateInv
             >
               {loading ? (
                 <>
-                  <svg className={styles.spinner} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 12a9 9 0 11-6.219-8.56"/>
-                  </svg>
-                  Creating...
+                  <Loader2 className={styles.spinner} size={16} />
+                  Processing...
                 </>
               ) : (
-                'Generate Invoice'
+                <>
+                  <Send size={16} />
+                  Generate Invoice
+                </>
               )}
             </button>
           </div>

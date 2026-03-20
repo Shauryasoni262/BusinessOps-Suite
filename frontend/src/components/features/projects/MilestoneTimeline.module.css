@@ -1,223 +1,138 @@
-/* Timeline Container */
 .container {
-  padding: 2rem;
-  background: #ffffff;
-  border-radius: 12px;
-  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fadeIn 0.3s ease-out;
 }
 
-/* Header */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header Section */
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.headerContent {
-  flex: 1;
+  align-items: flex-end;
+  gap: 1rem;
 }
 
 .title {
   font-size: 1.5rem;
-  font-weight: 600;
-  color: #111827;
-  margin: 0 0 0.5rem 0;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
   font-size: 0.875rem;
-  color: #6b7280;
-  margin: 0;
+  color: #64748b;
+  margin: 0.25rem 0 0 0;
+  font-weight: 500;
 }
 
 .addButton {
-  background: #000000;
-  color: #ffffff;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  padding: 0.6rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 600;
   font-size: 0.875rem;
+  border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.2);
 }
 
 .addButton:hover {
-  background: #374151;
   transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.3);
 }
 
-.addButton:active {
-  transform: translateY(0);
-}
-
-/* Loading State */
-.loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  text-align: center;
-}
-
-.spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid #e5e7eb;
-  border-top: 3px solid #3b82f6;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Error State */
-.error {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  text-align: center;
-}
-
-.retryButton {
-  background: #3b82f6;
-  color: #ffffff;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  margin-top: 1rem;
-}
-
-.retryButton:hover {
-  background: #2563eb;
-}
-
-/* Empty State */
-.emptyState {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  text-align: center;
-}
-
-.emptyIcon {
-  color: #9ca3af;
-  margin-bottom: 1rem;
-}
-
-.emptyState h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #374151;
-  margin: 0 0 0.5rem 0;
-}
-
-.emptyState p {
-  color: #6b7280;
-  margin: 0 0 1.5rem 0;
-}
-
-.addFirstButton {
-  background: #3b82f6;
-  color: #ffffff;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.addFirstButton:hover {
-  background: #2563eb;
-}
-
-/* Timeline */
+/* Timeline Layout */
 .timeline {
   position: relative;
-  padding-left: 2rem;
+  padding-left: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .timeline::before {
   content: '';
   position: absolute;
-  left: 1rem;
+  left: 11px;
   top: 0;
   bottom: 0;
   width: 2px;
-  background: #e5e7eb;
+  background: linear-gradient(to bottom, #e2e8f0 0%, #cbd5e1 50%, #e2e8f0 100%);
 }
 
 .timelineItem {
   position: relative;
-  margin-bottom: 2rem;
-  display: flex;
-  align-items: flex-start;
 }
 
-.timelineItem:last-child {
-  margin-bottom: 0;
-}
-
-/* Timeline Dot */
 .timelineDot {
   position: absolute;
-  left: -2rem;
-  top: 0.5rem;
-  width: 16px;
-  height: 16px;
+  left: -2.5rem;
+  top: 10px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  border: 3px solid #ffffff;
-  box-shadow: 0 0 0 2px #e5e7eb;
-  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: white;
+  z-index: 10;
+  box-shadow: 0 0 0 4px white;
 }
 
 .timelineDotInner {
-  width: 6px;
-  height: 6px;
-  background: #ffffff;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
+  background: currentColor;
 }
 
-/* Timeline Content */
+/* Milestone Cards */
 .timelineContent {
-  flex: 1;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-left: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.timelineContent:hover {
+  transform: translateX(4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
 }
 
 .timelineHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
 }
 
 .timelineDate {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #6b7280;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .timelineActions {
@@ -225,137 +140,174 @@
   gap: 0.5rem;
 }
 
-.editButton,
-.deleteButton {
-  background: none;
-  border: none;
-  padding: 0.5rem;
-  border-radius: 6px;
+.editButton, .deleteButton {
+  padding: 0.4rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #64748b;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.editButton {
-  color: #6b7280;
-}
-
 .editButton:hover {
-  background: #f3f4f6;
-  color: #374151;
-}
-
-.deleteButton {
-  color: #ef4444;
+  background: #fefce8;
+  color: #eab308;
+  border-color: #eab308;
 }
 
 .deleteButton:hover {
   background: #fef2f2;
-  color: #dc2626;
-}
-
-/* Timeline Body */
-.timelineBody {
-  margin-top: 0.5rem;
+  color: #ef4444;
+  border-color: #ef4444;
 }
 
 .timelineTitle {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #111827;
-  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .timelineDescription {
-  color: #6b7280;
-  margin: 0 0 1rem 0;
-  line-height: 1.5;
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
 }
 
 .timelineMeta {
   display: flex;
   gap: 0.75rem;
-  align-items: center;
+  flex-wrap: wrap;
 }
 
 .eventTypeBadge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #ffffff;
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
   text-transform: uppercase;
   letter-spacing: 0.025em;
 }
 
 .statusBadge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.025em;
 }
 
 .statusBadge[data-status="completed"] {
-  background: #dcfce7;
-  color: #166534;
+  background: #f0fdf4;
+  color: #22c55e;
 }
 
 .statusBadge[data-status="overdue"] {
   background: #fef2f2;
-  color: #dc2626;
+  color: #ef4444;
 }
 
-.statusBadge[data-status="pending"] {
-  background: #fef3c7;
-  color: #d97706;
+/* Loading & States */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  gap: 1rem;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .container {
-    padding: 1rem;
-  }
-  
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f1f5f9;
+  border-top: 4px solid #f59e0b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error {
+  background: #fef2f2;
+  color: #ef4444;
+  padding: 2rem;
+  border-radius: 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.retryButton {
+  padding: 0.5rem 1rem;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.emptyState {
+  background: white;
+  border: 2px dashed #e2e8f0;
+  border-radius: 1.5rem;
+  padding: 4rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.emptyIcon {
+  color: #cbd5e1;
+  margin-bottom: 0.5rem;
+}
+
+.emptyState h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.emptyState p {
+  color: #64748b;
+  max-width: 340px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.addFirstButton {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: #f59e0b;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.2);
+}
+
+@media (max-width: 640px) {
   .header {
     flex-direction: column;
-    gap: 1rem;
     align-items: stretch;
-  }
-  
-  .addButton {
-    align-self: flex-start;
-  }
-  
-  .timeline {
-    padding-left: 1.5rem;
-  }
-  
-  .timeline::before {
-    left: 0.75rem;
-  }
-  
-  .timelineDot {
-    left: -1.5rem;
-  }
-  
-  .timelineContent {
-    margin-left: 0.5rem;
-    padding: 1rem;
-  }
-  
-  .timelineHeader {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  
-  .timelineActions {
-    align-self: flex-end;
   }
 }

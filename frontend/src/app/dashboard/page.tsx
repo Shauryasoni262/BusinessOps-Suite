@@ -15,6 +15,8 @@ interface User {
   role: string;
 }
 
+import DashboardSkeleton from './DashboardSkeleton';
+
 export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,17 +51,7 @@ export default function DashboardPage() {
   }, [router]);
 
   if (loading || (statsLoading && !stats)) {
-    return (
-      <div className={styles.dashboardLayout}>
-        <Sidebar />
-        <div className={styles.mainContent}>
-          <div className={styles.loading}>
-            <div className={styles.spinner}></div>
-            <p>Loading dashboard stats...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (!user) {

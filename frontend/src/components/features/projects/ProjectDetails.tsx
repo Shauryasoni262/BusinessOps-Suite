@@ -4,6 +4,27 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { type Project } from '@/services/projectService';
 import { useProjectSocket } from '@/contexts/ProjectSocketContext';
+import { 
+  ArrowLeft, 
+  LayoutGrid, 
+  CheckSquare, 
+  Users, 
+  Flag, 
+  FileText, 
+  Clock, 
+  Calendar, 
+  User as UserIcon, 
+  Shield, 
+  Activity,
+  AlertCircle,
+  CheckCircle2,
+  PlayCircle,
+  PauseCircle,
+  PlusCircle,
+  TrendingUp,
+  BarChart3,
+  HardDrive
+} from 'lucide-react';
 import TaskList from './TaskList';
 import MemberList from './MemberList';
 import MilestoneTimeline from './MilestoneTimeline';
@@ -39,42 +60,18 @@ export default function ProjectDetails({ project, onProjectUpdated }: ProjectDet
   useEffect(() => {
     if (!project?.id) return;
 
-    // Listen for project updates
-    onProjectUpdate((data) => {
-      console.log('📡 Real-time project update received:', data);
-      onProjectUpdated();
-    });
-
-    // Listen for task updates
+    onProjectUpdate(() => onProjectUpdated());
     onTaskUpdate((action, task) => {
-      console.log(`📡 Real-time task ${action}:`, task);
-      if (task.project_id === project.id) {
-        onProjectUpdated();
-      }
+      if (task.project_id === project.id) onProjectUpdated();
     });
-
-    // Listen for milestone updates
     onMilestoneUpdate((action, milestone) => {
-      console.log(`📡 Real-time milestone ${action}:`, milestone);
-      if (milestone.project_id === project.id) {
-        onProjectUpdated();
-      }
+      if (milestone.project_id === project.id) onProjectUpdated();
     });
-
-    // Listen for member updates
     onMemberUpdate((action, member) => {
-      console.log(`📡 Real-time member ${action}:`, member);
-      if (member.project_id === project.id) {
-        onProjectUpdated();
-      }
+      if (member.project_id === project.id) onProjectUpdated();
     });
-
-    // Listen for file updates
     onFileUpdate((action, file) => {
-      console.log(`📡 Real-time file ${action}:`, file);
-      if (file.project_id === project.id) {
-        onProjectUpdated();
-      }
+      if (file.project_id === project.id) onProjectUpdated();
     });
   }, [project?.id, onProjectUpdate, onTaskUpdate, onMilestoneUpdate, onMemberUpdate, onFileUpdate, onProjectUpdated]);
 
@@ -82,236 +79,234 @@ export default function ProjectDetails({ project, onProjectUpdated }: ProjectDet
     return (
       <div className={styles.container}>
         <div className={styles.header}>
-          <button 
-            className={styles.backButton}
-            onClick={() => router.push('/dashboard/projects')}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5"/>
-              <path d="M12 19l-7-7 7-7"/>
-            </svg>
+          <button className={styles.backButton} onClick={() => router.push('/dashboard/projects')}>
+            <ArrowLeft size={18} />
             Back to Projects
           </button>
         </div>
         <div className={styles.content}>
-          <div style={{ textAlign: 'center', padding: '2rem' }}>
-            <p>Loading project details...</p>
+          <div style={{ textAlign: 'center', padding: '4rem' }}>
+            <Activity className={styles.spinner} size={40} color="#3b82f6" />
+            <p style={{ marginTop: '1rem', color: '#64748b', fontWeight: 600 }}>Loading project details...</p>
           </div>
         </div>
       </div>
     );
   }
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityInfo = (priority: string) => {
     switch (priority) {
-      case 'urgent':
-        return '#ef4444';
-      case 'high':
-        return '#f97316';
-      case 'medium':
-        return '#eab308';
-      case 'low':
-        return '#22c55e';
-      default:
-        return '#6b7280';
+      case 'urgent': return { color: '#ef4444', bg: '#fef2f2', icon: <AlertCircle size={14} /> };
+      case 'high': return { color: '#f97316', bg: '#fff7ed', icon: <TrendingUp size={14} /> };
+      case 'medium': return { color: '#eab308', bg: '#fefce8', icon: <Activity size={14} /> };
+      case 'low': return { color: '#22c55e', bg: '#f0fdf4', icon: <BarChart3 size={14} /> };
+      default: return { color: '#64748b', bg: '#f8fafc', icon: <Activity size={14} /> };
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusInfo = (status: string) => {
     switch (status) {
       case 'active':
-        return '#22c55e';
+      case 'in_progress':
+        return { color: '#3b82f6', bg: '#eff6ff', icon: <PlayCircle size={14} /> };
       case 'completed':
-        return '#3b82f6';
+        return { color: '#22c55e', bg: '#f0fdf4', icon: <CheckCircle2 size={14} /> };
       case 'on_hold':
-        return '#f59e0b';
+        return { color: '#f59e0b', bg: '#fffbeb', icon: <PauseCircle size={14} /> };
       case 'cancelled':
-        return '#ef4444';
+        return { color: '#ef4444', bg: '#fef2f2', icon: <AlertCircle size={14} /> };
       default:
-        return '#6b7280';
+        return { color: '#64748b', bg: '#f8fafc', icon: <PlusCircle size={14} /> };
     }
   };
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'No deadline';
-    return new Date(dateString).toLocaleDateString();
+    return new Date(dateString).toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
   };
 
-  const isOverdue = project?.deadline && new Date(project.deadline) < new Date() && project?.status === 'in_progress';
+  const isOverdue = project.deadline && new Date(project.deadline) < new Date() && project.status === 'in_progress';
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: 'grid' },
-    { id: 'tasks', label: 'Tasks', icon: 'checklist' },
-    { id: 'members', label: 'Members', icon: 'users' },
-    { id: 'milestones', label: 'Milestones', icon: 'flag' },
-    { id: 'files', label: 'Files', icon: 'folder' }
+    { id: 'overview', label: 'Overview', icon: <LayoutGrid size={18} /> },
+    { id: 'tasks', label: 'Tasks', icon: <CheckSquare size={18} /> },
+    { id: 'members', label: 'Members', icon: <Users size={18} /> },
+    { id: 'milestones', label: 'Milestones', icon: <Flag size={18} /> },
+    { id: 'files', label: 'Files', icon: <FileText size={18} /> }
   ] as const;
 
-  const renderIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'grid':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="3" width="7" height="7" rx="1"/>
-            <rect x="14" y="3" width="7" height="7" rx="1"/>
-            <rect x="14" y="14" width="7" height="7" rx="1"/>
-            <rect x="3" y="14" width="7" height="7" rx="1"/>
-          </svg>
-        );
-      case 'checklist':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 12l2 2 4-4"/>
-            <path d="M21 12c.552 0 1-.448 1-1V5c0-.552-.448-1-1-1H3c-.552 0-1 .448-1 1v6c0 .552.448 1 1 1h18z"/>
-            <path d="M3 12h18v6c0 .552-.448 1-1 1H4c-.552 0-1-.448-1-1v-6z"/>
-          </svg>
-        );
-      case 'users':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
-        );
-      case 'flag':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
-            <line x1="4" y1="22" x2="4" y2="15"/>
-          </svg>
-        );
-      case 'folder':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-          </svg>
-        );
-      default:
-        return null;
-    }
-  };
-
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'overview':
-        return (
-          <div className={styles.overview}>
-            <div className={styles.projectInfo}>
-              <div className={styles.header}>
-                <h1 className={styles.projectName}>{project.name}</h1>
-                <div className={styles.badges}>
-                  <span 
-                    className={styles.priorityBadge}
-                    style={{ backgroundColor: getPriorityColor(project.priority) }}
-                  >
-                    {project.priority}
-                  </span>
-                  <span 
-                    className={styles.statusBadge}
-                    style={{ backgroundColor: getStatusColor(project.status) }}
-                  >
-                    {project.status.replace('_', ' ')}
-                  </span>
-                </div>
-              </div>
-              
-              <div className={styles.description}>
-                <h3>Description</h3>
-                <p>{project.description || 'No description provided'}</p>
-              </div>
-
-              <div className={styles.details}>
-                <div className={styles.detailItem}>
-                  <span className={styles.detailLabel}>Owner:</span>
-                  <span className={styles.detailValue}>{project.owner?.name || 'Unknown'}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <span className={styles.detailLabel}>Created:</span>
-                  <span className={styles.detailValue}>
-                    {new Date(project.created_at).toLocaleDateString()}
-                  </span>
-                </div>
-                <div className={styles.detailItem}>
-                  <span className={styles.detailLabel}>Deadline:</span>
-                  <span className={`${styles.detailValue} ${isOverdue ? styles.overdue : ''}`}>
-                    {formatDate(project.deadline)}
-                  </span>
-                </div>
+  const renderOverview = () => (
+    <div className={styles.overview}>
+      <div className={styles.projectInfo}>
+        <div className={styles.infoContent}>
+          <div className={styles.mainInfo}>
+            <div className={styles.infoHeader}>
+              <h1 className={styles.projectName}>{project.name}</h1>
+              <div className={styles.badges}>
+                <span 
+                  className={styles.priorityBadge}
+                  style={{ color: getPriorityInfo(project.priority).color, backgroundColor: getPriorityInfo(project.priority).bg }}
+                >
+                  {getPriorityInfo(project.priority).icon}
+                  {project.priority}
+                </span>
+                <span 
+                  className={styles.statusBadge}
+                  style={{ color: getStatusInfo(project.status).color, backgroundColor: getStatusInfo(project.status).bg }}
+                >
+                  {getStatusInfo(project.status).icon}
+                  {project.status.replace('_', ' ')}
+                </span>
               </div>
             </div>
-
-            {project.stats && (
-              <div className={styles.stats}>
-                <h3>Project Statistics</h3>
-                <div className={styles.statsGrid}>
-                  <div className={styles.statCard}>
-                    <h4>Tasks</h4>
-                    <div className={styles.statNumbers}>
-                      <span className={styles.statTotal}>{project.stats.tasks?.total || 0}</span>
-                      <div className={styles.statBreakdown}>
-                        <span className={styles.statPending}>{project.stats.tasks?.pending || 0} pending</span>
-                        <span className={styles.statInProgress}>{project.stats.tasks?.in_progress || 0} in progress</span>
-                        <span className={styles.statCompleted}>{project.stats.tasks?.completed || 0} completed</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className={styles.statCard}>
-                    <h4>Milestones</h4>
-                    <div className={styles.statNumbers}>
-                      <span className={styles.statTotal}>{project.stats.milestones?.total || 0}</span>
-                      <div className={styles.statBreakdown}>
-                        <span className={styles.statPending}>{project.stats.milestones?.pending || 0} pending</span>
-                        <span className={styles.statCompleted}>{project.stats.milestones?.completed || 0} completed</span>
-                        <span className={styles.statOverdue}>{project.stats.milestones?.overdue || 0} overdue</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className={styles.statCard}>
-                    <h4>Files</h4>
-                    <div className={styles.statNumbers}>
-                      <span className={styles.statTotal}>{project.stats.files || 0}</span>
-                      <div className={styles.statBreakdown}>
-                        <span>files uploaded</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            
+            <div className={styles.description}>
+              <h3>Description</h3>
+              <p>{project.description || 'No description provided for this project.'}</p>
+            </div>
           </div>
-        );
-      case 'tasks':
-        return <TaskList projectId={project.id} />;
-      case 'members':
-        return <MemberList projectId={project.id} project={project} onProjectUpdated={onProjectUpdated} />;
-      case 'milestones':
-        return <MilestoneTimeline projectId={project.id} />;
-      case 'files':
-        return <FileList projectId={project.id} />;
-      default:
-        return null;
-    }
-  };
+
+          <div className={styles.metaGrid}>
+            <div className={styles.metaItem}>
+              <span className={styles.metaLabel}>Owner</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <UserIcon size={14} color="#94a3b8" />
+                <span className={styles.metaValue}>{project.owner?.name || 'Unknown'}</span>
+              </div>
+            </div>
+            <div className={styles.metaItem}>
+              <span className={styles.metaLabel}>Created</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Clock size={14} color="#94a3b8" />
+                <span className={styles.metaValue}>{formatDate(project.created_at)}</span>
+              </div>
+            </div>
+            <div className={styles.metaItem}>
+              <span className={styles.metaLabel}>Deadline</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Calendar size={14} color={isOverdue ? '#ef4444' : '#94a3b8'} />
+                <span className={`${styles.metaValue} ${isOverdue ? styles.overdue : ''}`}>
+                  {formatDate(project.deadline)}
+                </span>
+              </div>
+            </div>
+            <div className={styles.metaItem}>
+              <span className={styles.metaLabel}>Access Role</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Shield size={14} color="#94a3b8" />
+                <span className={styles.metaValue}>Project Member</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.stats}>
+        <h3 className={styles.statsTitle}>Project Statistics</h3>
+        <div className={styles.statsGrid}>
+          {/* Tasks Stat Card */}
+          <div className={styles.statCard}>
+            <div className={styles.statHeader}>
+              <span className={styles.statTitle}>TASKS</span>
+              <div className={styles.statIcon}><CheckSquare size={16} /></div>
+            </div>
+            <div className={styles.statBody}>
+              <span className={styles.statValue}>{project.stats?.tasks?.total || 0}</span>
+              <span className={styles.statUnit}>Total</span>
+            </div>
+            <div className={styles.progressBarContainer}>
+              <div 
+                className={styles.progressBar} 
+                style={{ 
+                  width: `${(project.stats?.tasks?.completed / Math.max(project.stats?.tasks?.total, 1)) * 100}%`,
+                  backgroundColor: '#3b82f6'
+                }}
+              ></div>
+            </div>
+            <div className={styles.statBreakdown}>
+              <div className={styles.breakdownItem}>
+                <div className={styles.dot} style={{ background: '#f59e0b' }}></div>
+                {project.stats?.tasks?.pending || 0} Pending
+              </div>
+              <div className={styles.breakdownItem}>
+                <div className={styles.dot} style={{ background: '#22c55e' }}></div>
+                {project.stats?.tasks?.completed || 0} Done
+              </div>
+            </div>
+          </div>
+
+          {/* Milestones Stat Card */}
+          <div className={styles.statCard}>
+            <div className={styles.statHeader}>
+              <span className={styles.statTitle}>MILESTONES</span>
+              <div className={styles.statIcon} style={{ background: '#fefce8', color: '#eab308' }}><Flag size={16} /></div>
+            </div>
+            <div className={styles.statBody}>
+              <span className={styles.statValue}>{project.stats?.milestones?.total || 0}</span>
+              <span className={styles.statUnit}>Major</span>
+            </div>
+            <div className={styles.progressBarContainer} style={{ background: '#fefce8' }}>
+              <div 
+                className={styles.progressBar} 
+                style={{ 
+                  width: `${(project.stats?.milestones?.completed / Math.max(project.stats?.milestones?.total, 1)) * 100}%`,
+                  backgroundColor: '#eab308'
+                }}
+              ></div>
+            </div>
+            <div className={styles.statBreakdown}>
+              <div className={styles.breakdownItem}>
+                <div className={styles.dot} style={{ background: '#94a3b8' }}></div>
+                {project.stats?.milestones?.pending || 0} Remaining
+              </div>
+              <div className={styles.breakdownItem}>
+                <div className={styles.dot} style={{ background: '#ef4444' }}></div>
+                {project.stats?.milestones?.overdue || 0} Overdue
+              </div>
+            </div>
+          </div>
+
+          {/* Files Stat Card */}
+          <div className={styles.statCard}>
+            <div className={styles.statHeader}>
+              <span className={styles.statTitle}>FILES</span>
+              <div className={styles.statIcon} style={{ background: '#fdf2f8', color: '#db2777' }}><HardDrive size={16} /></div>
+            </div>
+            <div className={styles.statBody}>
+              <span className={styles.statValue}>{project.stats?.files || 0}</span>
+              <span className={styles.statUnit}>Updates</span>
+            </div>
+            <div className={styles.progressBarContainer} style={{ background: '#fdf2f8' }}>
+              <div className={styles.progressBar} style={{ width: '100%', backgroundColor: '#db2777' }}></div>
+            </div>
+            <div className={styles.statBreakdown}>
+              <div className={styles.breakdownItem}>
+                <FileText size={12} color="#94a3b8" />
+                Shared assets
+              </div>
+              <div className={styles.breakdownItem}>
+                <Activity size={12} color="#94a3b8" />
+                Latest revision
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <button 
-          className={styles.backButton}
-          onClick={() => router.push('/dashboard/projects')}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5"/>
-            <path d="M12 19l-7-7 7-7"/>
-          </svg>
+        <button className={styles.backButton} onClick={() => router.push('/dashboard/projects')}>
+          <ArrowLeft size={18} />
           Back to Projects
         </button>
         
-        {/* Real-time connection status */}
         <div className={styles.connectionStatus}>
           <div className={`${styles.statusDot} ${isConnected ? styles.connected : styles.disconnected}`}></div>
           <span className={styles.statusText}>
@@ -327,14 +322,21 @@ export default function ProjectDetails({ project, onProjectUpdated }: ProjectDet
             className={`${styles.tab} ${activeTab === tab.id ? styles.active : ''}`}
             onClick={() => setActiveTab(tab.id)}
           >
-            <span className={styles.tabIcon}>{renderIcon(tab.icon)}</span>
+            <span className={styles.tabIcon}>{tab.icon}</span>
             <span className={styles.tabLabel}>{tab.label}</span>
           </button>
         ))}
       </div>
 
       <div className={styles.content}>
-        {renderTabContent()}
+        {activeTab === 'overview' ? renderOverview() : (
+          <>
+            {activeTab === 'tasks' && <TaskList projectId={project.id} />}
+            {activeTab === 'members' && <MemberList projectId={project.id} project={project} onProjectUpdated={onProjectUpdated} />}
+            {activeTab === 'milestones' && <MilestoneTimeline projectId={project.id} />}
+            {activeTab === 'files' && <FileList projectId={project.id} />}
+          </>
+        )}
       </div>
     </div>
   );

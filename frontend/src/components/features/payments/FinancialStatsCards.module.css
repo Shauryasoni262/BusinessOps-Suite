@@ -1,103 +1,97 @@
 .cardsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 24px;
-  margin-bottom: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 0.5rem;
 }
 
 .card {
   background: white;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
-  transition: all 0.2s ease;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
 }
 
 .card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  border-color: #cbd5e1;
 }
 
 .cardHeader {
   display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 16px;
+  align-items: center;
+  gap: 1rem;
 }
 
 .iconContainer {
   width: 48px;
   height: 48px;
+  background: #f1f5f9;
+  color: #475569;
   border-radius: 12px;
-  background-color: #3b82f6;
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-}
-
-.cardInfo {
-  flex: 1;
-  min-width: 0;
+  transition: all 0.2s;
 }
 
 .cardTitle {
-  font-size: 14px;
-  font-weight: 500;
-  color: #6b7280;
-  margin: 0 0 8px 0;
-  line-height: 1.4;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
 }
 
 .cardValue {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0;
-  line-height: 1.2;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0.1rem 0 0 0;
+  letter-spacing: -0.02em;
 }
 
 .cardFooter {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
 }
 
 .change {
-  font-size: 14px;
-  font-weight: 500;
-  padding: 4px 8px;
+  font-size: 0.725rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
   border-radius: 6px;
+  text-transform: uppercase;
 }
 
 .positive {
-  color: #059669;
-  background-color: #d1fae5;
-}
-
-.neutral {
-  color: #6b7280;
-  background-color: #f3f4f6;
+  background: #f0fdf4;
+  color: #22c55e;
 }
 
 .negative {
-  color: #dc2626;
-  background-color: #fee2e2;
+  background: #fef2f2;
+  color: #ef4444;
 }
 
-@media (max-width: 768px) {
-  .cardsGrid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
-  .card {
-    padding: 20px;
-  }
-  
-  .cardValue {
-    font-size: 20px;
-  }
+.neutral {
+  background: #f8fafc;
+  color: #64748b;
 }
+
+/* Category specific colors */
+.card:nth-child(1) .iconContainer { background: #eff6ff; color: #3b82f6; } /* Revenue - Blue */
+.card:nth-child(2) .iconContainer { background: #f0fdf4; color: #22c55e; } /* Paid - Green */
+.card:nth-child(3) .iconContainer { background: #fefce8; color: #eab308; } /* Pending - Yellow */
+.card:nth-child(4) .iconContainer { background: #fdf2f8; color: #db2777; } /* Growth - Pink */

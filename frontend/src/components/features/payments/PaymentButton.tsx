@@ -3,6 +3,13 @@
 import { useState } from 'react';
 import { paymentService } from '@/services/paymentService';
 import { type Invoice } from '@/services/invoiceService';
+import { 
+  CreditCard, 
+  CheckCircle2, 
+  Loader2, 
+  AlertCircle,
+  ShieldCheck 
+} from 'lucide-react';
 import styles from './PaymentButton.module.css';
 
 interface PaymentButtonProps {
@@ -37,7 +44,7 @@ export default function PaymentButton({ invoice, onPaymentSuccess }: PaymentButt
       onPaymentSuccess();
     } catch (error) {
       console.error('Payment error:', error);
-      setError('Payment failed. Please try again.');
+      setError('Payment initiation failed. Please check your connection.');
     } finally {
       setLoading(false);
     }
@@ -46,10 +53,8 @@ export default function PaymentButton({ invoice, onPaymentSuccess }: PaymentButt
   if (invoice.status === 'paid') {
     return (
       <span className={styles.paidBadge}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="20,6 9,17 4,12"/>
-        </svg>
-        Paid
+        <CheckCircle2 size={16} />
+        Paid Secured
       </span>
     );
   }
@@ -58,6 +63,7 @@ export default function PaymentButton({ invoice, onPaymentSuccess }: PaymentButt
     <div className={styles.container}>
       {error && (
         <div className={styles.error}>
+          <AlertCircle size={14} />
           {error}
         </div>
       )}
@@ -69,18 +75,13 @@ export default function PaymentButton({ invoice, onPaymentSuccess }: PaymentButt
       >
         {loading ? (
           <>
-            <svg className={styles.spinner} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 12a9 9 0 11-6.219-8.56"/>
-            </svg>
-            Processing...
+            <Loader2 className={styles.spinner} size={16} />
+            Secure Processing...
           </>
         ) : (
           <>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
-              <line x1="1" y1="10" x2="23" y2="10"/>
-            </svg>
-            Pay Now
+            <CreditCard size={18} />
+            Settle Invoice
           </>
         )}
       </button>

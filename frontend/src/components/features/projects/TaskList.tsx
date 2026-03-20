@@ -5,6 +5,23 @@ import { taskService, type Task } from '@/services/taskService';
 import { getInitials, getTaskStatusColor } from '@/utils/helpers';
 import { useProjectSocket } from '@/contexts/ProjectSocketContext';
 import { TaskModal } from '@/components/modals/project';
+import { 
+  CheckCircle2, 
+  Circle, 
+  Clock, 
+  Plus, 
+  Edit3, 
+  Trash2, 
+  Search, 
+  Filter, 
+  MoreVertical, 
+  User as UserIcon,
+  AlertCircle,
+  PlayCircle,
+  CheckCircle,
+  XCircle,
+  Loader2
+} from 'lucide-react';
 import styles from './TaskList.module.css';
 
 interface TaskListProps {
@@ -25,7 +42,6 @@ export default function TaskList({ projectId }: TaskListProps) {
 
   const { onTaskUpdate } = useProjectSocket();
 
-  // Load tasks
   const loadTasks = async () => {
     try {
       setLoading(true);
@@ -40,24 +56,18 @@ export default function TaskList({ projectId }: TaskListProps) {
     }
   };
 
-  // Load tasks on mount
   useEffect(() => {
     loadTasks();
   }, [projectId]);
 
-  // Listen for real-time task updates
   useEffect(() => {
     if (!projectId) return;
 
     const handleTaskUpdate = (action: string, taskData: Task) => {
-      console.log(`📡 Real-time task ${action}:`, taskData);
-      
       if (action === 'created' && taskData.project_id === projectId) {
         setTasks(prev => [taskData, ...prev]);
       } else if (action === 'updated' && taskData.project_id === projectId) {
-        setTasks(prev => prev.map(task => 
-          task.id === taskData.id ? taskData : task
-        ));
+        setTasks(prev => prev.map(task => task.id === taskData.id ? taskData : task));
       } else if (action === 'deleted' && taskData.project_id === projectId) {
         setTasks(prev => prev.filter(task => task.id !== taskData.id));
       }
@@ -66,18 +76,15 @@ export default function TaskList({ projectId }: TaskListProps) {
     onTaskUpdate(handleTaskUpdate);
   }, [projectId, onTaskUpdate]);
 
-  // Filter tasks by status
   const filteredTasks = tasks.filter(task => {
     if (statusFilter === 'all') return true;
     return task.status === statusFilter;
   });
 
-  // Handle status change
   const handleStatusChange = async (taskId: string, newStatus: string) => {
     try {
       setUpdatingStatus(taskId);
-      await taskService.updateTask(projectId, taskId, { status: newStatus as 'pending' | 'in_progress' | 'completed' | 'cancelled' });
-      // Real-time update will handle the UI update
+      await taskService.updateTask(projectId, taskId, { status: newStatus as any });
     } catch (err) {
       console.error('Error updating task status:', err);
       setError('Failed to update task status');
@@ -86,14 +93,12 @@ export default function TaskList({ projectId }: TaskListProps) {
     }
   };
 
-  // Handle delete task
   const handleDeleteTask = async (taskId: string) => {
     if (!confirm('Are you sure you want to delete this task?')) return;
     
     try {
       setDeletingTask(taskId);
       await taskService.deleteTask(projectId, taskId);
-      // Real-time update will handle the UI update
     } catch (err) {
       console.error('Error deleting task:', err);
       setError('Failed to delete task');
@@ -102,51 +107,25 @@ export default function TaskList({ projectId }: TaskListProps) {
     }
   };
 
-  // Handle modal close
   const handleModalClose = () => {
     setShowModal(false);
     setEditingTask(null);
   };
 
-  // Handle task save
   const handleTaskSave = () => {
-    loadTasks(); // Refresh the list
+    loadTasks();
     handleModalClose();
   };
 
-  // Get status icon
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 12l2 2 4-4"/>
-            <circle cx="12" cy="12" r="10"/>
-          </svg>
-        );
-      case 'in_progress':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12,6 12,12 16,14"/>
-          </svg>
-        );
-      case 'pending':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-          </svg>
-        );
-      default:
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-          </svg>
-        );
+      case 'completed': return <CheckCircle size={20} color="#22c55e" />;
+      case 'in_progress': return <PlayCircle size={20} color="#3b82f6" />;
+      case 'pending': return <Circle size={20} color="#94a3b8" />;
+      default: return <AlertCircle size={20} color="#94a3b8" />;
     }
   };
 
-  // Status filter options
   const statusFilters = [
     { key: 'all' as StatusFilter, label: 'All', count: tasks.length },
     { key: 'pending' as StatusFilter, label: 'Pending', count: tasks.filter(t => t.status === 'pending').length },
@@ -157,45 +136,37 @@ export default function TaskList({ projectId }: TaskListProps) {
   if (loading) {
     return (
       <div className={styles.loading}>
-        <div>Loading tasks...</div>
+        <Loader2 className={styles.spinner} size={32} />
+        <span style={{ marginLeft: '1rem' }}>Loading tasks...</span>
       </div>
     );
   }
 
   return (
     <div className={styles.container}>
-      {/* Header */}
       <div className={styles.header}>
         <div className={styles.titleSection}>
           <h2>Project Tasks</h2>
-          <p>Track progress on individual tasks</p>
+          <p>Deliver your project piece by piece</p>
         </div>
-        <button 
-          className={styles.createButton}
-          onClick={() => setShowModal(true)}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"/>
-            <line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
+        <button className={styles.createButton} onClick={() => setShowModal(true)}>
+          <Plus size={18} />
           Add Task
         </button>
       </div>
 
-      {/* Error message */}
       {error && (
         <div className={styles.error}>
-          <span>{error}</span>
-          <button onClick={() => setError(null)}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <AlertCircle size={18} />
+            <span>{error}</span>
+          </div>
+          <button onClick={() => setError(null)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>
+            <XCircle size={18} />
           </button>
         </div>
       )}
 
-      {/* Status filters */}
       <div className={styles.filters}>
         {statusFilters.map(filter => (
           <button
@@ -203,37 +174,27 @@ export default function TaskList({ projectId }: TaskListProps) {
             className={`${styles.filterButton} ${statusFilter === filter.key ? styles.active : ''}`}
             onClick={() => setStatusFilter(filter.key)}
           >
-            {filter.label} ({filter.count})
+            {filter.label} 
+            <span style={{ marginLeft: '0.4rem', opacity: 0.8 }}>({filter.count})</span>
           </button>
         ))}
       </div>
 
-      {/* Tasks list */}
       {filteredTasks.length === 0 ? (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 12l2 2 4-4"/>
-              <path d="M21 12c.552 0 1-.448 1-1V5c0-.552-.448-1-1-1H3c-.552 0-1 .448-1 1v6c0 .552.448 1 1 1h18z"/>
-              <path d="M3 12h18v6c0 .552-.448 1-1 1H4c-.552 0-1-.448-1-1v-6z"/>
-            </svg>
+            <CheckCircle2 size={64} strokeWidth={1} color="#cbd5e1" />
           </div>
           <h3>No tasks found</h3>
           <p>
             {statusFilter === 'all' 
-              ? "Get started by creating your first task for this project."
-              : `No tasks found with status "${statusFilter}".`
+              ? "Your project is a blank canvas. Start adding tasks to keep the momentum going."
+              : `It looks like there are no tasks matching the "${statusFilter}" filter right now.`
             }
           </p>
-          <button 
-            className={styles.createButton}
-            onClick={() => setShowModal(true)}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            Add Task
+          <button className={styles.createButton} style={{ marginTop: '0.5rem' }} onClick={() => setShowModal(true)}>
+            <Plus size={18} />
+            Create First Task
           </button>
         </div>
       ) : (
@@ -248,7 +209,10 @@ export default function TaskList({ projectId }: TaskListProps) {
                   <div className={styles.taskBadges}>
                     <span 
                       className={styles.statusBadge}
-                      style={{ backgroundColor: getTaskStatusColor(task.status) }}
+                      style={{ 
+                        backgroundColor: getTaskStatusColor(task.status),
+                        opacity: task.status === 'completed' ? 0.7 : 1
+                      }}
                     >
                       {task.status.replace('_', ' ')}
                     </span>
@@ -261,22 +225,16 @@ export default function TaskList({ projectId }: TaskListProps) {
                     className={styles.statusSelect}
                     disabled={updatingStatus === task.id}
                   >
-                    <option value="pending">Pending</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="completed">Completed</option>
+                    <option value="pending">Todo</option>
+                    <option value="in_progress">Working</option>
+                    <option value="completed">Done</option>
                   </select>
                   <button
                     className={styles.editButton}
-                    onClick={() => {
-                      setEditingTask(task);
-                      setShowModal(true);
-                    }}
+                    onClick={() => { setEditingTask(task); setShowModal(true); }}
                     title="Edit task"
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                    </svg>
+                    <Edit3 size={16} />
                   </button>
                   <button
                     className={styles.deleteButton}
@@ -284,12 +242,7 @@ export default function TaskList({ projectId }: TaskListProps) {
                     disabled={deletingTask === task.id}
                     title="Delete task"
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="3,6 5,6 21,6"/>
-                      <path d="M19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"/>
-                      <line x1="10" y1="11" x2="10" y2="17"/>
-                      <line x1="14" y1="11" x2="14" y2="17"/>
-                    </svg>
+                    <Trash2 size={16} />
                   </button>
                 </div>
               </div>
@@ -302,22 +255,21 @@ export default function TaskList({ projectId }: TaskListProps) {
 
               <div className={styles.taskFooter}>
                 <div className={styles.taskAssignee}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                  </svg>
                   {task.assignee ? (
                     <div className={styles.assigneeBadge}>
-                      <span className={styles.assigneeInitials}>
+                      <div className={styles.assigneeInitials}>
                         {getInitials(task.assignee.name)}
-                      </span>
+                      </div>
                       <span className={styles.assigneeName}>{task.assignee.name}</span>
                     </div>
                   ) : (
-                    <span>Unassigned</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#94a3b8' }}>
+                      <UserIcon size={14} />
+                      <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>Unassigned</span>
+                    </div>
                   )}
                 </div>
-                <div className={styles.statusIcon} style={{ color: getTaskStatusColor(task.status) }}>
+                <div className={styles.statusIcon}>
                   {getStatusIcon(task.status)}
                 </div>
               </div>
@@ -326,13 +278,20 @@ export default function TaskList({ projectId }: TaskListProps) {
         </div>
       )}
 
-      {/* Task Modal */}
       {showModal && (
         <TaskModal
           projectId={projectId}
           task={editingTask}
+          projectMembers={[]} // Members will be handled by the modal internally or passed if needed
           onClose={handleModalClose}
-          onSave={handleTaskSave}
+          onSave={async (data) => {
+            if (editingTask) {
+              await taskService.updateTask(projectId, editingTask.id, data);
+            } else {
+              await taskService.createTask(projectId, data);
+            }
+            handleTaskSave();
+          }}
         />
       )}
     </div>

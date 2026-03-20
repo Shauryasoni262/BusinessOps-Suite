@@ -5,135 +5,65 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import styles from './Sidebar.module.css';
 
+import { 
+  LayoutDashboard, 
+  FolderKanban, 
+  Mail, 
+  MessageSquare, 
+  CreditCard, 
+  BarChart3, 
+  Sparkles, 
+  User, 
+  Settings, 
+  Wrench, 
+  FileSearch,
+  ChevronDown
+} from 'lucide-react';
+
 interface NavItem {
   name: string;
   href: string;
-  icon: string;
+  icon: React.ReactNode;
 }
 
 const navigationItems: NavItem[] = [
-  { name: 'Dashboard', href: '/dashboard', icon: 'grid' },
-  { name: 'Projects', href: '/dashboard/projects', icon: 'folder' },
-  { name: 'Offer Letters', href: '/dashboard/offer-letters', icon: 'letter' },
-  { name: 'Chat', href: '/dashboard/chat', icon: 'chat' },
-  { name: 'Payments', href: '/dashboard/payments', icon: 'payment' },
-  { name: 'Analytics', href: '/dashboard/analytics', icon: 'analytics' },
-  { name: 'AI Assistant', href: '/dashboard/ai-assistant', icon: 'ai' },
+  { name: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard size={20} /> },
+  { name: 'Projects', href: '/dashboard/projects', icon: <FolderKanban size={20} /> },
+  { name: 'Offer Letters', href: '/dashboard/offer-letters', icon: <Mail size={20} /> },
+  { name: 'Chat', href: '/dashboard/chat', icon: <MessageSquare size={20} /> },
+  { name: 'Payments', href: '/dashboard/payments', icon: <CreditCard size={20} /> },
+  { name: 'Analytics', href: '/dashboard/analytics', icon: <BarChart3 size={20} /> },
+  { name: 'AI Assistant', href: '/dashboard/ai-assistant', icon: <Sparkles size={20} /> },
 ];
 
 const bottomNavigationItems: NavItem[] = [
-  { name: 'Profile', href: '/profile', icon: 'profile' },
-  { name: 'Settings', href: '/settings', icon: 'settings' },
+  { name: 'Profile', href: '/profile', icon: <User size={20} /> },
+  { name: 'Settings', href: '/settings', icon: <Settings size={20} /> },
 ];
 
 const toolsItems: NavItem[] = [
-  { name: 'Resume Analyzer', href: '/dashboard/tools/resume-analyzer', icon: 'fileSearch' },
+  { name: 'Resume Analyzer', href: '/dashboard/tools/resume-analyzer', icon: <FileSearch size={18} /> },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [isToolsExpanded, setIsToolsExpanded] = useState(false);
   
-  // Check if any tool path is active to keep the section expanded
   const isToolsActive = pathname.startsWith('/dashboard/tools');
-
-  const renderIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'grid':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="3" width="7" height="7" rx="1"/>
-            <rect x="14" y="3" width="7" height="7" rx="1"/>
-            <rect x="14" y="14" width="7" height="7" rx="1"/>
-            <rect x="3" y="14" width="7" height="7" rx="1"/>
-          </svg>
-        );
-      case 'folder':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-          </svg>
-        );
-      case 'letter':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-            <polyline points="22,6 12,13 2,6"/>
-          </svg>
-        );
-      case 'chat':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-          </svg>
-        );
-      case 'payment':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
-            <line x1="1" y1="10" x2="23" y2="10"/>
-          </svg>
-        );
-      case 'analytics':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="18" y1="20" x2="18" y2="10"/>
-            <line x1="12" y1="20" x2="12" y2="4"/>
-            <line x1="6" y1="20" x2="6" y2="14"/>
-          </svg>
-        );
-      case 'ai':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-6.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
-            <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-6.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
-          </svg>
-        );
-      case 'profile':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-          </svg>
-        );
-      case 'settings':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-          </svg>
-        );
-      case 'tools':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-          </svg>
-        );
-      case 'fileSearch':
-        return (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
-            <path d="M10.15 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v1"/>
-            <circle cx="16.5" cy="17.5" r="2.5"/>
-            <path d="m22 23-2.5-2.5"/>
-          </svg>
-        );
-      default:
-        return null;
-    }
-  };
 
   return (
     <div className={styles.sidebar}>
       {/* Logo Section */}
       <div className={styles.logoSection}>
+        <div className={styles.logoIcon}>
+          <Sparkles size={24} className={styles.sparkleIcon} />
+        </div>
         <span className={styles.brandName}>BusinessOps</span>
       </div>
 
       {/* Main Navigation */}
       <nav className={styles.navigation}>
         {navigationItems.map((item) => {
-          // Special logic for Projects - keep active when on any project page
           let isActive = pathname === item.href;
           if (item.name === 'Projects') {
             isActive = pathname === item.href || pathname.startsWith('/dashboard/projects/');
@@ -148,7 +78,7 @@ export default function Sidebar() {
               href={item.href}
               className={`${styles.navItem} ${isActive ? styles.active : ''}`}
             >
-              <span className={styles.navIcon}>{renderIcon(item.icon)}</span>
+              <span className={styles.navIcon}>{item.icon}</span>
               <span className={styles.navText}>{item.name}</span>
             </Link>
           );
@@ -161,12 +91,10 @@ export default function Sidebar() {
           className={`${styles.toolsHeader} ${isToolsActive ? styles.active : ''}`}
           onClick={() => setIsToolsExpanded(!isToolsExpanded)}
         >
-          <span className={styles.toolsHeaderIcon}>{renderIcon('tools')}</span>
+          <span className={styles.toolsHeaderIcon}><Wrench size={20} /></span>
           <span className={styles.toolsHeaderText}>Tools & Utilities</span>
           <span className={`${styles.expandIcon} ${(isToolsExpanded || isToolsActive) ? styles.expanded : ''}`}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
+            <ChevronDown size={16} />
           </span>
         </div>
         
@@ -180,7 +108,7 @@ export default function Sidebar() {
                 href={item.href}
                 className={`${styles.toolItem} ${isActive ? styles.active : ''}`}
               >
-                <span className={styles.toolIcon}>{renderIcon(item.icon)}</span>
+                <span className={styles.toolIcon}>{item.icon}</span>
                 <span className={styles.toolText}>{item.name}</span>
               </Link>
             );
@@ -198,7 +126,7 @@ export default function Sidebar() {
               href={item.href}
               className={`${styles.navItem} ${isActive ? styles.active : ''}`}
             >
-              <span className={styles.navIcon}>{renderIcon(item.icon)}</span>
+              <span className={styles.navIcon}>{item.icon}</span>
               <span className={styles.navText}>{item.name}</span>
             </Link>
           );

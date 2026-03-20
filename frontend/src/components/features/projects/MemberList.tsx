@@ -5,6 +5,19 @@ import { projectService, type Project } from '@/services/projectService';
 import { getInitials } from '@/utils/helpers';
 import { useProjectSocket } from '@/contexts/ProjectSocketContext';
 import { AddMemberModal } from '@/components/modals/project';
+import { 
+  Users, 
+  UserPlus, 
+  Trash2, 
+  Shield, 
+  Mail, 
+  MoreVertical, 
+  Search,
+  AlertCircle,
+  XCircle,
+  Loader2,
+  CheckCircle2
+} from 'lucide-react';
 import styles from './MemberList.module.css';
 
 interface MemberListProps {
@@ -35,7 +48,6 @@ export default function MemberList({ projectId, project, onProjectUpdated }: Mem
 
   const { onMemberUpdate } = useProjectSocket();
 
-  // Load members
   const loadMembers = async () => {
     try {
       setLoading(true);
@@ -50,18 +62,14 @@ export default function MemberList({ projectId, project, onProjectUpdated }: Mem
     }
   };
 
-  // Load members on mount
   useEffect(() => {
     loadMembers();
   }, [projectId]);
 
-  // Listen for real-time member updates
   useEffect(() => {
     if (!projectId) return;
 
     const handleMemberUpdate = (action: string, memberData: Member) => {
-      console.log(`📡 Real-time member ${action}:`, memberData);
-      
       if (action === 'added' && memberData.project_id === projectId) {
         setMembers(prev => [...prev, memberData]);
       } else if (action === 'removed' && memberData.project_id === projectId) {
@@ -72,14 +80,12 @@ export default function MemberList({ projectId, project, onProjectUpdated }: Mem
     onMemberUpdate(handleMemberUpdate);
   }, [projectId, onMemberUpdate]);
 
-  // Handle remove member
   const handleRemoveMember = async (userId: string, userName: string) => {
     if (!confirm(`Are you sure you want to remove ${userName} from this project?`)) return;
     
     try {
       setRemovingMember(userId);
       await projectService.removeMember(projectId, userId);
-      // Real-time update will handle the UI update
     } catch (err) {
       console.error('Error removing member:', err);
       setError('Failed to remove member');
@@ -88,80 +94,59 @@ export default function MemberList({ projectId, project, onProjectUpdated }: Mem
     }
   };
 
-  // Handle modal close
   const handleModalClose = () => {
     setShowModal(false);
   };
 
-  // Handle member added
   const handleMemberAdded = () => {
-    loadMembers(); // Refresh the list
+    loadMembers();
     handleModalClose();
   };
 
   if (loading) {
     return (
       <div className={styles.loading}>
-        <div>Loading members...</div>
+        <Loader2 className={styles.spinner} size={32} />
+        <span style={{ marginLeft: '1rem' }}>Loading team members...</span>
       </div>
     );
   }
 
   return (
     <div className={styles.container}>
-      {/* Header */}
       <div className={styles.header}>
         <div className={styles.titleSection}>
           <h2>Team Members</h2>
-          <p>People working on this project</p>
+          <p>Collaborating on {project.name}</p>
         </div>
-        <button 
-          className={styles.addButton}
-          onClick={() => setShowModal(true)}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"/>
-            <line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
+        <button className={styles.addButton} onClick={() => setShowModal(true)}>
+          <UserPlus size={18} />
           Add Member
         </button>
       </div>
 
-      {/* Error message */}
       {error && (
         <div className={styles.error}>
-          <span>{error}</span>
-          <button onClick={() => setError(null)}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <AlertCircle size={18} />
+            <span>{error}</span>
+          </div>
+          <button onClick={() => setError(null)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>
+            <XCircle size={18} />
           </button>
         </div>
       )}
 
-      {/* Members list */}
       {members.length === 0 ? (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
+            <Users size={64} strokeWidth={1} color="#cbd5e1" />
           </div>
           <h3>No team members yet</h3>
-          <p>Get started by adding the first member to this project.</p>
-          <button 
-            className={styles.addButton}
-            onClick={() => setShowModal(true)}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            Add Member
+          <p>Projects are better with friends. Invite your team to start collaborating.</p>
+          <button className={styles.addButton} style={{ marginTop: '0.5rem' }} onClick={() => setShowModal(true)}>
+            <UserPlus size={18} />
+            Invite First Member
           </button>
         </div>
       ) : (
@@ -176,34 +161,32 @@ export default function MemberList({ projectId, project, onProjectUpdated }: Mem
                 </div>
                 <div className={styles.memberDetails}>
                   <h3 className={styles.memberName}>{member.user.name}</h3>
-                  <p className={styles.memberRole}>{member.role}</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.1rem' }}>
+                    <Shield size={12} color="#94a3b8" />
+                    <p className={styles.memberRole}>{member.role}</p>
+                  </div>
                 </div>
               </div>
-              <button
-                className={styles.removeButton}
-                onClick={() => handleRemoveMember(member.user_id, member.user.name)}
-                disabled={removingMember === member.user_id}
-                title="Remove member"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="3,6 5,6 21,6"/>
-                  <path d="M19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"/>
-                  <line x1="10" y1="11" x2="10" y2="17"/>
-                  <line x1="14" y1="11" x2="14" y2="17"/>
-                </svg>
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <button
+                  className={styles.removeButton}
+                  onClick={() => handleRemoveMember(member.user_id, member.user.name)}
+                  disabled={removingMember === member.user_id}
+                  title="Remove member"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Add Member Modal */}
       {showModal && (
         <AddMemberModal
           projectId={projectId}
-          existingMembers={members.map(m => m.user_id)}
           onClose={handleModalClose}
-          onMemberAdded={handleMemberAdded}
+          onSuccess={handleMemberAdded}
         />
       )}
     </div>

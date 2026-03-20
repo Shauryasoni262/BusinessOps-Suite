@@ -2,6 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import { invoiceService, type Invoice } from '@/services/invoiceService';
+import { 
+  FileText, 
+  Download, 
+  Trash2, 
+  FileSearch, 
+  AlertCircle, 
+  CheckCircle2, 
+  Clock, 
+  XCircle,
+  MoreVertical,
+  ExternalLink,
+  ChevronRight,
+  Loader2
+} from 'lucide-react';
 import styles from './RecentInvoices.module.css';
 
 interface RecentInvoicesProps {
@@ -25,7 +39,7 @@ export default function RecentInvoices({ onRefresh }: RecentInvoicesProps) {
       setInvoices(data.slice(0, 6)); // Show only recent 6 invoices
     } catch (error) {
       console.error('Error loading invoices:', error);
-      setError('Failed to load invoices');
+      setError('Failed to load recent invoices');
     } finally {
       setLoading(false);
     }
@@ -46,26 +60,25 @@ export default function RecentInvoices({ onRefresh }: RecentInvoicesProps) {
     }
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusInfo = (status: string) => {
     switch (status) {
       case 'paid':
-        return { text: 'Paid', className: styles.paid };
+        return { text: 'Paid', className: styles.paid, icon: <CheckCircle2 size={12} /> };
       case 'pending':
-        return { text: 'Pending', className: styles.pending };
+        return { text: 'Pending', className: styles.pending, icon: <Clock size={12} /> };
       case 'overdue':
-        return { text: 'Overdue', className: styles.overdue };
+        return { text: 'Overdue', className: styles.overdue, icon: <AlertCircle size={12} /> };
       case 'cancelled':
-        return { text: 'Cancelled', className: styles.cancelled };
+        return { text: 'Cancelled', className: styles.cancelled, icon: <XCircle size={12} /> };
       default:
-        return { text: 'Unknown', className: styles.unknown };
+        return { text: 'Unknown', className: styles.unknown, icon: <AlertCircle size={12} /> };
     }
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
       year: 'numeric'
     });
   };
@@ -81,8 +94,10 @@ export default function RecentInvoices({ onRefresh }: RecentInvoicesProps) {
     return (
       <div className={styles.container}>
         <div className={styles.loading}>
-          <div className={styles.spinner}></div>
-          <p>Loading invoices...</p>
+          <Loader2 className={styles.spinner} />
+          <p style={{ fontSize: '0.875rem', fontWeight: 600, color: '#64748b' }}>
+            Syncing invoices...
+          </p>
         </div>
       </div>
     );
@@ -91,9 +106,10 @@ export default function RecentInvoices({ onRefresh }: RecentInvoicesProps) {
   if (error) {
     return (
       <div className={styles.container}>
-        <div className={styles.error}>
-          <p>{error}</p>
-          <button onClick={loadInvoices} className={styles.retryButton}>
+        <div className={styles.error} style={{ padding: '2rem', textAlign: 'center' }}>
+          <AlertCircle size={32} color="#ef4444" style={{ marginBottom: '0.5rem' }} />
+          <p style={{ color: '#ef4444', fontWeight: 600 }}>{error}</p>
+          <button onClick={loadInvoices} className={styles.retryButton} style={{ marginTop: '1rem' }}>
             Try Again
           </button>
         </div>
@@ -106,41 +122,35 @@ export default function RecentInvoices({ onRefresh }: RecentInvoicesProps) {
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <h3 className={styles.title}>Recent Invoices</h3>
-          <p className={styles.subtitle}>View and manage your invoices</p>
+          <p className={styles.subtitle}>Audit trail of latest client billings</p>
         </div>
       </div>
 
       {invoices.length === 0 ? (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14,2 14,8 20,8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10,9 9,9 8,9"/>
-            </svg>
+            <FileSearch size={48} strokeWidth={1} />
           </div>
-          <h4>No invoices yet</h4>
-          <p>Create your first invoice to get started.</p>
+          <h4>No invoices found</h4>
+          <p>Generate your first invoice to begin tracking billing history.</p>
         </div>
       ) : (
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Invoice ID</th>
-                <th>Client</th>
+                <th>Reference</th>
+                <th>Client Details</th>
                 <th>Amount</th>
-                <th>Issue Date</th>
+                <th>Issued</th>
                 <th>Due Date</th>
                 <th>Status</th>
-                <th>Actions</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               {invoices.map((invoice) => {
-                const statusBadge = getStatusBadge(invoice.status);
+                const status = getStatusInfo(invoice.status);
                 return (
                   <tr key={invoice.id}>
                     <td className={styles.invoiceId}>{invoice.invoice_number}</td>
@@ -156,35 +166,29 @@ export default function RecentInvoices({ onRefresh }: RecentInvoicesProps) {
                     <td className={styles.date}>{formatDate(invoice.invoice_date)}</td>
                     <td className={styles.date}>{formatDate(invoice.due_date)}</td>
                     <td>
-                      <span className={`${styles.statusBadge} ${statusBadge.className}`}>
-                        {statusBadge.text}
+                      <span className={`${styles.statusBadge} ${status.className}`}>
+                        {status.icon}
+                        {status.text}
                       </span>
                     </td>
-                    <td className={styles.actions}>
-                      <button
-                        className={styles.downloadButton}
-                        title="Download PDF"
-                        onClick={() => window.open(`/api/pdf/invoice/${invoice.id}`, '_blank')}
-                      >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                          <polyline points="7,10 12,15 17,10"/>
-                          <line x1="12" y1="15" x2="12" y2="3"/>
-                        </svg>
-                        PDF
-                      </button>
-                      <button
-                        onClick={() => handleDeleteInvoice(invoice.id)}
-                        className={styles.deleteButton}
-                        title="Delete invoice"
-                      >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="3,6 5,6 21,6"/>
-                          <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"/>
-                          <line x1="10" y1="11" x2="10" y2="17"/>
-                          <line x1="14" y1="11" x2="14" y2="17"/>
-                        </svg>
-                      </button>
+                    <td>
+                      <div className={styles.actions}>
+                        <button
+                          className={styles.downloadButton}
+                          title="Download PDF"
+                          onClick={() => window.open(`/api/pdf/invoice/${invoice.id}`, '_blank')}
+                        >
+                          <Download size={14} />
+                          PDF
+                        </button>
+                        <button
+                          onClick={() => handleDeleteInvoice(invoice.id)}
+                          className={styles.deleteButton}
+                          title="Delete invoice"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

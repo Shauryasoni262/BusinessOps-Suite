@@ -1,6 +1,8 @@
 'use client';
 
 import styles from './RecentProjects.module.css';
+import { FolderPlus, Plus } from 'lucide-react';
+import Link from 'next/link';
 
 interface Project {
   id: string;
@@ -38,43 +40,55 @@ export default function RecentProjects({ projects }: RecentProjectsProps) {
           <h2 className={styles.title}>Recent Projects</h2>
           <p className={styles.subtitle}>Your most recent project activity</p>
         </div>
+        {projects.length > 0 && (
+          <Link href="/dashboard/projects" className={styles.viewAll}>
+            View All
+          </Link>
+        )}
       </div>
 
       <div className={styles.projectsList}>
-        {projects.map((project) => (
-          <div key={project.id} className={styles.projectCard}>
-            <div className={styles.projectInfo}>
-              <h3 className={styles.projectName}>{project.name}</h3>
-              <div className={styles.projectMeta}>
-                <span className={styles.projectStatus} style={{ color: getStatusColor(project.status) }}>
-                  {project.status}
-                </span>
-                <span className={styles.projectMembers}>
-                  • {project.teamMembers} team member{project.teamMembers !== 1 ? 's' : ''}
-                </span>
+        {projects.length > 0 ? (
+          projects.map((project) => (
+            <div key={project.id} className={styles.projectCard}>
+              <div className={styles.projectInfo}>
+                <h3 className={styles.projectName}>{project.name}</h3>
+                <div className={styles.projectMeta}>
+                  <span className={styles.projectStatus} style={{ color: getStatusColor(project.status) }}>
+                    {project.status}
+                  </span>
+                  <span className={styles.projectMembers}>
+                    • {project.teamMembers} team member{project.teamMembers !== 1 ? 's' : ''}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.projectProgress}>
+                <div className={styles.progressBar}>
+                  <div 
+                    className={styles.progressFill} 
+                    style={{ 
+                      width: `${project.progress}%`,
+                      backgroundColor: getStatusColor(project.status)
+                    }}
+                  />
+                </div>
+                <span className={styles.progressText}>{project.progress}%</span>
               </div>
             </div>
-            <div className={styles.projectProgress}>
-              <div className={styles.progressBar}>
-                <div 
-                  className={styles.progressFill} 
-                  style={{ 
-                    width: `${project.progress}%`,
-                    backgroundColor: getStatusColor(project.status)
-                  }}
-                />
-              </div>
-              <span className={styles.progressText}>{project.progress}%</span>
-            </div>
-          </div>
-        ))}
-
-        {projects.length === 0 && (
+          ))
+        ) : (
           <div className={styles.emptyState}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-            </svg>
-            <p>No recent projects</p>
+            <div className={styles.emptyIconContainer}>
+              <FolderPlus size={40} strokeWidth={1.5} />
+            </div>
+            <h3 className={styles.emptyTitle}>Ready to start something new?</h3>
+            <p className={styles.emptySubtitle}>
+              Create your first project to track progress, collaborate with your team, and hit your goals.
+            </p>
+            <Link href="/dashboard/projects" className={styles.addButton}>
+              <Plus size={18} />
+              <span>Create Project</span>
+            </Link>
           </div>
         )}
       </div>

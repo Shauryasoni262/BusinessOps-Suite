@@ -4,6 +4,22 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Sidebar, TopBar } from '@/components/layout';
 import ReactMarkdown from 'react-markdown';
+import { 
+  Bot, 
+  User, 
+  Send, 
+  Trash2, 
+  Sparkles, 
+  Cpu, 
+  Wifi, 
+  WifiOff, 
+  AlertCircle, 
+  Loader2,
+  Terminal,
+  Code2,
+  Lightbulb,
+  MessageSquare
+} from 'lucide-react';
 import styles from './page.module.css';
 
 interface Message {
@@ -19,7 +35,7 @@ interface Model {
   modified_at: string;
 }
 
-interface User {
+interface UserData {
   id: string;
   name: string;
   email: string;
@@ -27,7 +43,10 @@ interface User {
 }
 
 const AIAssistantPage: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
+  
+  // State Hooks
+  const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -37,122 +56,110 @@ const AIAssistantPage: React.FC = () => {
   const [selectedModel, setSelectedModel] = useState('arcee-ai/trinity-large-preview:free');
   const [error, setError] = useState<string | null>(null);
   
+  // Ref Hooks
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const router = useRouter();
 
-  // Auto-scroll to bottom when new messages arrive
+  // Helper Functions
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Effect Hooks
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  // Authentication check
-  useEffect(() => {
-    console.log('🔍 AI Assistant - Checking authentication...');
-    
-    // Check if user is logged in
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
 
-    console.log('🔍 Token exists:', token ? 'Yes' : 'No');
-    console.log('🔍 User data exists:', userData ? 'Yes' : 'No');
-
     if (!token || !userData) {
-      console.log('❌ Missing token or user data, redirecting to login');
       router.push('/auth/login');
       return;
     }
 
     try {
-      if (userData === 'undefined' || userData === null || userData === '') {
-        console.log('❌ User data is undefined/null/empty, redirecting to login');
+      if (userData !== 'undefined' && userData !== null && userData !== '') {
+        setUser(JSON.parse(userData));
+      } else {
         router.push('/auth/login');
-        return;
       }
-      
-      const parsedUser = JSON.parse(userData);
-      console.log('✅ User data parsed successfully:', parsedUser);
-      setUser(parsedUser);
     } catch (error) {
-      console.error('❌ Error parsing user data:', error);
-      console.error('❌ Raw userData:', userData);
+      console.error('Error parsing user data:', error);
       router.push('/auth/login');
     } finally {
       setLoading(false);
     }
   }, [router]);
 
-  // Check AI connection and load models on component mount
   useEffect(() => {
     if (user) {
+      const checkConnection = async () => {
+        try {
+          const token = localStorage.getItem('token');
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/test`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          const data = await response.json();
+          setIsConnected(data.success);
+          if (!data.success) setError('AI Service heartbeat failed. Check configuration.');
+        } catch (error) {
+          setIsConnected(false);
+          setError('Connection to AI gateway lost.');
+        }
+      };
+
+      const loadModels = async () => {
+        try {
+          const token = localStorage.getItem('token');
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/models`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          const data = await response.json();
+          if (data.success && data.models.length > 0) {
+            setAvailableModels(data.models);
+            setSelectedModel(data.models[0].name);
+          }
+        } catch (error) {
+          console.error('Failed to load models:', error);
+        }
+      };
+
       checkConnection();
       loadModels();
     }
   }, [user]);
 
-  const checkConnection = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/test`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      const data = await response.json();
-      setIsConnected(data.success);
-      
-      if (!data.success) {
-        setError('Failed to connect to AI service. Please check your configuration.');
-      }
-    } catch (error) {
-      console.error('Connection test failed:', error);
-      setIsConnected(false);
-      setError('Failed to connect to AI service. Please check your connection.');
-    }
-  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages.length, isLoading]);
 
-  const loadModels = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/models`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      const data = await response.json();
-      if (data.success) {
-        setAvailableModels(data.models);
-        if (data.models.length > 0) {
-          setSelectedModel(data.models[0].name);
-        } else {
-          setError('No AI models available. Please check your OpenRouter configuration.');
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load models:', error);
-      setError('Failed to load AI models. Please check your connection.');
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      const scrollHeight = textareaRef.current.scrollHeight;
+      const maxHeight = 120; // Approximately 4-5 lines
+      textareaRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
     }
-  };
+  }, [inputMessage]);
 
+  // Event Handlers
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
 
-    const userMessage: Message = {
+    const userMsg: Message = {
       id: Date.now().toString(),
       type: 'user',
       content: inputMessage.trim(),
       timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages(prev => [...prev, userMsg]);
     setInputMessage('');
     setIsLoading(true);
     setError(null);
@@ -166,27 +173,24 @@ const AIAssistantPage: React.FC = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          message: userMessage.content,
+          message: userMsg.content,
           model: selectedModel
         })
       });
 
       const data = await response.json();
-
       if (data.success) {
-        const aiMessage: Message = {
+        setMessages(prev => [...prev, {
           id: (Date.now() + 1).toString(),
           type: 'ai',
           content: data.response,
           timestamp: new Date()
-        };
-        setMessages(prev => [...prev, aiMessage]);
+        }]);
       } else {
-        setError(data.message || 'Failed to get AI response');
+        setError(data.message || 'AI processing error occurred.');
       }
     } catch (error) {
-      console.error('Error sending message:', error);
-      setError('Failed to send message. Please try again.');
+      setError('Communication error with AI backend.');
     } finally {
       setIsLoading(false);
     }
@@ -200,33 +204,14 @@ const AIAssistantPage: React.FC = () => {
   };
 
   const clearChat = () => {
-    setMessages([]);
-    setError(null);
+    if (confirm('Are you sure you want to clear the conversation?')) {
+      setMessages([]);
+      setError(null);
+    }
   };
 
   const changeModel = async (modelName: string) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/ai/model`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ model: modelName })
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setSelectedModel(modelName);
-        setError(null);
-      } else {
-        setError(data.message || 'Failed to change model');
-      }
-    } catch (error) {
-      console.error('Error changing model:', error);
-      setError('Failed to change model');
-    }
+    setSelectedModel(modelName);
   };
 
   const handleLogout = () => {
@@ -235,16 +220,13 @@ const AIAssistantPage: React.FC = () => {
     router.push('/');
   };
 
-  if (loading) {
+  if (loading || !user) {
     return (
-      <div className={styles.container}>
-        <div className={styles.loading}>Loading...</div>
+      <div className={styles.loading}>
+        <Loader2 className={styles.spinner} size={40} />
+        <p>Initializing Neural Interface...</p>
       </div>
     );
-  }
-
-  if (!user) {
-    return null; // Will redirect to login
   }
 
   return (
@@ -256,12 +238,13 @@ const AIAssistantPage: React.FC = () => {
           <div className={styles.header}>
             <div className={styles.headerContent}>
               <h1>AI Assistant</h1>
-              <p>Chat with your AI assistant powered by OpenRouter</p>
+              <p>Harness the power of Trinity Large for complex problem solving</p>
             </div>
             
             <div className={styles.controls}>
               <div className={styles.modelSelector}>
-                <label htmlFor="model-select">Model:</label>
+                <Cpu size={14} color="#94a3b8" />
+                <label htmlFor="model-select">Model</label>
                 <select
                   id="model-select"
                   value={selectedModel}
@@ -273,6 +256,9 @@ const AIAssistantPage: React.FC = () => {
                       {model.name}
                     </option>
                   ))}
+                  {availableModels.length === 0 && (
+                    <option value={selectedModel}>{selectedModel.split('/').pop()}</option>
+                  )}
                 </select>
               </div>
               
@@ -280,8 +266,10 @@ const AIAssistantPage: React.FC = () => {
                 onClick={clearChat}
                 className={styles.clearButton}
                 disabled={messages.length === 0}
+                title="Reset conversation"
               >
-                Clear Chat
+                <Trash2 size={16} />
+                <span>Reset</span>
               </button>
             </div>
           </div>
@@ -289,12 +277,14 @@ const AIAssistantPage: React.FC = () => {
           <div className={styles.statusBar}>
             <div className={styles.status}>
               <div className={`${styles.statusIndicator} ${isConnected ? styles.connected : styles.disconnected}`}></div>
-              <span>{isConnected ? 'Connected to AI' : 'Disconnected'}</span>
+              {isConnected ? <Wifi size={12} /> : <WifiOff size={12} />}
+              <span>{isConnected ? 'Neural Link Active' : 'Link Severed'}</span>
             </div>
             {error && (
               <div className={styles.error}>
-                <span>⚠️ {error}</span>
-                <button onClick={() => setError(null)} className={styles.dismissError}>×</button>
+                <AlertCircle size={14} />
+                <span>{error}</span>
+                <button onClick={() => setError(null)} className={styles.dismissError}>&times;</button>
               </div>
             )}
           </div>
@@ -303,45 +293,29 @@ const AIAssistantPage: React.FC = () => {
             <div className={styles.messages}>
               {messages.length === 0 ? (
                 <div className={styles.emptyState}>
-                  <div className={styles.emptyIcon}>🤖</div>
-                  <h3>Start a conversation</h3>
-                  {availableModels.length === 0 ? (
-                    <>
-                      <p>No AI models are currently available.</p>
-                      <div className={styles.installInstructions}>
-                        <h4>To get started:</h4>
-                        <ol>
-                          <li>Make sure the backend server is running</li>
-                          <li>Check your OpenRouter API key in the .env file</li>
-                          <li>Refresh this page</li>
-                        </ol>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <p>Ask me anything! I&apos;m here to help with your questions and tasks.</p>
-                      <div className={styles.suggestions}>
-                        <button
-                          onClick={() => setInputMessage("What can you help me with?")}
-                          className={styles.suggestionButton}
-                        >
-                          What can you help me with?
-                        </button>
-                        <button
-                          onClick={() => setInputMessage("Explain quantum computing in simple terms")}
-                          className={styles.suggestionButton}
-                        >
-                          Explain quantum computing
-                        </button>
-                        <button
-                          onClick={() => setInputMessage("Write a Python function to sort a list")}
-                          className={styles.suggestionButton}
-                        >
-                          Write a Python function
-                        </button>
-                      </div>
-                    </>
-                  )}
+                  <div className={styles.emptyIcon}>
+                    <Sparkles size={32} />
+                  </div>
+                  <h3>Ready for Interaction</h3>
+                  <p>I can help you analyze projects, draft documents, or explain complex technical concepts.</p>
+                  
+                  <div className={styles.suggestions}>
+                    {[
+                      { text: "What can you help me with?", icon: <MessageSquare size={14} /> },
+                      { text: "Explain quantum computing", icon: <Lightbulb size={14} /> },
+                      { text: "Write a Python function", icon: <Code2 size={14} /> },
+                      { text: "Analyze my project tech stack", icon: <Terminal size={14} /> }
+                    ].map((suggestion, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setInputMessage(suggestion.text)}
+                        className={styles.suggestionButton}
+                      >
+                        {suggestion.icon}
+                        {suggestion.text}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               ) : (
                 messages.map((message) => (
@@ -351,11 +325,12 @@ const AIAssistantPage: React.FC = () => {
                   >
                     <div className={styles.messageContent}>
                       <div className={styles.messageHeader}>
+                        {message.type === 'ai' ? <Bot size={14} /> : <User size={14} />}
                         <span className={styles.messageType}>
-                          {message.type === 'user' ? 'You' : 'AI Assistant'}
+                          {message.type === 'user' ? 'Client' : 'Assistant'}
                         </span>
                         <span className={styles.timestamp}>
-                          {message.timestamp.toLocaleTimeString()}
+                          {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
                       <div className={styles.messageText}>
@@ -370,7 +345,8 @@ const AIAssistantPage: React.FC = () => {
                 <div className={`${styles.message} ${styles.ai}`}>
                   <div className={styles.messageContent}>
                     <div className={styles.messageHeader}>
-                      <span className={styles.messageType}>AI Assistant</span>
+                      <Bot size={14} />
+                      <span className={styles.messageType}>Assistant</span>
                     </div>
                     <div className={styles.typingIndicator}>
                       <span></span>
@@ -390,8 +366,8 @@ const AIAssistantPage: React.FC = () => {
                   ref={textareaRef}
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)"
+                  onKeyDown={handleKeyPress}
+                  placeholder="Inquire about a task or concept..."
                   className={styles.textInput}
                   rows={1}
                   disabled={isLoading || !isConnected}
@@ -401,23 +377,8 @@ const AIAssistantPage: React.FC = () => {
                   disabled={!inputMessage.trim() || isLoading || !isConnected}
                   className={styles.sendButton}
                 >
-                  {isLoading ? (
-                    <>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M8 12h8"/>
-                      </svg>
-                      <span>Sending...</span>
-                    </>
-                  ) : (
-                    <>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"/>
-                        <polygon points="22,2 15,22 11,13 2,9 22,2"/>
-                      </svg>
-                      <span>Send</span>
-                    </>
-                  )}
+                  {isLoading ? <Loader2 className={styles.spinner} size={18} /> : <Send size={18} />}
+                  <span>{isLoading ? 'Processing' : 'Transmit'}</span>
                 </button>
               </div>
             </div>

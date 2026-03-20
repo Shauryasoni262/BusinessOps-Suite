@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { type Project, type CreateProjectData, type UpdateProjectData } from '@/services/projectService';
+import { type Project } from '@/services/projectService';
 import { useProjects } from '@/contexts/ProjectContext';
+import { X, FolderPlus, Type, AlignLeft, Flag, Clock, Lightbulb, ClipboardList, Play, Pause, Eye, CheckCircle, XCircle } from 'lucide-react';
 import styles from './ProjectModal.module.css';
 
 interface ProjectModalProps {
@@ -17,7 +18,7 @@ export default function ProjectModal({ project, onClose, onSave }: ProjectModalP
     description: '',
     priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
     deadline: '',
-    status: 'idea' as 'idea' | 'planning' | 'in_progress' | 'on_hold' | 'review' | 'completed' | 'cancelled'
+    status: 'planning' as 'idea' | 'planning' | 'in_progress' | 'on_hold' | 'review' | 'completed' | 'cancelled'
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +32,7 @@ export default function ProjectModal({ project, onClose, onSave }: ProjectModalP
         description: project.description || '',
         priority: project.priority,
         deadline: project.deadline ? new Date(project.deadline).toISOString().split('T')[0] : '',
-        status: project.status
+        status: project.status as any
       });
     }
   }, [project]);
@@ -64,11 +65,9 @@ export default function ProjectModal({ project, onClose, onSave }: ProjectModalP
       };
 
       if (project) {
-        // Update existing project using context
         await updateProject(project.id, projectData);
       } else {
-        // Create new project using context
-        await createProject(projectData);
+        await createProject(projectData as any);
       }
 
       onSave();
@@ -81,8 +80,19 @@ export default function ProjectModal({ project, onClose, onSave }: ProjectModalP
   };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'idea': return <Lightbulb size={14} className={styles.fieldIcon} />;
+      case 'planning': return <ClipboardList size={14} className={styles.fieldIcon} />;
+      case 'in_progress': return <Play size={14} className={styles.fieldIcon} />;
+      case 'on_hold': return <Pause size={14} className={styles.fieldIcon} />;
+      case 'review': return <Eye size={14} className={styles.fieldIcon} />;
+      case 'completed': return <CheckCircle size={14} className={styles.fieldIcon} />;
+      case 'cancelled': return <XCircle size={14} className={styles.fieldIcon} />;
+      default: return <Flag size={14} className={styles.fieldIcon} />;
     }
   };
 
@@ -90,12 +100,17 @@ export default function ProjectModal({ project, onClose, onSave }: ProjectModalP
     <div className={styles.backdrop} onClick={handleBackdropClick}>
       <div className={styles.modal}>
         <div className={styles.header}>
-          <h2>{project ? 'Edit Project' : 'Create New Project'}</h2>
-          <button className={styles.closeButton} onClick={onClose}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
+          <div className={styles.headerTitleContainer}>
+            <div className={styles.headerIcon}>
+              <FolderPlus size={18} />
+            </div>
+            <div>
+              <h2 className={styles.titleText}>{project ? 'Edit Project' : 'New Project'}</h2>
+              <p className={styles.subtitle}>Define your vision and goals</p>
+            </div>
+          </div>
+          <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">
+            <X size={18} />
           </button>
         </div>
 
@@ -108,7 +123,8 @@ export default function ProjectModal({ project, onClose, onSave }: ProjectModalP
 
           <div className={styles.field}>
             <label htmlFor="name" className={styles.label}>
-              Project Name *
+              <Type size={14} className={styles.fieldIcon} />
+              Project Name
             </label>
             <input
               type="text"
@@ -117,7 +133,7 @@ export default function ProjectModal({ project, onClose, onSave }: ProjectModalP
               value={formData.name}
               onChange={handleInputChange}
               className={styles.input}
-              placeholder="Enter project name"
+              placeholder="e.g., Enterprise Branding"
               required
               disabled={loading}
             />
@@ -125,7 +141,8 @@ export default function ProjectModal({ project, onClose, onSave }: ProjectModalP
 
           <div className={styles.field}>
             <label htmlFor="description" className={styles.label}>
-              Description
+              <AlignLeft size={14} className={styles.fieldIcon} />
+              Key Details
             </label>
             <textarea
               id="description"
@@ -133,15 +150,39 @@ export default function ProjectModal({ project, onClose, onSave }: ProjectModalP
               value={formData.description}
               onChange={handleInputChange}
               className={styles.textarea}
-              placeholder="Enter project description"
-              rows={3}
+              placeholder="What is this project about?"
+              rows={2}
               disabled={loading}
             />
           </div>
 
           <div className={styles.row}>
             <div className={styles.field}>
+              <label htmlFor="status" className={styles.label}>
+                {getStatusIcon(formData.status)}
+                Current Status
+              </label>
+              <select
+                id="status"
+                name="status"
+                value={formData.status}
+                onChange={handleInputChange}
+                className={styles.select}
+                disabled={loading}
+              >
+                <option value="planning">Planning</option>
+                <option value="in_progress">In Progress</option>
+                <option value="review">Review</option>
+                <option value="completed">Completed</option>
+                <option value="idea">Idea</option>
+                <option value="on_hold">On Hold</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+
+            <div className={styles.field}>
               <label htmlFor="priority" className={styles.label}>
+                <Clock size={14} className={styles.fieldIcon} />
                 Priority
               </label>
               <select
@@ -158,43 +199,6 @@ export default function ProjectModal({ project, onClose, onSave }: ProjectModalP
                 <option value="urgent">Urgent</option>
               </select>
             </div>
-
-            <div className={styles.field}>
-              <label htmlFor="status" className={styles.label}>
-                Status
-              </label>
-              <select
-                id="status"
-                name="status"
-                value={formData.status}
-                onChange={handleInputChange}
-                className={styles.select}
-                disabled={loading}
-              >
-                <option value="idea">Idea</option>
-                <option value="planning">Planning</option>
-                <option value="in_progress">In Progress</option>
-                <option value="on_hold">On Hold</option>
-                <option value="review">Review</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </div>
-          </div>
-
-          <div className={styles.field}>
-            <label htmlFor="deadline" className={styles.label}>
-              Deadline
-            </label>
-            <input
-              type="date"
-              id="deadline"
-              name="deadline"
-              value={formData.deadline}
-              onChange={handleInputChange}
-              className={styles.input}
-              disabled={loading}
-            />
           </div>
 
           <div className={styles.actions}>
@@ -213,13 +217,14 @@ export default function ProjectModal({ project, onClose, onSave }: ProjectModalP
             >
               {loading ? (
                 <>
-                  <svg className={styles.spinner} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 12a9 9 0 11-6.219-8.56"/>
-                  </svg>
-                  {project ? 'Updating...' : 'Creating...'}
+                  <Clock className={styles.spinner} size={16} />
+                  Saving...
                 </>
               ) : (
-                project ? 'Update Project' : 'Create Project'
+                <>
+                  <FolderPlus size={16} />
+                  {project ? 'Update' : 'Create'}
+                </>
               )}
             </button>
           </div>

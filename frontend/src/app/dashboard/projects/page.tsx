@@ -8,6 +8,7 @@ import { ProjectModal } from '@/components/modals/project';
 import { useProjectSocket } from '@/contexts/ProjectSocketContext';
 import { useProjects } from '@/contexts/ProjectContext';
 import { type Project } from '@/services/projectService';
+import { FolderPlus } from 'lucide-react';
 import styles from './page.module.css';
 
 interface User {
@@ -219,54 +220,55 @@ export default function ProjectsPage() {
             </div>
           )}
 
-          {/* Filter Tabs */}
-          <div className={styles.filterTabs}>
-            <button
-              className={`${styles.filterTab} ${activeFilter === 'all' ? styles.active : ''}`}
-              onClick={() => handleFilterChange('all')}
-            >
-              All Projects
-            </button>
-            <button
-              className={`${styles.filterTab} ${activeFilter === 'active' ? styles.active : ''}`}
-              onClick={() => handleFilterChange('active')}
-            >
-              In Progress
-            </button>
-            <button
-              className={`${styles.filterTab} ${activeFilter === 'planning' ? styles.active : ''}`}
-              onClick={() => handleFilterChange('planning')}
-            >
-              Planning
-            </button>
-            <button
-              className={`${styles.filterTab} ${activeFilter === 'review' ? styles.active : ''}`}
-              onClick={() => handleFilterChange('review')}
-            >
-              Review
-            </button>
-            <button
-              className={`${styles.filterTab} ${activeFilter === 'completed' ? styles.active : ''}`}
-              onClick={() => handleFilterChange('completed')}
-            >
-              Completed
-            </button>
-          </div>
+          {/* Filter Tabs - Only show when there are projects */}
+          {projects.length > 0 && (
+            <div className={styles.filterTabs}>
+              <button
+                className={`${styles.filterTab} ${activeFilter === 'all' ? styles.active : ''}`}
+                onClick={() => handleFilterChange('all')}
+              >
+                All Projects
+              </button>
+              <button
+                className={`${styles.filterTab} ${activeFilter === 'active' ? styles.active : ''}`}
+                onClick={() => handleFilterChange('active')}
+              >
+                In Progress
+              </button>
+              <button
+                className={`${styles.filterTab} ${activeFilter === 'planning' ? styles.active : ''}`}
+                onClick={() => handleFilterChange('planning')}
+              >
+                Planning
+              </button>
+              <button
+                className={`${styles.filterTab} ${activeFilter === 'review' ? styles.active : ''}`}
+                onClick={() => handleFilterChange('review')}
+              >
+                Review
+              </button>
+              <button
+                className={`${styles.filterTab} ${activeFilter === 'completed' ? styles.active : ''}`}
+                onClick={() => handleFilterChange('completed')}
+              >
+                Completed
+              </button>
+            </div>
+          )}
 
           {getFilteredProjects().length === 0 ? (
             <div className={styles.emptyState}>
-              <div className={styles.emptyIcon}>
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-                </svg>
+              <div className={styles.emptyIconContainer}>
+                <FolderPlus size={48} strokeWidth={1.5} />
               </div>
-              <h3>No projects yet</h3>
-              <p>Create your first project to get started with project management</p>
+              <h3>Ready to start something new?</h3>
+              <p>You haven't created any projects yet. Start by creating your first project to organize your team and tasks efficiently.</p>
               <button 
-                className={styles.createButton}
+                className={styles.emptyStateButton}
                 onClick={handleCreateProject}
               >
-                Create Project
+                <FolderPlus size={18} style={{ marginRight: '8px' }} />
+                Create First Project
               </button>
             </div>
           ) : (

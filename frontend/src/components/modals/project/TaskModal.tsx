@@ -1,55 +1,40 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { taskService, type Task, type CreateTaskData, type UpdateTaskData } from '@/services/taskService';
-import { projectService } from '@/services/projectService';
-import { getInitials } from '@/utils/helpers';
+import { type ProjectTask } from '@/services/taskService';
+import { X, CheckCircle2, Type, AlignLeft, Layout, User, Clock, Loader2, ListTodo, Play, Eye, CheckCircle } from 'lucide-react';
 import styles from './TaskModal.module.css';
 
 interface TaskModalProps {
+  task: ProjectTask | null;
   projectId: string;
-  task: Task | null;
+  projectMembers: any[];
   onClose: () => void;
-  onSave: () => void;
+  onSave: (taskData: any) => Promise<void>;
 }
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
-
-export default function TaskModal({ projectId, task, onClose, onSave }: TaskModalProps) {
+export default function TaskModal({ task, projectId, projectMembers, onClose, onSave }: TaskModalProps) {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
+    status: 'todo' as 'todo' | 'in_progress' | 'in_review' | 'completed',
     assigned_to: '',
-    status: 'pending' as 'pending' | 'in_progress' | 'completed'
+    due_date: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [projectMembers, setProjectMembers] = useState<User[]>([]);
 
   useEffect(() => {
     if (task) {
       setFormData({
         title: task.title,
         description: task.description || '',
+        status: task.status as any,
         assigned_to: task.assigned_to || '',
-        status: task.status as 'pending' | 'in_progress' | 'completed'
+        due_date: task.due_date ? new Date(task.due_date).toISOString().split('T')[0] : ''
       });
     }
-    loadProjectMembers();
-  }, [task, projectId]);
-
-  const loadProjectMembers = async () => {
-    try {
-      const members = await projectService.getMembers(projectId);
-      setProjectMembers(members.map(member => member.user).filter(Boolean));
-    } catch (error) {
-      console.error('Error loading project members:', error);
-    }
-  };
+  }, [task]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -61,7 +46,6 @@ export default function TaskModal({ projectId, task, onClose, onSave }: TaskModa
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!formData.title.trim()) {
       setError('Task title is required');
       return;
@@ -70,24 +54,10 @@ export default function TaskModal({ projectId, task, onClose, onSave }: TaskModa
     try {
       setLoading(true);
       setError(null);
-
-      const taskData = {
-        title: formData.title.trim(),
-        description: formData.description.trim(),
-        assigned_to: formData.assigned_to || undefined,
-        status: formData.status,
-        priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent' // Default priority
-      };
-
-      if (task) {
-        // Update existing task
-        await taskService.updateTask(projectId, task.id, taskData);
-      } else {
-        // Create new task
-        await taskService.createTask(projectId, taskData);
-      }
-
-      onSave();
+      await onSave({
+        ...formData,
+        projectId
+      });
     } catch (error) {
       console.error('Error saving task:', error);
       setError('Failed to save task');
@@ -97,8 +67,16 @@ export default function TaskModal({ projectId, task, onClose, onSave }: TaskModa
   };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'todo': return <ListTodo size={14} className={styles.fieldIcon} />;
+      case 'in_progress': return <Play size={14} className={styles.fieldIcon} />;
+      case 'in_review': return <Eye size={14} className={styles.fieldIcon} />;
+      case 'completed': return <CheckCircle size={14} className={styles.fieldIcon} />;
+      default: return <Layout size={14} className={styles.fieldIcon} />;
     }
   };
 
@@ -106,15 +84,17 @@ export default function TaskModal({ projectId, task, onClose, onSave }: TaskModa
     <div className={styles.backdrop} onClick={handleBackdropClick}>
       <div className={styles.modal}>
         <div className={styles.header}>
-          <div>
-            <h2>{task ? 'Edit Task' : 'Add New Task'}</h2>
-            <p className={styles.subtitle}>Create a new task for this project</p>
+          <div className={styles.headerTitleContainer}>
+            <div className={styles.headerIcon}>
+              <CheckCircle2 size={18} />
+            </div>
+            <div>
+              <h2 className={styles.titleText}>{task ? 'Edit Task' : 'New Task'}</h2>
+              <p className={styles.subtitle}>Specify the task requirements</p>
+            </div>
           </div>
-          <button className={styles.closeButton} onClick={onClose}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
+          <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">
+            <X size={18} />
           </button>
         </div>
 
@@ -127,7 +107,8 @@ export default function TaskModal({ projectId, task, onClose, onSave }: TaskModa
 
           <div className={styles.field}>
             <label htmlFor="title" className={styles.label}>
-              Task Name
+              <Type size={14} className={styles.fieldIcon} />
+              Task Title
             </label>
             <input
               type="text"
@@ -136,7 +117,7 @@ export default function TaskModal({ projectId, task, onClose, onSave }: TaskModa
               value={formData.title}
               onChange={handleInputChange}
               className={styles.input}
-              placeholder="e.g., Design wireframes"
+              placeholder="e.g., Design System Update"
               required
               disabled={loading}
             />
@@ -144,7 +125,8 @@ export default function TaskModal({ projectId, task, onClose, onSave }: TaskModa
 
           <div className={styles.field}>
             <label htmlFor="description" className={styles.label}>
-              Description (Optional)
+              <AlignLeft size={14} className={styles.fieldIcon} />
+              Description
             </label>
             <textarea
               id="description"
@@ -152,51 +134,50 @@ export default function TaskModal({ projectId, task, onClose, onSave }: TaskModa
               value={formData.description}
               onChange={handleInputChange}
               className={styles.textarea}
-              placeholder="Brief description"
-              rows={3}
+              placeholder="Provide more context..."
+              rows={2}
               disabled={loading}
             />
           </div>
 
-          <div className={styles.field}>
-            <label htmlFor="status" className={styles.label}>
-              Status
-            </label>
-            <select
-              id="status"
-              name="status"
-              value={formData.status}
-              onChange={handleInputChange}
-              className={styles.select}
-              disabled={loading}
-            >
-              <option value="pending">Pending</option>
-              <option value="in_progress">In Progress</option>
-              <option value="completed">Completed</option>
-            </select>
-          </div>
+          <div className={styles.row}>
+            <div className={styles.field}>
+              <label htmlFor="status" className={styles.label}>
+                {getStatusIcon(formData.status)}
+                Status
+              </label>
+              <select
+                id="status"
+                name="status"
+                value={formData.status}
+                onChange={handleInputChange}
+                className={styles.select}
+                disabled={loading}
+              >
+                <option value="todo">To Do</option>
+                <option value="in_progress">In Progress</option>
+                <option value="in_review">In Review</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
 
-          <div className={styles.field}>
-            <label htmlFor="assigned_to" className={styles.label}>
-              Assignee
-            </label>
-            <select
-              id="assigned_to"
-              name="assigned_to"
-              value={formData.assigned_to}
-              onChange={handleInputChange}
-              className={styles.select}
-              disabled={loading}
-            >
-              <option value="">Unassigned</option>
-              {projectMembers.map((member) => (
-                <option key={member.id} value={member.id}>
-                  {member.name} ({getInitials(member.name)})
-                </option>
-              ))}
-            </select>
+            <div className={styles.field}>
+              <label htmlFor="assigned_to" className={styles.label}>
+                <User size={14} className={styles.fieldIcon} />
+                Assignee
+              </label>
+              <input
+                type="text"
+                id="assigned_to"
+                name="assigned_to"
+                value={formData.assigned_to}
+                onChange={handleInputChange}
+                className={styles.input}
+                placeholder="Name or Initials"
+                disabled={loading}
+              />
+            </div>
           </div>
-
 
           <div className={styles.actions}>
             <button
@@ -214,13 +195,14 @@ export default function TaskModal({ projectId, task, onClose, onSave }: TaskModa
             >
               {loading ? (
                 <>
-                  <svg className={styles.spinner} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 12a9 9 0 11-6.219-8.56"/>
-                  </svg>
-                  {task ? 'Updating...' : 'Adding...'}
+                  <Loader2 className={styles.spinner} size={16} />
+                  Saving...
                 </>
               ) : (
-                task ? 'Update Task' : 'Add Task'
+                <>
+                  <CheckCircle2 size={16} />
+                  {task ? 'Update' : 'Create'}
+                </>
               )}
             </button>
           </div>
