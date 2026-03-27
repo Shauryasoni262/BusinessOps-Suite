@@ -1,0 +1,140 @@
+.container {
+  min-height: 100vh;
+  background-color: #ffffff;
+  background-image: radial-gradient(circle at 50% -20%, rgba(37, 99, 235, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+  color: #0f172a;
+}
+
+.main {
+  padding: 8rem 2rem 6rem;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 5rem;
+}
+
+.badge {
+  display: inline-flex;
+  padding: 0.5rem 1rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 100px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #2563eb;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  margin-bottom: 1.5rem;
+  color: #020617;
+}
+
+.title span {
+  background: linear-gradient(to right, #2563eb, #7c3aed);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: #64748b;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Filters */
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 4rem;
+  flex-wrap: wrap;
+}
+
+.filterBtn {
+  padding: 0.625rem 1.25rem;
+  border-radius: 100px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #64748b;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filterBtn:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.filterBtnActive {
+  background: #020617;
+  color: white;
+  border-color: #020617;
+}
+
+/* Jobs Grid */
+.jobsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.noJobs {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem;
+  background: #f8fafc;
+  border-radius: 24px;
+  border: 1px dashed #e2e8f0;
+}
+
+.noJobs h3 {
+  font-size: 1.5rem;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.noJobs p {
+  color: #64748b;
+}
+
+/* Loading State */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6rem;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  color: #2563eb;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .main { padding-top: 6rem; }
+  .title { font-size: 3rem; }
+  .jobsGrid { grid-template-columns: 1fr; }
+}

@@ -159,7 +159,7 @@ export default function Home() {
               <h4 className={styles.navHeading}>Company</h4>
               <ul className={styles.navList}>
                 <li><Link href="#" className={styles.navLink}>About Us</Link></li>
-                <li><Link href="#" className={styles.navLink}>Careers</Link></li>
+                <li><Link href="/careers" className={styles.navLink}>Careers</Link></li>
                 <li><Link href="#" className={styles.navLink}>Contact</Link></li>
                 <li><Link href="#" className={styles.navLink}>Newsroom</Link></li>
               </ul>

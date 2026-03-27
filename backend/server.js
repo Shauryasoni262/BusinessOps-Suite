@@ -19,6 +19,7 @@ const pdfRoutes = require('./routes/pdf');
 const analyticsRoutes = require('./routes/analytics');
 const offerLetterRoutes = require('./routes/offerLetters');
 const resumeAnalyzerRoutes = require('./routes/resumeAnalyzer');
+const careersRoutes = require('./routes/careers');
 
 const adminRoutes = require('./routes/admin');
 const apiLogger = require('./middleware/apiLogger');
@@ -70,7 +71,8 @@ app.get('/', (req, res) => {
       invoices: '/api/invoices',
       payments: '/api/payments',
       analytics: '/api/analytics',
-      offerLetters: '/api/offer-letters'
+      offerLetters: '/api/offer-letters',
+      careers: '/api/careers'
     }
   });
 });
@@ -100,6 +102,7 @@ app.use('/api/pdf', pdfRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/offer-letters', offerLetterRoutes);
 app.use('/api/resume-analyzer', resumeAnalyzerRoutes);
+app.use('/api/careers', careersRoutes);
 
 // 404 handler
 app.use((req, res) => {

@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
   LayoutDashboard, Users, FolderKanban, Wallet,
-  MessageSquare, Activity, ShieldCheck, Home, LogOut
+  MessageSquare, Activity, ShieldCheck, Home, LogOut, Briefcase
 } from 'lucide-react';
 import styles from './layout.module.css';
 
@@ -14,6 +14,7 @@ const navItems = [
   { name: 'Users', href: '/admin/users', icon: Users },
   { name: 'Projects', href: '/admin/projects', icon: FolderKanban },
   { name: 'Finance', href: '/admin/finance', icon: Wallet },
+  { name: 'Careers', href: '/admin/careers', icon: Briefcase },
   { name: 'Chat', href: '/admin/chat', icon: MessageSquare },
   { name: 'System Logs', href: '/admin/logs', icon: Activity },
   { name: 'Audit Trail', href: '/admin/activity', icon: ShieldCheck },
