@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { 
-  Zap, Shield, BarChart3, Users, 
+  Zap, Shield, BarChart, Users, 
   MessageSquare, CreditCard, Sparkles, 
   Layers, Globe, Smartphone 
 } from 'lucide-react';
@@ -53,8 +53,8 @@ export default function FeaturesPage() {
       color: "#ec4899"
     },
     {
-      icon: BarChart3,
-      title: "Deep Analytics",
+      icon: BarChart,
+      title: "Real-time Analytics",
       description: "Gain actionable insights with real-time dashboards and custom reporting tools.",
       color: "#6366f1"
     }

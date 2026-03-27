@@ -21,6 +21,7 @@ const analyticsRoutes = require('./routes/analytics');
 const offerLetterRoutes = require('./routes/offerLetters');
 const resumeAnalyzerRoutes = require('./routes/resumeAnalyzer');
 const careersRoutes = require('./routes/careers');
+const salarySlipRoutes = require('./routes/salarySlips');
 
 const adminRoutes = require('./routes/admin');
 const apiLogger = require('./middleware/apiLogger');
@@ -77,7 +78,8 @@ app.get('/', (req, res) => {
       payments: '/api/payments',
       analytics: '/api/analytics',
       offerLetters: '/api/offer-letters',
-      careers: '/api/careers'
+      careers: '/api/careers',
+      salarySlips: '/api/salary-slips'
     }
   });
 });
@@ -92,8 +94,8 @@ app.get('/api/health', (req, res) => {
 });
 
 // Use routes
-app.use('/api/auth', authRoutes);
 app.use('/api/auth', googleAuthRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/ai', aiRoutes);
@@ -108,6 +110,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/offer-letters', offerLetterRoutes);
 app.use('/api/resume-analyzer', resumeAnalyzerRoutes);
 app.use('/api/careers', careersRoutes);
+app.use('/api/salary-slips', salarySlipRoutes);
 
 // 404 handler
 app.use((req, res) => {

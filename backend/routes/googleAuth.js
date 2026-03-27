@@ -18,6 +18,72 @@ router.get('/google', (req, res) => {
   }
 });
 
+// Google One Tap / Identity Services login route
+router.post('/one-tap', async (req, res) => {
+  console.log('📥 Received One Tap request');
+  try {
+    const { credential } = req.body;
+    console.log('Credential received:', credential ? 'Yes (length: ' + credential.length + ')' : 'No');
+
+    if (!credential) {
+      return res.status(400).json({
+        success: false,
+        message: 'Google identity token (credential) not provided'
+      });
+    }
+
+    // Verify the Google ID token and get user info
+    const { verifyGoogleIdToken } = require('../config/googleAuth');
+    const googleUser = await verifyGoogleIdToken(credential);
+
+    if (!googleUser.verified) {
+      return res.status(400).json({
+        success: false,
+        message: 'Google email not verified'
+      });
+    }
+
+    // Check if user already exists
+    let user = await User.findByEmail(googleUser.email);
+
+    if (!user) {
+      // Create new user with Google info
+      user = await User.create({
+        name: googleUser.name,
+        email: googleUser.email,
+        password: 'google_oauth_user_' + Math.random().toString(36).slice(-8), 
+        role: 'user'
+      });
+    }
+
+    // Generate JWT token
+    const token = generateToken(user);
+    
+    console.log('✅ Google One Tap successful for user:', user.email);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error('Google One Tap error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Google One Tap authentication failed',
+      error: error.message
+    });
+  }
+});
+
 // Google OAuth callback route
 router.get('/google/callback', async (req, res) => {
   try {

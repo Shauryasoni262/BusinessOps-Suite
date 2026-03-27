@@ -58,8 +58,32 @@ const verifyGoogleToken = async (code) => {
   }
 };
 
+// Verify Google ID token (for One Tap/Identity Services)
+const verifyGoogleIdToken = async (idToken) => {
+  try {
+    const ticket = await oauth2Client.verifyIdToken({
+      idToken: idToken,
+      audience: GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    
+    return {
+      googleId: payload.sub,
+      email: payload.email,
+      name: payload.name,
+      picture: payload.picture,
+      verified: payload.email_verified
+    };
+  } catch (error) {
+    console.error('Google ID token verification error:', error);
+    throw new Error('Invalid Google ID token');
+  }
+};
+
 module.exports = {
   getGoogleAuthURL,
   verifyGoogleToken,
+  verifyGoogleIdToken,
   oauth2Client
 };

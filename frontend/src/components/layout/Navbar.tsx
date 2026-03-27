@@ -48,12 +48,6 @@ export default function Navbar() {
         {/* Left side - Brand */}
         <div className="navbar-brand" suppressHydrationWarning>
           <Link href="/" className="brand-link">
-            <img 
-              src="/images/Logo/businesslogo.svg" 
-              alt="BusinessOps Logo" 
-              className="brand-logo"
-              suppressHydrationWarning
-            />
             <span>BusinessOps</span>
           </Link>
         </div>

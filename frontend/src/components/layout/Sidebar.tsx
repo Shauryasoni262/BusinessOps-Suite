@@ -30,6 +30,7 @@ const navigationItems: NavItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard size={20} /> },
   { name: 'Projects', href: '/dashboard/projects', icon: <FolderKanban size={20} /> },
   { name: 'Offer Letters', href: '/dashboard/offer-letters', icon: <Mail size={20} /> },
+  { name: 'Salary Slips', href: '/dashboard/salary-slips', icon: <CreditCard size={20} /> },
   { name: 'Chat', href: '/dashboard/chat', icon: <MessageSquare size={20} /> },
   { name: 'Payments', href: '/dashboard/payments', icon: <CreditCard size={20} /> },
   { name: 'Analytics', href: '/dashboard/analytics', icon: <BarChart3 size={20} /> },
@@ -55,9 +56,6 @@ export default function Sidebar() {
     <div className={styles.sidebar}>
       {/* Logo Section */}
       <div className={styles.logoSection}>
-        <div className={styles.logoIcon}>
-          <Sparkles size={24} className={styles.sparkleIcon} />
-        </div>
         <span className={styles.brandName}>BusinessOps</span>
       </div>
 
@@ -70,6 +68,9 @@ export default function Sidebar() {
           }
           if (item.name === 'Offer Letters') {
             isActive = pathname === item.href || pathname.startsWith('/dashboard/offer-letters/');
+          }
+          if (item.name === 'Salary Slips') {
+            isActive = pathname === item.href || pathname.startsWith('/dashboard/salary-slips/');
           }
           
           return (
