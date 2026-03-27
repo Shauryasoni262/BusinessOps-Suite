@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { type ProjectTask } from '@/services/taskService';
+import { type Task } from '@/services/taskService';
 import { X, CheckCircle2, Type, AlignLeft, Layout, User, Clock, Loader2, ListTodo, Play, Eye, CheckCircle } from 'lucide-react';
 import styles from './TaskModal.module.css';
 
 interface TaskModalProps {
-  task: ProjectTask | null;
+  task: Task | null;
   projectId: string;
   projectMembers: any[];
   onClose: () => void;
