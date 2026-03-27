@@ -42,10 +42,6 @@ export default function CareersPage() {
     return matchesFilter && matchesSearch;
   });
 
-  const handleApply = (job: Job) => {
-    console.log('Apply to job:', job.title);
-    // Modal logic will be added next
-  };
 
   return (
     <div className={styles.container}>
@@ -83,7 +79,7 @@ export default function CareersPage() {
           <div className={styles.jobsGrid}>
             {filteredJobs.length > 0 ? (
               filteredJobs.map(job => (
-                <JobCard key={job.id} job={job} onApply={handleApply} />
+                <JobCard key={job.id} job={job} />
               ))
             ) : (
               <div className={styles.noJobs}>

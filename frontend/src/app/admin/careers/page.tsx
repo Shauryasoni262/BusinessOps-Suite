@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Plus, Edit2, Trash2, RefreshCw, 
-  Briefcase, MapPin, Search, ExternalLink 
+  Briefcase, MapPin, Search, ExternalLink, Users 
 } from 'lucide-react';
 import { Job } from '@/components/features/careers/JobCard';
 import { AdminJobModal } from '@/components/features/careers/AdminJobModal';
+import { CandidateListModal } from '@/components/features/careers/CandidateListModal';
 import styles from './page.module.css';
 
 export default function AdminCareersPage() {
@@ -15,7 +16,9 @@ export default function AdminCareersPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCandidateModalOpen, setIsCandidateModalOpen] = useState(false);
   const [editingJob, setEditingJob] = useState<Job | null>(null);
+  const [selectedJob, setSelectedJob] = useState<{id: string, title: string} | null>(null);
 
   useEffect(() => {
     fetchJobs();
@@ -84,6 +87,11 @@ export default function AdminCareersPage() {
     setIsModalOpen(true);
   };
 
+  const handleViewCandidates = (job: Job) => {
+    setSelectedJob({ id: job.id, title: job.title });
+    setIsCandidateModalOpen(true);
+  };
+
   const handleCreate = () => {
     setEditingJob(null);
     setIsModalOpen(true);
@@ -141,6 +149,7 @@ export default function AdminCareersPage() {
               <th>Department</th>
               <th>Type</th>
               <th>Status</th>
+              <th>Applicants</th>
               <th>Posted On</th>
               <th style={{ textAlign: 'right' }}>Actions</th>
             </tr>
@@ -148,7 +157,7 @@ export default function AdminCareersPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={6} style={{ textAlign: 'center', padding: '4rem' }}>
+                <td colSpan={7} style={{ textAlign: 'center', padding: '4rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.75rem', color: '#64748b' }}>
                     <RefreshCw size={20} className="animate-spin" />
                     <span>Syncing neural talent pool...</span>
@@ -174,6 +183,15 @@ export default function AdminCareersPage() {
                     <span className={`${styles.badge} ${job.status === 'open' ? styles.statusOpen : styles.statusClosed}`}>
                       {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
                     </span>
+                  </td>
+                  <td>
+                    <button 
+                      className={styles.viewAppsBtn}
+                      onClick={() => handleViewCandidates(job)}
+                    >
+                      <Users size={14} />
+                      <span>View Candidates</span>
+                    </button>
                   </td>
                   <td>
                     <span style={{ color: '#475569', fontSize: '0.75rem' }}>
@@ -202,7 +220,7 @@ export default function AdminCareersPage() {
               ))
             ) : (
               <tr>
-                <td colSpan={6} style={{ textAlign: 'center', padding: '4rem', color: '#475569' }}>
+                <td colSpan={7} style={{ textAlign: 'center', padding: '4rem', color: '#475569' }}>
                   <Briefcase size={32} style={{ margin: '0 auto 1rem', opacity: 0.2 }} />
                   <p>No job postings found. Click "Post New Job" to start.</p>
                 </td>
@@ -217,6 +235,13 @@ export default function AdminCareersPage() {
         job={editingJob}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
+      />
+
+      <CandidateListModal 
+        isOpen={isCandidateModalOpen}
+        jobId={selectedJob?.id || null}
+        jobTitle={selectedJob?.title || null}
+        onClose={() => setIsCandidateModalOpen(false)}
       />
     </div>
   );

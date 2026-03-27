@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { MapPin, Clock, Briefcase, ArrowUpRight } from 'lucide-react';
 import styles from './JobCard.module.css';
 
@@ -15,10 +16,9 @@ export interface Job {
 
 interface JobCardProps {
   job: Job;
-  onApply: (job: Job) => void;
 }
 
-export const JobCard: React.FC<JobCardProps> = ({ job, onApply }) => {
+export const JobCard: React.FC<JobCardProps> = ({ job }) => {
   return (
     <div className={styles.card}>
       <div className={styles.header}>
@@ -43,10 +43,10 @@ export const JobCard: React.FC<JobCardProps> = ({ job, onApply }) => {
         </div>
       </div>
       
-      <button className={styles.applyBtn} onClick={() => onApply(job)}>
+      <Link href={`/careers/${job.id}`} className={styles.applyBtn}>
         <span>View Details & Apply</span>
         <ArrowUpRight size={16} />
-      </button>
+      </Link>
     </div>
   );
 };
