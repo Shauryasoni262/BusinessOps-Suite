@@ -130,7 +130,7 @@ export default function CreateSalarySlipPage() {
       const element = document.getElementById('salary-slip-preview');
       if (element) {
         const html2pdf = (await import('html2pdf.js')).default;
-        const opt = {
+        const opt: any = {
           margin: 10,
           filename: `Salary_Slip_${formData.employee_name.replace(/\s+/g, '_')}_${formData.month_year.replace(/\s+/g, '_')}.pdf`,
           image: { type: 'jpeg', quality: 0.98 },
