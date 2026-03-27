@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import Image from 'next/image';
 import styles from './Sidebar.module.css';
 
 import { 
@@ -56,6 +57,13 @@ export default function Sidebar() {
     <div className={styles.sidebar}>
       {/* Logo Section */}
       <div className={styles.logoSection}>
+        <Image 
+          src="/images/Logo/businesslogo.svg" 
+          alt="BusinessOps Logo" 
+          width={32} 
+          height={32} 
+          className={styles.brandLogoImg}
+        />
         <span className={styles.brandName}>BusinessOps</span>
       </div>
 

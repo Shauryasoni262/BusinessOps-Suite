@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import './Navbar.css';
 
 interface User {
@@ -48,6 +49,13 @@ export default function Navbar() {
         {/* Left side - Brand */}
         <div className="navbar-brand" suppressHydrationWarning>
           <Link href="/" className="brand-link">
+            <Image 
+              src="/images/Logo/businesslogo.svg" 
+              alt="BusinessOps Logo" 
+              width={32} 
+              height={32} 
+              className="brand-logo-img"
+            />
             <span>BusinessOps</span>
           </Link>
         </div>

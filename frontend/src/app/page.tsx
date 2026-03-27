@@ -35,12 +35,14 @@ export default function Home() {
           <div className={styles.mockup}>
             <div className={styles.mockupNav}></div>
             <div className={styles.mockupContent}>
-              <div style={{ height: '20px', width: '40%', background: '#e2e8f0', borderRadius: '4px', marginBottom: '1.5rem' }}></div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
-                <div style={{ height: '100px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px' }}></div>
-                <div style={{ height: '100px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px' }}></div>
-                <div style={{ height: '100px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px' }}></div>
-              </div>
+              <video 
+                src="/Videos/landingvideo.mp4" 
+                autoPlay 
+                loop 
+                muted 
+                playsInline 
+                className={styles.mockupVideo}
+              />
             </div>
           </div>
         </div>
@@ -60,8 +62,13 @@ export default function Home() {
             <span className={styles.cardLabel}>Automation</span>
             <h3 className={styles.cardTitle}>AI-Powered Workflow Engine</h3>
             <p className={styles.cardDesc}>Let our AI handle the repetitive tasks while you focus on high-impact work. From auto-invoicing to smart scheduling.</p>
-            <div style={{ marginTop: 'auto', paddingTop: '2rem' }}>
-              <div style={{ height: '120px', background: 'var(--color-accent-soft)', borderRadius: '16px', border: '1px dashed var(--color-accent)' }}></div>
+            <div className={styles.visualWrapper}>
+              <div className={styles.workflowVisual}>
+                <div className={styles.workflowNode} style={{ animationDelay: '0s' }}></div>
+                <div className={styles.workflowNode} style={{ animationDelay: '0.2s' }}></div>
+                <div className={styles.workflowNode} style={{ animationDelay: '0.4s' }}></div>
+                <div className={styles.workflowNode} style={{ animationDelay: '0.6s' }}></div>
+              </div>
             </div>
           </div>
 
@@ -69,22 +76,38 @@ export default function Home() {
             <span className={styles.cardLabel}>Communication</span>
             <h3 className={styles.cardTitle}>Seamless Team Chat</h3>
             <p className={styles.cardDesc}>Context-aware messaging that lives right where your work does.</p>
+            <div className={styles.chatVisual}>
+              <div className={styles.avatar} style={{ background: '#e0e7ff' }}></div>
+              <div className={styles.avatar} style={{ background: '#f5f3ff' }}></div>
+              <div className={styles.avatar} style={{ background: '#ecfdf5' }}></div>
+              <div className={styles.typing}>
+                <div className={styles.typingDot} style={{ animationDelay: '0s' }}></div>
+                <div className={styles.typingDot} style={{ animationDelay: '0.2s' }}></div>
+                <div className={styles.typingDot} style={{ animationDelay: '0.4s' }}></div>
+              </div>
+            </div>
           </div>
 
           <div className={`${styles.card} ${styles.col4}`}>
             <span className={styles.cardLabel}>Financials</span>
             <h3 className={styles.cardTitle}>One-Click Invoicing</h3>
             <p className={styles.cardDesc}>Get paid faster with professional, automated invoicing.</p>
+            <div className={styles.invoiceVisual}>
+              <div className={styles.invoiceAmount}>$14,200.00</div>
+              <div className={styles.paidBadge}>PAID</div>
+            </div>
           </div>
 
           <div className={`${styles.card} ${styles.col8}`}>
             <span className={styles.cardLabel}>Intelligence</span>
             <h3 className={styles.cardTitle}>Real-time Insights & Analytics</h3>
             <p className={styles.cardDesc}>Visualization tools that give you a bird's eye view of your business performance.</p>
-            <div style={{ marginTop: 'auto', paddingTop: '2rem', display: 'flex', gap: '0.5rem' }}>
-              <div style={{ height: '60px', flex: 1, background: '#f1f5f9', borderRadius: '8px' }}></div>
-              <div style={{ height: '60px', flex: 2, background: 'var(--color-accent)', borderRadius: '8px' }}></div>
-              <div style={{ height: '60px', flex: 1, background: '#f1f5f9', borderRadius: '8px' }}></div>
+            <div className={styles.chartVisual}>
+              <div className={styles.chartBar} style={{ height: '40%' }}></div>
+              <div className={styles.chartBarActive} style={{ height: '70%', flex: 2 }}></div>
+              <div className={styles.chartBar} style={{ height: '55%' }}></div>
+              <div className={styles.chartBarActive} style={{ height: '90%', flex: 1.5 }}></div>
+              <div className={styles.chartBar} style={{ height: '30%' }}></div>
             </div>
           </div>
         </div>
@@ -94,22 +117,22 @@ export default function Home() {
       <section className={styles.section} style={{ background: '#f8fafc' }}>
         <div className={styles.sectionHeader}>
           <span className={styles.badge}>Comprehensive</span>
-          <h2 className={styles.sectionTitle}>1 Platform, 127 HR processes.<br/>As Comprehensive as it gets.</h2>
+          <h2 className={styles.sectionTitle}>1 Platform, 50+ HR processes.<br/>Everything your team needs.</h2>
           <p className={styles.heroSubtitle}>Manage your employee lifecycle like a breeze from onboarding to exit.</p>
         </div>
         
         <div className={styles.bentoGrid}>
-          <Link href="/products/workforce" className={`${styles.card} ${styles.col4}`}>
-            <h3 className={styles.cardTitle}>Workforce Management</h3>
-            <p className={styles.cardDesc}>Simplified journey from Onboarding to Exit.</p>
+          <Link href="/careers" className={`${styles.card} ${styles.col4}`}>
+            <h3 className={styles.cardTitle}>Offer Letter Generator</h3>
+            <p className={styles.cardDesc}>Create professional, legally-compliant offer letters in seconds.</p>
           </Link>
-          <Link href="/products/payroll" className={`${styles.card} ${styles.col4}`}>
-            <h3 className={styles.cardTitle}>Payroll Management</h3>
-            <p className={styles.cardDesc}>Automated, compliant, and error-free payroll cycles.</p>
+          <Link href="/dashboard/salary-slips" className={`${styles.card} ${styles.col4}`}>
+            <h3 className={styles.cardTitle}>Salary Slip Generator</h3>
+            <p className={styles.cardDesc}>Automated, compliant, and error-free payroll generation.</p>
           </Link>
           <div className={`${styles.card} ${styles.col4}`}>
-            <h3 className={styles.cardTitle}>Attendance Management</h3>
-            <p className={styles.cardDesc}>Geo-fencing, live-photo, and biometric sync.</p>
+            <h3 className={styles.cardTitle}>Team Management</h3>
+            <p className={styles.cardDesc}>Manage your employee lifecycle from onboarding to exit.</p>
           </div>
         </div>
       </section>

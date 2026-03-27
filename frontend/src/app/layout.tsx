@@ -5,6 +5,7 @@ import { ProjectSocketProvider } from "@/contexts/ProjectSocketContext";
 import { ProjectProvider } from "@/contexts/ProjectContext";
 import { AnalyticsProvider } from "@/contexts/AnalyticsContext";
 import CookieNotice from "@/components/layout/CookieNotice";
+import MobileOptimizationOverlay from "@/components/layout/MobileOptimizationOverlay";
 
 export const metadata: Metadata = {
   title: "BusinessOps Suite | All-in-One Platform for Modern Business",
@@ -51,6 +52,7 @@ export default function RootLayout({
         <ProjectProvider>
           <ProjectSocketProvider>
             <AnalyticsProvider>
+              <MobileOptimizationOverlay />
               {children}
               <CookieNotice />
             </AnalyticsProvider>

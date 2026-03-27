@@ -416,3 +416,94 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* ATS & SWOT Enhancements */
+
+.scoreCard {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.scoreGauge {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scoreValue {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.scoreLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.swotSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.swotGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.swotTitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.strengthsTitle { color: #059669; }
+.weaknessesTitle { color: #dc2626; }
+
+.swotList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.swotItem {
+  font-size: 0.85rem;
+  color: #475569;
+  padding: 0.6rem 0.8rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #f1f5f9;
+  line-height: 1.4;
+  position: relative;
+  padding-left: 1.75rem;
+}
+
+.swotItem::before {
+  content: '•';
+  position: absolute;
+  left: 0.75rem;
+  font-weight: bold;
+}
+
+.strengthItem::before { color: #10b981; }
+.weaknessItem::before { color: #ef4444; }

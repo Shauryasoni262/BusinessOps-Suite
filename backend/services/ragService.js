@@ -316,6 +316,58 @@ const deleteResume = async (resumeId) => {
 };
 
 
+/**
+ * FUNCTION 6: performInitialAnalysis(text)
+ * Performs a comprehensive SWOT analysis and ATS scoring on the resume.
+ */
+const performInitialAnalysis = async (text) => {
+  const model = genAI.getGenerativeModel({ 
+    model: 'gemini-flash-latest',
+    generationConfig: { responseMimeType: "application/json" }
+  });
+  
+  const prompt = `You are an expert HR Manager and ATS (Applicant Tracking System) specialist. 
+  Analyze the following resume text and provide a structured JSON response.
+  
+  The response MUST be a valid JSON object with exactly these fields:
+  {
+    "atsScore": number (0-100),
+    "strengths": string[] (3 items),
+    "weaknesses": string[] (3 items),
+    "summary": string (brief overview)
+  }
+
+  RESUME TEXT:
+  """
+  ${text.slice(0, 5000)}
+  """`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text();
+    
+    // Clean JSON response (sometimes Gemini adds ```json ... ```)
+    const jsonStr = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+    const analysis = JSON.parse(jsonStr);
+    
+    return {
+      atsScore: analysis.atsScore || 60,
+      strengths: analysis.strengths || [],
+      weaknesses: analysis.weaknesses || [],
+      summary: analysis.summary || "Analysis complete."
+    };
+  } catch (error) {
+    console.error('❌ Analysis generation error:', error);
+    return {
+      atsScore: 50,
+      strengths: ["Resume parsed successfully"],
+      weaknesses: ["Deep AI analysis failed temporarily"],
+      summary: "Basic parsing completed."
+    };
+  }
+};
+
+
 // Export all functions
 module.exports = {
   generateEmbedding,
@@ -323,4 +375,5 @@ module.exports = {
   ingestResume,
   queryResume,
   deleteResume,
+  performInitialAnalysis,
 };

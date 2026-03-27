@@ -6,6 +6,12 @@ export interface ResumeUploadResult {
   textLength: number;
   chunksCreated: number;
   pageCount: number;
+  analysis?: {
+    atsScore: number;
+    strengths: string[];
+    weaknesses: string[];
+    summary: string;
+  };
 }
 
 export interface ChatResult {

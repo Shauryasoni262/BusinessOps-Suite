@@ -1,27 +1,25 @@
 import React from 'react';
 import styles from './LogoCloud.module.css';
 
-const logos = [
-  { name: 'Aviva', symbol: '💠' },
-  { name: 'Canon', symbol: '📷' },
-  { name: 'Haier', symbol: '🏠' },
-  { name: 'Flipkart', symbol: '🛒' },
-  { name: 'Bikanervala', symbol: '🍲' },
-  { name: 'Muthoot', symbol: '💰' },
-  { name: 'Sula', symbol: '🍷' },
-  { name: 'Magicpin', symbol: '📍' },
+const features = [
+  { name: 'AI-First', symbol: '🤖' },
+  { name: 'On-Cloud', symbol: '☁️' },
+  { name: 'Secure', symbol: '🛡️' },
+  { name: 'Scalable', symbol: '📈' },
+  { name: 'Intuitive', symbol: '✨' },
+  { name: 'Automated', symbol: '⚙️' },
 ];
 
 export const LogoCloud = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
-        <p className={styles.label}>Trusted by 2000+ industry leaders</p>
+        <p className={styles.label}>Built for the next generation of businesses</p>
         <div className={styles.grid}>
-          {logos.map((logo) => (
-            <div key={logo.name} className={styles.logoItem}>
-              <span className={styles.symbol}>{logo.symbol}</span>
-              <span className={styles.name}>{logo.name}</span>
+          {features.map((feature) => (
+            <div key={feature.name} className={styles.logoItem}>
+              <span className={styles.symbol}>{feature.symbol}</span>
+              <span className={styles.name}>{feature.name}</span>
             </div>
           ))}
         </div>

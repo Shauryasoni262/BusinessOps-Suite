@@ -36,11 +36,9 @@
   align-items: center;
 }
 
-.brand-logo {
-  height: 40px;
-  width: auto;
+.brand-logo-img {
+  margin-right: 0.75rem;
   object-fit: contain;
-  display: block;
 }
 
 .brand-link:hover {

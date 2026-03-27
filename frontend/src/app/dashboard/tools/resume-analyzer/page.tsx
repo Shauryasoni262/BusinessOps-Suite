@@ -109,7 +109,19 @@ export default function ResumeAnalyzerPage() {
 
     try {
       const result = await resumeAnalyzerService.uploadResume(selectedFile);
+      console.log('📄 Resume Upload Result:', result);
       setUploadResult(result);
+      
+      // Update welcome message with AI analysis context
+      if (result.analysis) {
+        setMessages([
+          {
+            id: 'ai-analysis',
+            role: 'ai',
+            content: `I've analyzed your resume! **ATS Score: ${result.analysis.atsScore}/100**\n\n${result.analysis.summary}\n\nI've populated your strengths and weaknesses in the left panel. What would you like to discuss first?`
+          }
+        ]);
+      }
     } catch (err: any) {
       setUploadError(err.message || 'An error occurred while analyzing the resume.');
       setFile(null);
@@ -255,32 +267,61 @@ export default function ResumeAnalyzerPage() {
               <div className={styles.mainLayout}>
                 {/* Left Panel: Document Metadata */}
                 <div className={styles.infoPanel}>
-                  <div className={styles.fileCard}>
-                    <div className={styles.fileIcon}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                  {/* ATS Score Gauge */}
+                  <div className={styles.scoreCard}>
+                    <div className={styles.scoreGauge}>
+                      <svg viewBox="0 0 36 36" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
+                        <path
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          fill="none"
+                          stroke="#f1f5f9"
+                          strokeWidth="3"
+                        />
+                        <path
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          fill="none"
+                          stroke={uploadResult.analysis?.atsScore && uploadResult.analysis.atsScore > 70 ? '#10b981' : '#f59e0b'}
+                          strokeWidth="3"
+                          strokeDasharray={`${uploadResult.analysis?.atsScore || 0}, 100`}
+                          strokeLinecap="round"
+                        />
                       </svg>
+                      <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <span className={styles.scoreValue}>{uploadResult.analysis?.atsScore || 0}</span>
+                        <span className={styles.scoreLabel}>ATS</span>
+                      </div>
                     </div>
-                    <span className={styles.fileName}>{uploadResult.fileName}</span>
+                    <p style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>CANDIDATE SCORE</p>
                   </div>
 
-                  <div className={styles.statsGrid}>
-                    <div className={styles.statItem}>
-                      <span className={styles.statLabel}>Semantic Chunks</span>
-                      <span className={styles.statValue}>{uploadResult.chunksCreated}</span>
-                    </div>
-                    <div className={styles.statItem}>
-                      <span className={styles.statLabel}>Document Pages</span>
-                      <span className={styles.statValue}>{uploadResult.pageCount || 1}</span>
-                    </div>
-                  </div>
+                  {/* SWOT Analysis */}
+                  {uploadResult.analysis && (
+                    <div className={styles.swotSection}>
+                      <div className={styles.swotGroup}>
+                        <div className={`${styles.swotTitle} ${styles.strengthsTitle}`}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                          Key Strengths
+                        </div>
+                        <ul className={styles.swotList}>
+                          {uploadResult.analysis.strengths.map((s, i) => (
+                            <li key={i} className={`${styles.swotItem} ${styles.strengthItem}`}>{s}</li>
+                          ))}
+                        </ul>
+                      </div>
 
-                  <div className={styles.contextCard}>
-                    <span className={styles.statLabel}>AI Insights Ready</span>
-                    <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.5rem' }}>
-                      Our AI has indexed your professional background and is ready to answer specific questions regarding your experience and skills.
-                    </p>
-                  </div>
+                      <div className={styles.swotGroup}>
+                        <div className={`${styles.swotTitle} ${styles.weaknessesTitle}`}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                          Gap Analysis
+                        </div>
+                        <ul className={styles.swotList}>
+                          {uploadResult.analysis.weaknesses.map((w, i) => (
+                            <li key={i} className={`${styles.swotItem} ${styles.weaknessItem}`}>{w}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
 
                   <button className={styles.changeResumeBtn} onClick={resetUpload}>
                     Analyze New Resume

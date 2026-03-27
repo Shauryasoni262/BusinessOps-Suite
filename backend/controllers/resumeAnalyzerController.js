@@ -14,7 +14,7 @@
 //   POST /chat    → Accept question + resumeId → Query Pinecone + Gemini
 const pdfParse = require('pdf-parse');
 const crypto = require('crypto');
-const { ingestResume, queryResume, deleteResume } = require('../services/ragService');
+const { ingestResume, queryResume, deleteResume, performInitialAnalysis } = require('../services/ragService');
 
 // ────────────────────────────────────────────────────────────────────────────
 // ENDPOINT 1: Upload Resume
@@ -69,17 +69,22 @@ const uploadResume = async (req, res) => {
     const resumeId = crypto.randomUUID();
 
     // Step 3: Ingest into Pinecone (chunk → embed → store)
-    const result = await ingestResume(extractedText, resumeId);
+    const ingestResult = await ingestResume(extractedText, resumeId);
+
+    // Step 4: Perform Initial AI Analysis (SWOT + ATS)
+    console.log(`🧠 Performing AI SWOT analysis for resume ${resumeId}...`);
+    const analysisResult = await performInitialAnalysis(extractedText);
 
     res.json({
       success: true,
-      message: 'Resume uploaded and processed successfully!',
+      message: 'Resume analyzed successfully!',
       data: {
         resumeId: resumeId,
         fileName: req.file.originalname,
         textLength: extractedText.length,
-        chunksCreated: result.chunksCreated,
+        chunksCreated: ingestResult.chunksCreated,
         pageCount: pageCount,
+        analysis: analysisResult, // Include ATS score, strengths, weaknesses
       },
     });
 
