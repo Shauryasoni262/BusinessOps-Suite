@@ -1,0 +1,262 @@
+.container {
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 8rem 2rem 4rem;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  margin-bottom: 6rem;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: rgba(37, 99, 235, 0.08);
+  color: #2563eb;
+  border-radius: 100px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.title span {
+  background: linear-gradient(135deg, #10b981, #3b82f6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: #64748b;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Contact Wrapper */
+.contactWrapper {
+  display: flex;
+  gap: 6rem;
+  align-items: flex-start;
+}
+
+.infoSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.infoCard {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 16px;
+  border: 1px solid #f1f5f9;
+}
+
+.infoIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.infoText h4 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.infoText p, .infoText a {
+  color: #64748b;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.supportBento {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.supportCard {
+  padding: 2rem;
+  background: #0f172a;
+  color: white;
+  border-radius: 24px;
+}
+
+.supportCard svg {
+  color: #60a5fa;
+  margin-bottom: 1rem;
+}
+
+.supportCard h4 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.supportCard p {
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+/* Form Section */
+.formSection {
+  flex: 1.5;
+  background: white;
+  padding: 3rem;
+  border-radius: 32px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formGroup label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.formGroup input, .formGroup textarea {
+  padding: 1rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.formGroup input:focus, .formGroup textarea:focus {
+  outline: none;
+  background: white;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.submitBtn {
+  margin-top: 1rem;
+  background: #2563eb;
+  color: white;
+  padding: 1.125rem;
+  border-radius: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+}
+
+.submitBtn:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Success State */
+.successMessage {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.successIcon {
+  width: 64px;
+  height: 64px;
+  background: #dcfce7;
+  color: #16a34a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 2rem;
+}
+
+.successMessage h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.successMessage p {
+  color: #64748b;
+  margin-bottom: 2.5rem;
+}
+
+.resetBtn {
+  background: #f1f5f9;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+}
+
+.resetBtn:hover {
+  background: #e2e8f0;
+}
+
+.footer {
+  text-align: center;
+  padding: 4rem 2rem;
+  margin-top: 4rem;
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1024px) {
+  .title { font-size: 2.5rem; }
+  .contactWrapper { flex-direction: column; gap: 4rem; }
+  .infoSection { width: 100%; order: 2; }
+  .formSection { width: 100%; order: 1; padding: 2rem; }
+}

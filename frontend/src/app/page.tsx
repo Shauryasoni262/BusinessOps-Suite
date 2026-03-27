@@ -10,12 +10,6 @@ export default function Home() {
       <Navbar />
       
       <main className={styles.main}>
-        {/* Trusted by banner */}
-        <div className={styles.trustedBanner}>
-          <span className={styles.starIcon}>✨</span>
-          <span>Trusted by 10,000+ businesses worldwide</span>
-        </div>
-
         {/* Main heading */}
         <h1 className={styles.heroTitle}>
           Business Operations, <span>Perfected by AI.</span>

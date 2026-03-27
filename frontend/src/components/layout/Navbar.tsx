@@ -60,10 +60,10 @@ export default function Navbar() {
 
         {/* Center - Navigation Links */}
         <div className="navbar-links" suppressHydrationWarning>
-          <Link href="#features" className="nav-link">Features</Link>
+          <Link href="/features" className="nav-link">Features</Link>
           <Link href="/careers" className="nav-link">Careers</Link>
-          <Link href="#about" className="nav-link">About</Link>
-          <Link href="#contact" className="nav-link">Contact</Link>
+          <Link href="/about" className="nav-link">About</Link>
+          <Link href="/contact" className="nav-link">Contact</Link>
         </div>
 
         {/* Right side - Auth Buttons */}

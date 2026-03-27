@@ -1,0 +1,252 @@
+.container {
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 8rem 2rem 4rem;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  margin-bottom: 8rem;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: rgba(37, 99, 235, 0.08);
+  color: #2563eb;
+  border-radius: 100px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.title span {
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: #64748b;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Story Section */
+.storySection {
+  display: flex;
+  align-items: center;
+  gap: 6rem;
+  margin-bottom: 10rem;
+}
+
+.storyContent {
+  flex: 1;
+}
+
+.storyContent h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.storyContent p {
+  font-size: 1.125rem;
+  color: #475569;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+.stats {
+  display: flex;
+  gap: 3rem;
+  margin-top: 3rem;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.statNumber {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.storyImage {
+  flex: 1;
+}
+
+.imagePlaceholder {
+  aspect-ratio: 4/3;
+  background: #f8fafc;
+  border-radius: 32px;
+  border: 1px solid #f1f5f9;
+  position: relative;
+  overflow: hidden;
+}
+
+.abstractGraphic {
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, #2563eb10 0%, transparent 70%);
+  top: -25%;
+  left: -25%;
+}
+
+/* Values Section */
+.valuesSection {
+  margin-bottom: 10rem;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.sectionHeader h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.sectionHeader h2 span {
+  color: #2563eb;
+}
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.valueCard {
+  padding: 3rem;
+  background: #f8fafc;
+  border-radius: 24px;
+  border: 1px solid #f1f5f9;
+}
+
+.valueIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.valueCard h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.valueCard p {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* Team Section */
+.teamSection {
+  text-align: center;
+  padding: 8rem 2rem;
+  background: #0f172a;
+  border-radius: 40px;
+  color: white;
+  margin-bottom: 4rem;
+}
+
+.ctaCard h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.ctaCard p {
+  color: #94a3b8;
+  margin-bottom: 2rem;
+}
+
+.careersBtn {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  background: #2563eb;
+  color: white;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.careersBtn:hover {
+  background: #1d4ed8;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+  transform: translateY(-2px);
+}
+
+.footer {
+  text-align: center;
+  padding: 4rem 2rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.footerLinks {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.footerLinks a {
+  color: #94a3b8;
+  transition: color 0.2s;
+}
+
+.footerLinks a:hover {
+  color: #2563eb;
+}
+
+.footer p {
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1024px) {
+  .title { font-size: 2.5rem; }
+  .storySection { flex-direction: column; gap: 3rem; }
+  .stats { flex-wrap: wrap; justify-content: center; }
+}
