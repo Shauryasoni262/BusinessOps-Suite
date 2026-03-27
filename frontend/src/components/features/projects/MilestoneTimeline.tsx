@@ -79,10 +79,19 @@ export default function MilestoneTimeline({ projectId }: MilestoneTimelineProps)
     setEditingMilestone(null);
   };
 
-  const handleModalSave = () => {
-    setShowModal(false);
-    setEditingMilestone(null);
-    loadMilestones();
+  const handleModalSave = async (data: any) => {
+    try {
+      if (editingMilestone) {
+        await milestoneService.updateMilestone(projectId, editingMilestone.id, data);
+      } else {
+        await milestoneService.createMilestone(projectId, data);
+      }
+      setShowModal(false);
+      setEditingMilestone(null);
+      loadMilestones();
+    } catch (error) {
+      console.error('Error saving event:', error);
+    }
   };
 
   const formatDate = (dateString: string) => {
