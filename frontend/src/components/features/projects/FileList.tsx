@@ -213,7 +213,7 @@ export default function FileList({ projectId }: FileListProps) {
         <FileUploadModal
           projectId={projectId}
           onClose={handleModalClose}
-          onSave={handleModalSave}
+          onUploadSuccess={handleModalSave}
         />
       )}
     </div>
