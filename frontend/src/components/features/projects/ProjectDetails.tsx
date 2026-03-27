@@ -222,7 +222,7 @@ export default function ProjectDetails({ project, onProjectUpdated }: ProjectDet
               <div 
                 className={styles.progressBar} 
                 style={{ 
-                  width: `${(project.stats?.tasks?.completed / Math.max(project.stats?.tasks?.total, 1)) * 100}%`,
+                  width: `${((project.stats?.tasks?.completed || 0) / Math.max(project.stats?.tasks?.total || 0, 1)) * 100}%`,
                   backgroundColor: '#3b82f6'
                 }}
               ></div>
@@ -253,7 +253,7 @@ export default function ProjectDetails({ project, onProjectUpdated }: ProjectDet
               <div 
                 className={styles.progressBar} 
                 style={{ 
-                  width: `${(project.stats?.milestones?.completed / Math.max(project.stats?.milestones?.total, 1)) * 100}%`,
+                  width: `${((project.stats?.milestones?.completed || 0) / Math.max(project.stats?.milestones?.total || 0, 1)) * 100}%`,
                   backgroundColor: '#eab308'
                 }}
               ></div>
