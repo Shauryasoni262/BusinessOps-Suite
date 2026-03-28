@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Sidebar, TopBar } from '@/components/layout';
+import { offerLetterService } from '@/services/offerLetterService';
 import styles from './page.module.css';
 
 interface User {
@@ -64,16 +65,8 @@ export default function OfferLettersPage() {
   const fetchOfferLetters = async () => {
     try {
       setLoadingData(true);
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/offer-letters`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setOfferLetters(data.data || []);
-      }
+      const data = await offerLetterService.getOfferLetters();
+      setOfferLetters(data || []);
     } catch (error) {
       console.error('Error fetching offer letters:', error);
     } finally {

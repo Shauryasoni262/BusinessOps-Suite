@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Sidebar, TopBar } from '@/components/layout';
 import { ModernTemplate, ClassicFormalTemplate, StartupFriendlyTemplate, CompanySettings } from '@/components/offer-letters/OfferLetterTemplates';
+import { offerLetterService } from '@/services/offerLetterService';
 import styles from './page.module.css';
 
 interface User {
@@ -166,28 +167,15 @@ export default function CreateOfferLetterPage() {
       }
 
       // 2. Save metadata to Backend
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/offer-letters`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          ...formData,
-          status: 'draft'
-        })
+      await offerLetterService.createOfferLetter({
+        ...formData,
+        status: 'draft'
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to save to database');
-      }
       
       router.push('/dashboard/offer-letters');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error generating offer letter:', error);
-      alert('Error generating offer letter. Check console for details.');
+      alert(error.message || 'Error generating offer letter. Check console for details.');
     } finally {
       setIsGenerating(false);
     }
