@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Sidebar, TopBar } from '@/components/layout';
 import { Plus, FileText, User as UserIcon, Briefcase, CreditCard, Search } from 'lucide-react';
+import { salarySlipService, SalarySlip } from '@/services/salarySlipService';
 import styles from './page.module.css';
 
 interface User {
@@ -11,18 +12,6 @@ interface User {
   name: string;
   email: string;
   role: string;
-}
-
-interface SalarySlip {
-  id: string;
-  employee_name: string;
-  employee_id: string;
-  month_year: string;
-  designation: string;
-  net_pay: number;
-  status: string;
-  currency: string;
-  created_at: string;
 }
 
 export default function SalarySlipsPage() {
@@ -67,21 +56,17 @@ export default function SalarySlipsPage() {
   const fetchSalarySlips = async () => {
     try {
       setLoadingData(true);
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/salary-slips`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setSalarySlips(data.data || []);
-      }
+      const data = await salarySlipService.getAllSalarySlips();
+      setSalarySlips(data);
     } catch (error) {
       console.error('Error fetching salary slips:', error);
     } finally {
       setLoadingData(false);
     }
+  };
+
+  const handleViewDetails = (id: string) => {
+    router.push(`/dashboard/salary-slips/${id}`);
   };
 
   if (loading) {
@@ -166,7 +151,10 @@ export default function SalarySlipsPage() {
                         month: 'short', day: 'numeric', year: 'numeric'
                       })}
                     </span>
-                    <button className={styles.actionButton}>
+                    <button 
+                      className={styles.actionButton}
+                      onClick={() => handleViewDetails(slip.id)}
+                    >
                       <Search size={14} />
                       View Details
                     </button>

@@ -6,6 +6,7 @@ import { User, Landmark, CreditCard, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { Sidebar, TopBar } from '@/components/layout';
 import { ModernTemplate, ClassicTemplate, SalarySlipData } from '@/components/salary-slips/SalarySlipTemplates';
+import { salarySlipService } from '@/services/salarySlipService';
 import styles from './page.module.css';
 
 interface User {
@@ -126,7 +127,7 @@ export default function CreateSalarySlipPage() {
     try {
       setIsGenerating(true);
       
-      // 1. Generate PDF
+      // 1. Generate PDF locally
       const element = document.getElementById('salary-slip-preview');
       if (element) {
         const html2pdf = (await import('html2pdf.js')).default;
@@ -140,21 +141,14 @@ export default function CreateSalarySlipPage() {
         await html2pdf().set(opt).from(element).save();
       }
 
-      // 2. Save to DB
-      const token = localStorage.getItem('token');
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/salary-slips`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
-      });
-
-      router.push('/dashboard/salary-slips');
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Failed to generate salary slip');
+      // 2. Save to DB using service
+      const newSlip = await salarySlipService.createSalarySlip(formData);
+      
+      // Redirect to the Details view
+      router.push(`/dashboard/salary-slips/${newSlip.id}`);
+    } catch (error: any) {
+      console.error('Error generating salary slip:', error);
+      alert(error.message || 'Failed to generate salary slip');
     } finally {
       setIsGenerating(false);
     }
