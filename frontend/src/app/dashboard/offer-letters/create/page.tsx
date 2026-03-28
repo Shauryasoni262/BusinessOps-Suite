@@ -161,18 +161,18 @@ export default function CreateOfferLetterPage() {
           filename:     `${formData.candidateName.replace(/\s+/g, '_')}_Offer_Letter.pdf`,
           image:        { type: 'jpeg' as const, quality: 0.98 },
           html2canvas:  { scale: 2, useCORS: true },
-          jsPDF:        { unit: 'px', format: [element.offsetWidth, element.offsetHeight] as [number, number], orientation: 'portrait' as const }
+          jsPDF: { unit: 'px', format: [element.offsetWidth, element.offsetHeight] as [number, number], orientation: 'portrait' as const }
         };
         await html2pdf().set(opt).from(element).save();
       }
 
       // 2. Save metadata to Backend
-      await offerLetterService.createOfferLetter({
+      const newLetter = await offerLetterService.createOfferLetter({
         ...formData,
         status: 'draft'
       });
       
-      router.push('/dashboard/offer-letters');
+      router.push(`/dashboard/offer-letters/${newLetter.id}`);
     } catch (error: any) {
       console.error('Error generating offer letter:', error);
       alert(error.message || 'Error generating offer letter. Check console for details.');

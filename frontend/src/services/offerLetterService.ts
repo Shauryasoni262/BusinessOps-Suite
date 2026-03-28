@@ -45,6 +45,41 @@ class OfferLetterService {
     }
   }
 
+  async getOfferLetter(id: string): Promise<OfferLetter> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/offer-letters/${id}`, {
+        method: 'GET',
+        headers: this.getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result: ApiResponse<OfferLetter> = await response.json();
+      return result.data;
+    } catch (error) {
+      console.error('Error fetching offer letter:', error);
+      throw error;
+    }
+  }
+
+  async deleteOfferLetter(id: string): Promise<void> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/offer-letters/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error deleting offer letter:', error);
+      throw error;
+    }
+  }
+
   async createOfferLetter(data: any): Promise<OfferLetter> {
     try {
       const response = await fetch(`${API_BASE_URL}/offer-letters`, {
@@ -62,6 +97,26 @@ class OfferLetterService {
       return result.data;
     } catch (error) {
       console.error('Error creating offer letter:', error);
+      throw error;
+    }
+  }
+
+  async updateOfferLetterStatus(id: string, status: string): Promise<OfferLetter> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/offer-letters/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ status })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result: ApiResponse<OfferLetter> = await response.json();
+      return result.data;
+    } catch (error) {
+      console.error('Error updating offer letter status:', error);
       throw error;
     }
   }
