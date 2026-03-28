@@ -489,12 +489,6 @@
   40% { transform: scale(1.0); }
 }
 
-.videoFeature {
-  margin-top: auto;
-  padding-top: 2rem;
-  width: 100%;
-}
-
 .featureVideo {
   width: 100%;
   height: 160px;
@@ -502,4 +496,219 @@
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+}
+
+/* Efficiency Section */
+.efficiencySection {
+  padding: 10rem 2rem;
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.efficiencySection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+}
+
+.efficiencyGrid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.efficiencyContent {
+  text-align: left;
+}
+
+.efficiencyTag {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  border-radius: 100px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.efficiencyTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 2rem;
+  color: #020617;
+}
+
+.efficiencyDesc {
+  font-size: 1.25rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin-bottom: 3rem;
+}
+
+.statList {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.statNumber {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-accent);
+}
+
+.statLabel {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Charts Container */
+.chartsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.chartCard {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 24px;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: var(--transition-smooth);
+}
+
+.chartCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-xl);
+}
+
+.chartHeader {
+  width: 100%;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.chartTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+/* Pie Chart */
+.pieChart {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--color-accent) 0% 85%,
+    #f1f5f9 85% 100%
+  );
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pieRotate 2s ease-out forwards;
+}
+
+.pieChart::before {
+  content: '';
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: inset var(--shadow-md);
+}
+
+.pieValue {
+  position: relative;
+  z-index: 1;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+/* Growth Chart */
+.growthChart {
+  height: 220px;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding-bottom: 1rem;
+}
+
+.growthBar {
+  width: 32px;
+  border-radius: 8px 8px 4px 4px;
+  background: #f1f5f9;
+  position: relative;
+  transition: all 0.5s ease;
+}
+
+.growthBarActive {
+  background: linear-gradient(to top, var(--color-accent), #7c3aed);
+  animation: barRise 1.5s ease-out forwards;
+}
+
+.chartLegend {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+@keyframes pieRotate {
+  from { transform: rotate(-90deg) scale(0.9); opacity: 0; }
+  to { transform: rotate(0deg) scale(1); opacity: 1; }
+}
+
+@keyframes barRise {
+  from { height: 0; }
+  to { height: var(--height); }
+}
+
+@media (max-width: 1024px) {
+  .efficiencyGrid { grid-template-columns: 1fr; gap: 3rem; }
+  .efficiencyContent { text-align: center; }
+  .chartsContainer { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .chartsContainer { grid-template-columns: 1fr; }
+  .efficiencyTitle { font-size: 3rem; }
 }

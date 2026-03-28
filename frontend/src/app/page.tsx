@@ -14,7 +14,7 @@ export default function Home() {
       <main className={styles.main}>
         {/* Main heading */}
         <h1 className={styles.heroTitle}>
-          Business Operations, <span>Perfected by AI.</span>
+          Business Operations, <span>Made Easy.</span>
         </h1>
         <p className={styles.heroSubtitle}>
           Unify your team, projects, and payments in a single, high-performance workspace. Designed for teams who refuse to settle for "good enough."
@@ -138,6 +138,72 @@ export default function Home() {
           <div className={`${styles.card} ${styles.col4}`}>
             <h3 className={styles.cardTitle}>Team Management</h3>
             <p className={styles.cardDesc}>Manage your employee lifecycle from onboarding to exit.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Efficiency & Impact Section */}
+      <section className={styles.efficiencySection}>
+        <div className={styles.efficiencyGrid}>
+          <div className={styles.efficiencyContent}>
+            <span className={styles.efficiencyTag}>Performance Metrics</span>
+            <h2 className={styles.efficiencyTitle}>
+              Efficiency That <br/>Scales With You.
+            </h2>
+            <p className={styles.efficiencyDesc}>
+              We don't just manage your business; we optimize every second of it. Our platform turns manual overhead into automated growth.
+            </p>
+            <div className={styles.statList}>
+              <div className={styles.statItem}>
+                <span className={styles.statNumber}>85%</span>
+                <span className={styles.statLabel}>Reduction in administrative manual tasks</span>
+              </div>
+              <div className={styles.statItem}>
+                <span className={styles.statNumber}>12x</span>
+                <span className={styles.statLabel}>Faster project delivery through AI orchestration</span>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.chartsContainer}>
+            {/* Time Saved Pie Chart */}
+            <div className={styles.chartCard} style={{ animationDelay: '0.2s' }}>
+              <div className={styles.chartHeader}>
+                <h3 className={styles.chartTitle}>Time Distribution</h3>
+              </div>
+              <div className={styles.pieChart}>
+                <span className={styles.pieValue}>85%</span>
+              </div>
+              <div className={styles.chartLegend}>
+                <div className={styles.legendItem}>
+                  <div className={styles.legendDot} style={{ background: 'var(--color-accent)' }}></div>
+                  <span>Automated</span>
+                </div>
+                <div className={styles.legendItem}>
+                  <div className={styles.legendDot} style={{ background: '#f1f5f9' }}></div>
+                  <span>Manual</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Efficiency Growth Graph */}
+            <div className={styles.chartCard} style={{ animationDelay: '0.4s' }}>
+              <div className={styles.chartHeader}>
+                <h3 className={styles.chartTitle}>Efficiency Gain</h3>
+              </div>
+              <div className={styles.growthChart}>
+                <div className={styles.growthBar} style={{ height: '30%' }}></div>
+                <div className={styles.growthBar} style={{ height: '45%' }}></div>
+                <div className={styles.growthBar} style={{ height: '35%' }}></div>
+                <div className={`${styles.growthBar} ${styles.growthBarActive}`} style={{ height: '90%', flex: 1.5, '--height': '90%' } as any}></div>
+                <div className={styles.growthBar} style={{ height: '55%' }}></div>
+                <div className={styles.growthBar} style={{ height: '75%' }}></div>
+              </div>
+              <div className={styles.chartLegend}>
+                <span>Standard Workflow</span>
+                <span>BusinessOps Intelligence</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
