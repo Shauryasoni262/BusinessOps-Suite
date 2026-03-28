@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { taskService, type Task } from '@/services/taskService';
+import { projectService } from '@/services/projectService';
 import { getInitials, getTaskStatusColor } from '@/utils/helpers';
 import { useProjectSocket } from '@/contexts/ProjectSocketContext';
 import { TaskModal } from '@/components/modals/project';
@@ -39,18 +40,50 @@ export default function TaskList({ projectId }: TaskListProps) {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
   const [deletingTask, setDeletingTask] = useState<string | null>(null);
-
+  const [members, setMembers] = useState<any[]>([]);
   const { onTaskUpdate } = useProjectSocket();
 
   const loadTasks = async () => {
     try {
       setLoading(true);
       setError(null);
-      const projectTasks = await taskService.getProjectTasks(projectId);
+      
+      // Load tasks and members in parallel
+      const [projectTasks, projectDetails] = await Promise.all([
+        taskService.getProjectTasks(projectId),
+        projectService.getProject(projectId)
+      ]);
+      
       setTasks(projectTasks);
+      
+      // Combine owner and members for the assignee list
+      const allMembers = [];
+      
+      // Add owner if available
+      if (projectDetails.owner && projectDetails.owner_id) {
+        allMembers.push({
+          user_id: projectDetails.owner_id,
+          user: {
+            ...projectDetails.owner,
+            id: projectDetails.owner_id
+          },
+          role: 'Owner'
+        });
+      }
+      
+      // Add other members
+      if (projectDetails.members) {
+        projectDetails.members.forEach(member => {
+          if (member.user_id !== projectDetails.owner_id) {
+            allMembers.push(member);
+          }
+        });
+      }
+      
+      setMembers(allMembers);
     } catch (err) {
-      console.error('Error loading tasks:', err);
-      setError('Failed to load tasks');
+      console.error('Error loading component data:', err);
+      setError('Failed to load tasks and members');
     } finally {
       setLoading(false);
     }
@@ -282,7 +315,7 @@ export default function TaskList({ projectId }: TaskListProps) {
         <TaskModal
           projectId={projectId}
           task={editingTask}
-          projectMembers={[]} // Members will be handled by the modal internally or passed if needed
+          projectMembers={members}
           onClose={handleModalClose}
           onSave={async (data) => {
             if (editingTask) {

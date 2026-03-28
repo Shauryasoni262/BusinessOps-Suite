@@ -166,16 +166,21 @@ export default function TaskModal({ task, projectId, projectMembers, onClose, on
                 <User size={14} className={styles.fieldIcon} />
                 Assignee
               </label>
-              <input
-                type="text"
+              <select
                 id="assigned_to"
                 name="assigned_to"
                 value={formData.assigned_to}
                 onChange={handleInputChange}
-                className={styles.input}
-                placeholder="Name or Initials"
+                className={styles.select}
                 disabled={loading}
-              />
+              >
+                <option value="">Unassigned</option>
+                {projectMembers.map((member) => (
+                  <option key={member.user.id} value={member.user.id}>
+                    {member.user.name} ({member.role || 'Member'})
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 

@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { Navbar } from '@/components/layout';
 import { LogoCloud } from '@/components/home/LogoCloud';
@@ -19,19 +21,22 @@ export default function Home() {
         </p>
         
         <div className={styles.ctaGroup}>
-          <Link href="/auth/signup" className={styles.btnPrimary}>
+          <Link href="/auth/register" className={styles.btnPrimary}>
             Get Started for Free
           </Link>
-          <Link href="/auth/login" className={styles.btnSecondary}>
+          <button 
+            onClick={() => document.getElementById('demo-video-section')?.scrollIntoView({ behavior: 'smooth' })}
+            className={styles.btnSecondary}
+          >
             <span>View Demo</span>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </Link>
+          </button>
         </div>
 
         {/* Floating Mockup Visual */}
-        <div className={styles.floatingUi}>
+        <div id="demo-video-section" className={styles.floatingUi}>
           <div className={styles.mockup}>
             <div className={styles.mockupNav}></div>
             <div className={styles.mockupContent}>
