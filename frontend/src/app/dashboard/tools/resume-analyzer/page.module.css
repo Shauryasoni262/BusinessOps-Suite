@@ -2,9 +2,10 @@
   padding: 1.5rem;
   max-width: 1400px;
   margin: 0 auto;
-  height: calc(100vh - 80px); /* Adjust based on TopBar height */
+  min-height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
+  overflow-y: auto; /* Allow full-page scrolling */
 }
 
 .header {
@@ -116,25 +117,25 @@
   to { transform: rotate(360deg); }
 }
 
-/* Main Split Layout */
+/* Main Full-Width Layout */
 .mainLayout {
-  display: grid;
-  grid-template-columns: 350px 1fr;
-  gap: 1.5rem;
-  flex: 1;
-  min-height: 0; /* Important for nested scrolls */
-}
-
-/* Sidebar Info Panel */
-.infoPanel {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  flex: 1;
+}
+
+/* Analysis Hero Panel (Full Width) */
+.infoPanel {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
 .fileCard {
@@ -207,15 +208,17 @@
   border-color: #fecaca;
 }
 
-/* Chat Section */
+/* Chat Section (Below Analysis) */
 .chatContainer {
   background: white;
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
+  height: 700px; /* Fixed height for chat area to maintain internal scroll */
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
 }
 
 .chatMessages {
@@ -400,22 +403,7 @@
   gap: 0.5rem;
 }
 
-@media (max-width: 1024px) {
-  .mainLayout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-  }
-  
-  .infoPanel {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
+/* Responsive adjustments removed original media query as we are now flex-column by default */
 
 /* ATS & SWOT Enhancements */
 
@@ -453,9 +441,15 @@
 }
 
 .swotSection {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Strengths and weaknesses side-by-side */
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .swotSection {
+    grid-template-columns: 1fr;
+  }
 }
 
 .swotGroup {

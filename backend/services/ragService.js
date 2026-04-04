@@ -43,6 +43,44 @@ const pinecone = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
 const PINECONE_INDEX_NAME = 'resume-analyzer';
 
 // ============================================================================
+// SHARED HELPER: callGoogleAIWithRetry(fn, maxRetries, initialDelay)
+// ============================================================================
+//
+// 🧠 WHY RETRIES?
+// Sometimes Google's AI models are under high demand (Error 503) or we hit
+// rate limits (Error 429). Instead of failing immediately, we wait a bit
+// and try again. "Exponential backoff" means we wait longer each time.
+//
+// ============================================================================
+
+const callGoogleAIWithRetry = async (fn, maxRetries = 3, initialDelay = 1000) => {
+  let lastError;
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      const status = error.status || (error.response && error.response.status);
+      const message = error.message || "";
+      
+      // Retry on 503 (Service Unavailable), 429 (Too Many Requests), 
+      // or "high demand" messages from Google
+      const isRetryable = status === 503 || status === 429 || 
+                          message.includes('503') || message.includes('429') ||
+                          message.includes('high demand');
+                          
+      if (isRetryable && i < maxRetries - 1) {
+        const delay = initialDelay * Math.pow(2, i);
+        console.warn(`⚠️ Gemini API under high demand. Retrying in ${delay}ms... (Attempt ${i + 1}/${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      throw error;
+    }
+  }
+};
+
+// ============================================================================
 // FUNCTION 1: generateEmbedding(text)
 // ============================================================================
 //
@@ -65,12 +103,14 @@ const PINECONE_INDEX_NAME = 'resume-analyzer';
 // ============================================================================
 
 const generateEmbedding = async (text) => {
-  const model = genAI.getGenerativeModel({ model: 'gemini-embedding-001' });
-  const result = await model.embedContent({
-    content: { parts: [{ text }] },
-    outputDimensionality: 768,
+  return await callGoogleAIWithRetry(async () => {
+    const model = genAI.getGenerativeModel({ model: 'gemini-embedding-001' });
+    const result = await model.embedContent({
+      content: { parts: [{ text }] },
+      outputDimensionality: 768,
+    });
+    return result.embedding.values; // Returns an array of 768 numbers
   });
-  return result.embedding.values; // Returns an array of 768 numbers
 };
 
 
@@ -277,9 +317,11 @@ User's Question: ${question}
 Answer:`;
 
   // Step 4: Generate the answer using Gemini
-  const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
-  const result = await model.generateContent(ragPrompt);
-  const answer = result.response.text();
+  const answer = await callGoogleAIWithRetry(async () => {
+    const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+    const result = await model.generateContent(ragPrompt);
+    return result.response.text();
+  });
 
   return {
     answer: answer,
@@ -343,8 +385,10 @@ const performInitialAnalysis = async (text) => {
   """`;
 
   try {
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
+    const responseText = await callGoogleAIWithRetry(async () => {
+      const result = await model.generateContent(prompt);
+      return result.response.text();
+    });
     
     // Clean JSON response (sometimes Gemini adds ```json ... ```)
     const jsonStr = responseText.replace(/```json/g, '').replace(/```/g, '').trim();

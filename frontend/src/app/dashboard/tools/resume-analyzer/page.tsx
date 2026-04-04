@@ -265,36 +265,38 @@ export default function ResumeAnalyzerPage() {
             {/* View 2: Split View Post-Analysis */}
             {uploadResult && (
               <div className={styles.mainLayout}>
-                {/* Left Panel: Document Metadata */}
+                {/* Top Panel: Analysis Dashboard (Full Width) */}
                 <div className={styles.infoPanel}>
-                  {/* ATS Score Gauge */}
-                  <div className={styles.scoreCard}>
-                    <div className={styles.scoreGauge}>
-                      <svg viewBox="0 0 36 36" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
-                        <path
-                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                          fill="none"
-                          stroke="#f1f5f9"
-                          strokeWidth="3"
-                        />
-                        <path
-                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                          fill="none"
-                          stroke={uploadResult.analysis?.atsScore && uploadResult.analysis.atsScore > 70 ? '#10b981' : '#f59e0b'}
-                          strokeWidth="3"
-                          strokeDasharray={`${uploadResult.analysis?.atsScore || 0}, 100`}
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                      <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <span className={styles.scoreValue}>{uploadResult.analysis?.atsScore || 0}</span>
-                        <span className={styles.scoreLabel}>ATS</span>
+                  <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginBottom: '1rem' }}>
+                    {/* ATS Score Gauge centered */}
+                    <div className={styles.scoreCard} style={{ width: 'fit-content' }}>
+                      <div className={styles.scoreGauge}>
+                        <svg viewBox="0 0 36 36" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
+                          <path
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none"
+                            stroke="#f1f5f9"
+                            strokeWidth="3"
+                          />
+                          <path
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none"
+                            stroke={uploadResult.analysis?.atsScore && uploadResult.analysis.atsScore > 70 ? '#10b981' : '#f59e0b'}
+                            strokeWidth="3"
+                            strokeDasharray={`${uploadResult.analysis?.atsScore || 0}, 100`}
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                          <span className={styles.scoreValue}>{uploadResult.analysis?.atsScore || 0}</span>
+                          <span className={styles.scoreLabel}>ATS</span>
+                        </div>
                       </div>
+                      <p style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>CANDIDATE SCORE</p>
                     </div>
-                    <p style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>CANDIDATE SCORE</p>
                   </div>
 
-                  {/* SWOT Analysis */}
+                  {/* SWOT Analysis (Side-by-side on desktop via CSS) */}
                   {uploadResult.analysis && (
                     <div className={styles.swotSection}>
                       <div className={styles.swotGroup}>
@@ -323,9 +325,11 @@ export default function ResumeAnalyzerPage() {
                     </div>
                   )}
 
-                  <button className={styles.changeResumeBtn} onClick={resetUpload}>
-                    Analyze New Resume
-                  </button>
+                  <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+                    <button className={styles.changeResumeBtn} onClick={resetUpload} style={{ width: 'auto', padding: '0.75rem 2rem' }}>
+                      Analyze New Resume
+                    </button>
+                  </div>
                 </div>
 
                 {/* Right Panel: Interactive Chat */}
