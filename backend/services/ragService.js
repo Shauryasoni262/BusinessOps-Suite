@@ -338,7 +338,7 @@ Answer:`;
 
   // Step 4: Generate the answer using Gemini
   const answer = await callGoogleAIWithRetry(async () => {
-    const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     const result = await model.generateContent(ragPrompt);
     return result.response.text();
   });
@@ -388,7 +388,7 @@ const performInitialAnalysis = async (text) => {
     throw new Error('Google Generative AI API key is not configured in backend/.env');
   }
   const model = genAI.getGenerativeModel({ 
-    model: 'gemini-flash-latest',
+    model: 'gemini-2.5-flash',
     generationConfig: { responseMimeType: "application/json" }
   });
   
