@@ -20,7 +20,7 @@ export const useSocket = (): UseSocketReturn => {
     }
 
     // Get the base URL without '/api' suffix for Socket.IO connection
-    let socketUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    let socketUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002';
     // Remove '/api' suffix if present, as Socket.IO connects to the base server
     socketUrl = socketUrl.replace(/\/api\/?$/, '');
 

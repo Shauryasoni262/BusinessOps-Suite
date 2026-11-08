@@ -154,6 +154,11 @@ const taskController = {
       delete updateData.id;
       delete updateData.project_id;
       delete updateData.created_at;
+      delete updateData.projectId;
+
+      // Sanitize empty strings to null for PostgreSQL UUID and DATE columns
+      if (updateData.assigned_to === '') updateData.assigned_to = null;
+      if (updateData.due_date === '') updateData.due_date = null;
 
       const updatedTask = await Task.update(taskId, updateData);
 

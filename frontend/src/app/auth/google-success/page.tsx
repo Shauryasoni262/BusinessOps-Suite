@@ -20,7 +20,7 @@ function GoogleSuccessContent() {
       console.log('✅ Token stored in localStorage');
       
       // Fetch user profile from backend
-      fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/auth/profile`, {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api'}/auth/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

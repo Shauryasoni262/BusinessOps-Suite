@@ -1,6 +1,6 @@
 import { SalarySlipData } from '@/components/salary-slips/SalarySlipTemplates';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002';
 
 export interface SalarySlip extends SalarySlipData {
   id: string;

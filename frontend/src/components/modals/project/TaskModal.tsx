@@ -2,7 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import { type Task } from '@/services/taskService';
-import { X, CheckCircle2, Type, AlignLeft, Layout, User, Clock, Loader2, ListTodo, Play, Eye, CheckCircle } from 'lucide-react';
+import { 
+  X, 
+  CheckCircle2, 
+  Type, 
+  AlignLeft, 
+  Layout, 
+  User, 
+  Calendar, 
+  Flag,
+  Loader2, 
+  ListTodo, 
+  Play, 
+  CheckCircle, 
+  XCircle 
+} from 'lucide-react';
 import styles from './TaskModal.module.css';
 
 interface TaskModalProps {
@@ -17,7 +31,8 @@ export default function TaskModal({ task, projectId, projectMembers, onClose, on
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    status: 'todo' as 'todo' | 'in_progress' | 'in_review' | 'completed',
+    status: 'pending' as 'pending' | 'in_progress' | 'completed' | 'cancelled',
+    priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
     assigned_to: '',
     due_date: ''
   });
@@ -27,9 +42,10 @@ export default function TaskModal({ task, projectId, projectMembers, onClose, on
   useEffect(() => {
     if (task) {
       setFormData({
-        title: task.title,
+        title: task.title || '',
         description: task.description || '',
-        status: task.status as any,
+        status: (task.status as any) || 'pending',
+        priority: (task.priority as any) || 'medium',
         assigned_to: task.assigned_to || '',
         due_date: task.due_date ? new Date(task.due_date).toISOString().split('T')[0] : ''
       });
@@ -55,12 +71,17 @@ export default function TaskModal({ task, projectId, projectMembers, onClose, on
       setLoading(true);
       setError(null);
       await onSave({
-        ...formData,
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        status: formData.status,
+        priority: formData.priority,
+        assigned_to: formData.assigned_to || null,
+        due_date: formData.due_date || null,
         projectId
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving task:', error);
-      setError('Failed to save task');
+      setError(error.message || 'Failed to save task');
     } finally {
       setLoading(false);
     }
@@ -72,10 +93,10 @@ export default function TaskModal({ task, projectId, projectMembers, onClose, on
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'todo': return <ListTodo size={14} className={styles.fieldIcon} />;
+      case 'pending': return <ListTodo size={14} className={styles.fieldIcon} />;
       case 'in_progress': return <Play size={14} className={styles.fieldIcon} />;
-      case 'in_review': return <Eye size={14} className={styles.fieldIcon} />;
       case 'completed': return <CheckCircle size={14} className={styles.fieldIcon} />;
+      case 'cancelled': return <XCircle size={14} className={styles.fieldIcon} />;
       default: return <Layout size={14} className={styles.fieldIcon} />;
     }
   };
@@ -154,13 +175,35 @@ export default function TaskModal({ task, projectId, projectMembers, onClose, on
                 className={styles.select}
                 disabled={loading}
               >
-                <option value="todo">To Do</option>
+                <option value="pending">Pending</option>
                 <option value="in_progress">In Progress</option>
-                <option value="in_review">In Review</option>
                 <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
               </select>
             </div>
 
+            <div className={styles.field}>
+              <label htmlFor="priority" className={styles.label}>
+                <Flag size={14} className={styles.fieldIcon} />
+                Priority
+              </label>
+              <select
+                id="priority"
+                name="priority"
+                value={formData.priority}
+                onChange={handleInputChange}
+                className={styles.select}
+                disabled={loading}
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </div>
+          </div>
+
+          <div className={styles.row}>
             <div className={styles.field}>
               <label htmlFor="assigned_to" className={styles.label}>
                 <User size={14} className={styles.fieldIcon} />
@@ -176,11 +219,27 @@ export default function TaskModal({ task, projectId, projectMembers, onClose, on
               >
                 <option value="">Unassigned</option>
                 {projectMembers.map((member) => (
-                  <option key={member.user.id} value={member.user.id}>
-                    {member.user.name} ({member.role || 'Member'})
+                  <option key={member.user?.id || member.user_id} value={member.user?.id || member.user_id}>
+                    {member.user?.name || member.name || 'Member'} ({member.role || 'Member'})
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div className={styles.field}>
+              <label htmlFor="due_date" className={styles.label}>
+                <Calendar size={14} className={styles.fieldIcon} />
+                Due Date
+              </label>
+              <input
+                type="date"
+                id="due_date"
+                name="due_date"
+                value={formData.due_date}
+                onChange={handleInputChange}
+                className={styles.input}
+                disabled={loading}
+              />
             </div>
           </div>
 

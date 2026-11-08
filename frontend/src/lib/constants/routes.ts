@@ -20,7 +20,7 @@ export const DASHBOARD_ROUTES = {
 
 // API routes
 export const API_ROUTES = {
-  BASE: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api',
+  BASE: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api',
   AUTH: '/auth',
   PROJECTS: '/projects',
   TASKS: '/tasks',

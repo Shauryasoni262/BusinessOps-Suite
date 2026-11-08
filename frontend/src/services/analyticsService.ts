@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api';
 
 // Date range helper functions
 export const getDateRange = (preset: string): { startDate: string | null; endDate: string | null } => {
