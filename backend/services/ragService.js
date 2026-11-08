@@ -36,8 +36,19 @@ const { Pinecone } = require('@pinecone-database/pinecone');
 // ── Initialize Clients ──────────────────────────────────────────────────────
 // We create one instance of each client that the whole service reuses.
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-const pinecone = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
+let genAI = null;
+if (process.env.GOOGLE_API_KEY) {
+  genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+} else {
+  console.log('⚠️  GOOGLE_API_KEY not found. Gemini AI features will be disabled.');
+}
+
+let pinecone = null;
+if (process.env.PINECONE_API_KEY) {
+  pinecone = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
+} else {
+  console.log('⚠️  PINECONE_API_KEY not found. Resume Analyzer vector features will be disabled.');
+}
 
 // Pinecone index name — this is like a "database table" for vectors
 const PINECONE_INDEX_NAME = 'resume-analyzer';
@@ -103,6 +114,9 @@ const callGoogleAIWithRetry = async (fn, maxRetries = 3, initialDelay = 1000) =>
 // ============================================================================
 
 const generateEmbedding = async (text) => {
+  if (!genAI) {
+    throw new Error('Google Generative AI API key is not configured in .env');
+  }
   return await callGoogleAIWithRetry(async () => {
     const model = genAI.getGenerativeModel({ model: 'gemini-embedding-001' });
     const result = await model.embedContent({
@@ -205,6 +219,9 @@ const chunkText = (text, chunkSize = 500, overlap = 50) => {
 // ============================================================================
 
 const ingestResume = async (pdfText, resumeId) => {
+  if (!pinecone || !genAI) {
+    throw new Error('Pinecone or Google API Key is not configured in backend/.env');
+  }
   // Step 1: Chunk the text
   const chunks = chunkText(pdfText);
   console.log(`📦 Split resume into ${chunks.length} chunks`);
@@ -268,6 +285,9 @@ const ingestResume = async (pdfText, resumeId) => {
 // ============================================================================
 
 const queryResume = async (question, resumeId) => {
+  if (!pinecone || !genAI) {
+    throw new Error('Pinecone or Google API Key is not configured in backend/.env');
+  }
   // Step 1: Embed the question
   const questionEmbedding = await generateEmbedding(question);
 
@@ -337,6 +357,7 @@ Answer:`;
 // ============================================================================
 
 const deleteResume = async (resumeId) => {
+  if (!pinecone) return;
   const index = pinecone.Index(PINECONE_INDEX_NAME);
 
   // Pinecone supports deleting by filter on serverless indexes
@@ -363,6 +384,9 @@ const deleteResume = async (resumeId) => {
  * Performs a comprehensive SWOT analysis and ATS scoring on the resume.
  */
 const performInitialAnalysis = async (text) => {
+  if (!genAI) {
+    throw new Error('Google Generative AI API key is not configured in backend/.env');
+  }
   const model = genAI.getGenerativeModel({ 
     model: 'gemini-flash-latest',
     generationConfig: { responseMimeType: "application/json" }
