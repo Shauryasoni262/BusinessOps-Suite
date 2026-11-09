@@ -1,6 +1,5 @@
 import { SalarySlipData } from '@/components/salary-slips/SalarySlipTemplates';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002';
+import { API_ROUTES } from '@/lib/constants/routes';
 
 export interface SalarySlip extends SalarySlipData {
   id: string;
@@ -26,7 +25,7 @@ class SalarySlipService {
   }
 
   async getAllSalarySlips(): Promise<SalarySlip[]> {
-    const response = await fetch(`${API_URL}/salary-slips`, {
+    const response = await fetch(`${API_ROUTES.BASE}/salary-slips`, {
       headers: this.getHeaders()
     });
 
@@ -40,7 +39,7 @@ class SalarySlipService {
   }
 
   async getSalarySlip(id: string): Promise<SalarySlip> {
-    const response = await fetch(`${API_URL}/salary-slips/${id}`, {
+    const response = await fetch(`${API_ROUTES.BASE}/salary-slips/${id}`, {
       headers: this.getHeaders()
     });
 
@@ -54,7 +53,7 @@ class SalarySlipService {
   }
 
   async createSalarySlip(data: SalarySlipData): Promise<SalarySlip> {
-    const response = await fetch(`${API_URL}/salary-slips`, {
+    const response = await fetch(`${API_ROUTES.BASE}/salary-slips`, {
       method: 'POST',
       headers: this.getHeaders(),
       body: JSON.stringify(data)
@@ -70,7 +69,7 @@ class SalarySlipService {
   }
 
   async deleteSalarySlip(id: string): Promise<void> {
-    const response = await fetch(`${API_URL}/salary-slips/${id}`, {
+    const response = await fetch(`${API_ROUTES.BASE}/salary-slips/${id}`, {
       method: 'DELETE',
       headers: this.getHeaders()
     });

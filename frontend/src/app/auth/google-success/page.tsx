@@ -3,6 +3,7 @@
 import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/layout';
+import { API_ROUTES } from '@/lib/constants/routes';
 import styles from './google-success.module.css';
 
 function GoogleSuccessContent() {
@@ -20,7 +21,7 @@ function GoogleSuccessContent() {
       console.log('✅ Token stored in localStorage');
       
       // Fetch user profile from backend
-      fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api'}/auth/profile`, {
+      fetch(`${API_ROUTES.BASE}/auth/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

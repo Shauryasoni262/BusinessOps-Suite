@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api';
+import { API_ROUTES } from '@/lib/constants/routes';
 
 interface Milestone {
   id: string;
@@ -57,7 +57,7 @@ class MilestoneService {
 
   async getProjectMilestones(projectId: string): Promise<Milestone[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/milestones`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/milestones`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -76,7 +76,7 @@ class MilestoneService {
 
   async getMilestone(milestoneId: string): Promise<Milestone> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/milestones/${milestoneId}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/milestones/${milestoneId}`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -95,7 +95,7 @@ class MilestoneService {
 
   async createMilestone(projectId: string, data: CreateMilestoneData): Promise<Milestone> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/milestones`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/milestones`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data)
@@ -115,7 +115,7 @@ class MilestoneService {
 
   async updateMilestone(projectId: string, milestoneId: string, data: UpdateMilestoneData): Promise<Milestone> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/milestones/${milestoneId}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/milestones/${milestoneId}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data)
@@ -135,7 +135,7 @@ class MilestoneService {
 
   async deleteMilestone(projectId: string, milestoneId: string): Promise<void> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/milestones/${milestoneId}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/milestones/${milestoneId}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -151,7 +151,7 @@ class MilestoneService {
 
   async markMilestoneCompleted(projectId: string, milestoneId: string): Promise<Milestone> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/milestones/${milestoneId}/complete`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/milestones/${milestoneId}/complete`, {
         method: 'PATCH',
         headers: this.getAuthHeaders()
       });
@@ -170,7 +170,7 @@ class MilestoneService {
 
   async getMilestoneStats(projectId: string): Promise<MilestoneStats> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/milestones/stats`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/milestones/stats`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -189,7 +189,7 @@ class MilestoneService {
 
   async getUpcomingMilestones(projectId?: string): Promise<Milestone[]> {
     try {
-      const url = new URL(`${API_BASE_URL}/milestones/upcoming`);
+      const url = new URL(`${API_ROUTES.BASE}/milestones/upcoming`);
       if (projectId) {
         url.searchParams.append('projectId', projectId);
       }

@@ -1,4 +1,5 @@
-import { API_BASE_URL, getAuthHeaders } from '@/lib/config/api';
+import { API_ROUTES } from '@/lib/constants/routes';
+import { getAuthHeaders } from '@/lib/config/api';
 
 export interface ResumeUploadResult {
   resumeId: string;
@@ -34,7 +35,7 @@ export const resumeAnalyzerService = {
     // sets the correct Content-Type with boundaries when passing FormData.
     // If we manually set 'Content-Type': 'application/json', it will break.
     
-    const response = await fetch(`${API_BASE_URL}/resume-analyzer/upload`, {
+    const response = await fetch(`${API_ROUTES.BASE}/resume-analyzer/upload`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -57,7 +58,7 @@ export const resumeAnalyzerService = {
   chatWithResume: async (resumeId: string, message: string): Promise<ChatResult> => {
     const token = localStorage.getItem('token');
     
-    const response = await fetch(`${API_BASE_URL}/resume-analyzer/chat`, {
+    const response = await fetch(`${API_ROUTES.BASE}/resume-analyzer/chat`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,

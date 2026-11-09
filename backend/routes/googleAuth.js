@@ -7,7 +7,15 @@ const { generateToken } = require('../middleware/auth');
 // Google OAuth login route
 router.get('/google', (req, res) => {
   try {
-    const authURL = getGoogleAuthURL();
+    // Check if returnTo was passed or infer from referer
+    let returnTo = req.query.returnTo;
+    if (!returnTo && req.headers.referer) {
+      try {
+        const parsed = new URL(req.headers.referer);
+        returnTo = parsed.origin;
+      } catch (e) {}
+    }
+    const authURL = getGoogleAuthURL(returnTo);
     res.redirect(authURL);
   } catch (error) {
     console.error('Google auth URL generation error:', error);
@@ -87,7 +95,7 @@ router.post('/one-tap', async (req, res) => {
 // Google OAuth callback route
 router.get('/google/callback', async (req, res) => {
   try {
-    const { code } = req.query;
+    const { code, state } = req.query;
 
     if (!code) {
       return res.status(400).json({
@@ -124,15 +132,21 @@ router.get('/google/callback', async (req, res) => {
     console.log('✅ Google OAuth successful for user:', user.email);
     console.log('✅ Generated token:', token.substring(0, 50) + '...');
 
-    // Redirect to frontend with token
-    const frontendURL = process.env.FRONTEND_URL || 'http://localhost:3000';
+    // Redirect to frontend with token (support dynamic returnTo/state for Vercel/Local)
+    let frontendURL = process.env.FRONTEND_URL || 'http://localhost:3000';
+    if (state && (state.startsWith('http://localhost') || state.includes('.vercel.app') || (process.env.FRONTEND_URL && state.startsWith(process.env.FRONTEND_URL)))) {
+      frontendURL = state.replace(/\/+$/, '');
+    }
     const successURL = `${frontendURL}/auth/google-success?token=${token}`;
     console.log('✅ Redirecting to:', successURL);
     res.redirect(successURL);
 
   } catch (error) {
     console.error('Google OAuth callback error:', error);
-    const frontendURL = process.env.FRONTEND_URL || 'http://localhost:3000';
+    let frontendURL = process.env.FRONTEND_URL || 'http://localhost:3000';
+    if (req.query.state && (req.query.state.startsWith('http://localhost') || req.query.state.includes('.vercel.app'))) {
+      frontendURL = req.query.state.replace(/\/+$/, '');
+    }
     const errorURL = `${frontendURL}/auth/google-error?message=${encodeURIComponent(error.message)}`;
     res.redirect(errorURL);
   }

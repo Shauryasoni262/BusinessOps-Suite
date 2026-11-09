@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api';
+import { API_ROUTES } from '@/lib/constants/routes';
 
 interface Project {
   id: string;
@@ -79,7 +79,7 @@ class ProjectService {
         throw new Error('No authentication token found');
       }
 
-      const response = await fetch(`${API_BASE_URL}/projects`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -105,7 +105,7 @@ class ProjectService {
 
   async getProject(id: string): Promise<Project> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${id}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${id}`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -124,7 +124,7 @@ class ProjectService {
 
   async createProject(data: CreateProjectData): Promise<Project> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data)
@@ -144,7 +144,7 @@ class ProjectService {
 
   async updateProject(id: string, data: UpdateProjectData): Promise<Project> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${id}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data)
@@ -164,7 +164,7 @@ class ProjectService {
 
   async deleteProject(id: string): Promise<void> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${id}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${id}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -181,7 +181,7 @@ class ProjectService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async addMember(projectId: string, userId: string, role: string = 'Team Member'): Promise<any> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/members`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/members`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify({ user_id: userId, role: role })
@@ -202,7 +202,7 @@ class ProjectService {
 
   async removeMember(projectId: string, userId: string): Promise<void> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/members/${userId}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/members/${userId}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -219,7 +219,7 @@ class ProjectService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getMembers(projectId: string): Promise<any[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/members`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/members`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -240,7 +240,7 @@ class ProjectService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getProjectStats(projectId: string): Promise<any> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/stats`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/stats`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });

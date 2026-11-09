@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api';
+import { API_ROUTES } from '@/lib/constants/routes';
 
 export interface RazorpayOrder {
   order_id: string;
@@ -25,7 +25,7 @@ class PaymentService {
   // Create Razorpay order
   async createRazorpayOrder(invoiceId: string, amount: number, currency: string = 'INR'): Promise<RazorpayOrder> {
     try {
-      const response = await fetch(`${API_BASE_URL}/payments/razorpay/order`, {
+      const response = await fetch(`${API_ROUTES.BASE}/payments/razorpay/order`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify({
@@ -51,7 +51,7 @@ class PaymentService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async verifyPayment(verificationData: PaymentVerification): Promise<any> {
     try {
-      const response = await fetch(`${API_BASE_URL}/payments/razorpay/verify`, {
+      const response = await fetch(`${API_ROUTES.BASE}/payments/razorpay/verify`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(verificationData)

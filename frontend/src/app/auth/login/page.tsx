@@ -67,9 +67,11 @@ export default function LoginPage() {
     console.log(`Attempting ${provider} login...`);
     
     if (provider.toLowerCase() === 'google') {
-      // Redirect to Google OAuth
+      // Redirect to Google OAuth (pass current origin so backend redirects back correctly)
       console.log('Redirecting to Google OAuth...');
-      window.location.href = `${API_ROUTES.BASE}/auth/google`;
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      const redirectUrl = `${API_ROUTES.BASE}/auth/google${origin ? `?returnTo=${encodeURIComponent(origin)}` : ''}`;
+      window.location.href = redirectUrl;
     } else {
       console.log(`Unknown provider: ${provider}`);
     }

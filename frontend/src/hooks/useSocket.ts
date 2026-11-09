@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { API_ROUTES } from '@/lib/constants/routes';
 
 interface UseSocketReturn {
   socket: Socket | null;
@@ -20,9 +21,7 @@ export const useSocket = (): UseSocketReturn => {
     }
 
     // Get the base URL without '/api' suffix for Socket.IO connection
-    let socketUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002';
-    // Remove '/api' suffix if present, as Socket.IO connects to the base server
-    socketUrl = socketUrl.replace(/\/api\/?$/, '');
+    let socketUrl = API_ROUTES.BASE.replace(/\/api\/?$/, '');
 
     // Initialize socket connection
     const socketInstance = io(socketUrl, {

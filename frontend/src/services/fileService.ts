@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api';
+import { API_ROUTES } from '@/lib/constants/routes';
 
 interface ProjectFile {
   id: string;
@@ -45,7 +45,7 @@ class FileService {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/files`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/files`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: formData
@@ -68,7 +68,7 @@ class FileService {
 
   async getProjectFiles(projectId: string): Promise<ProjectFile[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/files`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/files`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -87,7 +87,7 @@ class FileService {
 
   async getFile(fileId: string): Promise<ProjectFile> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/files/${fileId}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/files/${fileId}`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -106,7 +106,7 @@ class FileService {
 
   async deleteFile(projectId: string, fileId: string): Promise<void> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/files/${fileId}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/files/${fileId}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -122,7 +122,7 @@ class FileService {
 
   async getFileStats(projectId: string): Promise<FileStats> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/files/stats`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/files/stats`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -141,7 +141,7 @@ class FileService {
 
   async getRecentFiles(projectId?: string): Promise<ProjectFile[]> {
     try {
-      const url = new URL(`${API_BASE_URL}/files/recent`);
+      const url = new URL(`${API_ROUTES.BASE}/files/recent`);
       if (projectId) {
         url.searchParams.append('projectId', projectId);
       }
@@ -165,7 +165,7 @@ class FileService {
 
   async getFilesByType(projectId: string, fileType: string): Promise<ProjectFile[]> {
     try {
-      const url = new URL(`${API_BASE_URL}/projects/${projectId}/files`);
+      const url = new URL(`${API_ROUTES.BASE}/projects/${projectId}/files`);
       url.searchParams.append('type', fileType);
 
       const response = await fetch(url.toString(), {

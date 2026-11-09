@@ -18,9 +18,25 @@ export const DASHBOARD_ROUTES = {
   PROFILE: '/profile',
 } as const;
 
+// Helper to determine the API base URL dynamically for localhost or production
+export const getApiBaseUrl = (): string => {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, '');
+  }
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    if (host !== 'localhost' && host !== '127.0.0.1') {
+      return 'https://businessops-suite-backend.onrender.com/api';
+    }
+  }
+  return 'http://localhost:5002/api';
+};
+
 // API routes
 export const API_ROUTES = {
-  BASE: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api',
+  get BASE(): string {
+    return getApiBaseUrl();
+  },
   AUTH: '/auth',
   PROJECTS: '/projects',
   TASKS: '/tasks',

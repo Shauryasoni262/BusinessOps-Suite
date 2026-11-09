@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api';
+import { API_ROUTES } from '@/lib/constants/routes';
 
 interface Task {
   id: string;
@@ -64,7 +64,7 @@ class TaskService {
 
   async getProjectTasks(projectId: string): Promise<Task[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/tasks`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/tasks`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -83,7 +83,7 @@ class TaskService {
 
   async getTask(taskId: string): Promise<Task> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/tasks/${taskId}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/tasks/${taskId}`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -102,7 +102,7 @@ class TaskService {
 
   async createTask(projectId: string, data: CreateTaskData): Promise<Task> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/tasks`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/tasks`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data)
@@ -122,7 +122,7 @@ class TaskService {
 
   async updateTask(projectId: string, taskId: string, data: UpdateTaskData): Promise<Task> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/tasks/${taskId}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/tasks/${taskId}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data)
@@ -142,7 +142,7 @@ class TaskService {
 
   async deleteTask(projectId: string, taskId: string): Promise<void> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/tasks/${taskId}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/tasks/${taskId}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -158,7 +158,7 @@ class TaskService {
 
   async getTaskStats(projectId: string): Promise<TaskStats> {
     try {
-      const response = await fetch(`${API_BASE_URL}/projects/${projectId}/tasks/stats`, {
+      const response = await fetch(`${API_ROUTES.BASE}/projects/${projectId}/tasks/stats`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -177,7 +177,7 @@ class TaskService {
 
   async getUserTasks(): Promise<Task[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/tasks/user`, {
+      const response = await fetch(`${API_ROUTES.BASE}/tasks/user`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -196,7 +196,7 @@ class TaskService {
 
   async getOverdueTasks(projectId?: string): Promise<Task[]> {
     try {
-      const url = new URL(`${API_BASE_URL}/tasks/overdue`);
+      const url = new URL(`${API_ROUTES.BASE}/tasks/overdue`);
       if (projectId) {
         url.searchParams.append('projectId', projectId);
       }

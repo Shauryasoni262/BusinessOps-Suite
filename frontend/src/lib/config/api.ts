@@ -1,7 +1,9 @@
 import { API_ROUTES } from '../constants';
 
 export const API_CONFIG = {
-  baseURL: API_ROUTES.BASE,
+  get baseURL() {
+    return API_ROUTES.BASE;
+  },
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -25,7 +27,7 @@ export const apiRequest = async <T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> => {
-  const url = `${API_CONFIG.baseURL}${endpoint}`;
+  const url = `${API_ROUTES.BASE}${endpoint}`;
   
   const response = await fetch(url, {
     ...options,

@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api';
+import { API_ROUTES } from '@/lib/constants/routes';
 
 export interface Invoice {
   id: string;
@@ -76,7 +76,7 @@ class InvoiceService {
   // Create new invoice
   async createInvoice(invoiceData: CreateInvoiceData): Promise<Invoice> {
     try {
-      const response = await fetch(`${API_BASE_URL}/invoices`, {
+      const response = await fetch(`${API_ROUTES.BASE}/invoices`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(invoiceData)
@@ -97,7 +97,7 @@ class InvoiceService {
   // Get all invoices
   async getInvoices(): Promise<Invoice[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/invoices`, {
+      const response = await fetch(`${API_ROUTES.BASE}/invoices`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -117,7 +117,7 @@ class InvoiceService {
   // Get invoice by ID
   async getInvoiceById(invoiceId: string): Promise<Invoice> {
     try {
-      const response = await fetch(`${API_BASE_URL}/invoices/${invoiceId}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/invoices/${invoiceId}`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -137,7 +137,7 @@ class InvoiceService {
   // Update invoice
   async updateInvoice(invoiceId: string, updateData: Partial<CreateInvoiceData>): Promise<Invoice> {
     try {
-      const response = await fetch(`${API_BASE_URL}/invoices/${invoiceId}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/invoices/${invoiceId}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(updateData)
@@ -158,7 +158,7 @@ class InvoiceService {
   // Delete invoice
   async deleteInvoice(invoiceId: string): Promise<void> {
     try {
-      const response = await fetch(`${API_BASE_URL}/invoices/${invoiceId}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/invoices/${invoiceId}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -175,7 +175,7 @@ class InvoiceService {
   // Get financial statistics
   async getFinancialStats(): Promise<FinancialStats> {
     try {
-      const response = await fetch(`${API_BASE_URL}/invoices/stats`, {
+      const response = await fetch(`${API_ROUTES.BASE}/invoices/stats`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -195,7 +195,7 @@ class InvoiceService {
   // Get revenue data for charts
   async getRevenueData(): Promise<RevenueData[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/invoices/revenue`, {
+      const response = await fetch(`${API_ROUTES.BASE}/invoices/revenue`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });

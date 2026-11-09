@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api';
+import { API_ROUTES } from '@/lib/constants/routes';
 
 interface OfferLetter {
   id: string;
@@ -28,7 +28,7 @@ class OfferLetterService {
 
   async getOfferLetters(): Promise<OfferLetter[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/offer-letters`, {
+      const response = await fetch(`${API_ROUTES.BASE}/offer-letters`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -47,7 +47,7 @@ class OfferLetterService {
 
   async getOfferLetter(id: string): Promise<OfferLetter> {
     try {
-      const response = await fetch(`${API_BASE_URL}/offer-letters/${id}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/offer-letters/${id}`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -66,7 +66,7 @@ class OfferLetterService {
 
   async deleteOfferLetter(id: string): Promise<void> {
     try {
-      const response = await fetch(`${API_BASE_URL}/offer-letters/${id}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/offer-letters/${id}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -82,7 +82,7 @@ class OfferLetterService {
 
   async createOfferLetter(data: any): Promise<OfferLetter> {
     try {
-      const response = await fetch(`${API_BASE_URL}/offer-letters`, {
+      const response = await fetch(`${API_ROUTES.BASE}/offer-letters`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(data)
@@ -103,7 +103,7 @@ class OfferLetterService {
 
   async updateOfferLetterStatus(id: string, status: string): Promise<OfferLetter> {
     try {
-      const response = await fetch(`${API_BASE_URL}/offer-letters/${id}`, {
+      const response = await fetch(`${API_ROUTES.BASE}/offer-letters/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify({ status })

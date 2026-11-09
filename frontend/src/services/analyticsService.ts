@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api';
+import { API_ROUTES } from '@/lib/constants/routes';
 
 // Date range helper functions
 export const getDateRange = (preset: string): { startDate: string | null; endDate: string | null } => {
@@ -39,7 +39,7 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     }
   };
 
-  const response = await fetch(`${API_URL}${endpoint}`, {
+  const response = await fetch(`${API_ROUTES.BASE}${endpoint}`, {
     ...defaultOptions,
     ...options,
     headers: {
@@ -210,7 +210,7 @@ export const analyticsService = {
   exportAnalytics: async (type: string, format: 'csv' | 'pdf', startDate?: string, endDate?: string): Promise<Blob> => {
     const token = localStorage.getItem('token');
     
-    const response = await fetch(`${API_URL}/analytics/export`, {
+    const response = await fetch(`${API_ROUTES.BASE}/analytics/export`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

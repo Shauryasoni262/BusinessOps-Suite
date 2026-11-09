@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '@/lib/config/api';
+import { API_ROUTES } from '@/lib/constants/routes';
 import {
   EnhancedStats, GrowthDataPoint, RevenueTrendPoint, ProjectDistribution,
   AdminProject, AdminInvoice, AdminPayment, ChatStats, ApiLog, ApiLogStats,
@@ -15,7 +15,7 @@ const getAuthHeaders = () => {
 };
 
 const apiFetch = async <T>(endpoint: string): Promise<T> => {
-  const response = await fetch(`${API_BASE_URL}/admin${endpoint}`, {
+  const response = await fetch(`${API_ROUTES.BASE}/admin${endpoint}`, {
     headers: getAuthHeaders()
   });
   if (!response.ok) {
@@ -40,7 +40,7 @@ export const adminService = {
   getUsers: (): Promise<User[]> => apiFetch('/users'),
   getUserDetails: (id: string): Promise<UserDetails> => apiFetch(`/users/${id}/details`),
   updateUser: async (id: string, data: { role?: string; status?: string }): Promise<User> => {
-    const response = await fetch(`${API_BASE_URL}/admin/users/${id}`, {
+    const response = await fetch(`${API_ROUTES.BASE}/admin/users/${id}`, {
       method: 'PATCH',
       headers: getAuthHeaders(),
       body: JSON.stringify(data)

@@ -18,17 +18,23 @@ const oauth2Client = new OAuth2Client(
 );
 
 // Generate Google OAuth URL
-const getGoogleAuthURL = () => {
+const getGoogleAuthURL = (state = null) => {
   const scopes = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile'
   ];
 
-  return oauth2Client.generateAuthUrl({
+  const authOptions = {
     access_type: 'offline',
     scope: scopes,
     include_granted_scopes: true
-  });
+  };
+
+  if (state) {
+    authOptions.state = state;
+  }
+
+  return oauth2Client.generateAuthUrl(authOptions);
 };
 
 // Verify Google OAuth token
