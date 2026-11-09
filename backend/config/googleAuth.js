@@ -59,8 +59,9 @@ const verifyGoogleToken = async (code) => {
       verified: payload.email_verified
     };
   } catch (error) {
-    console.error('Google token verification error:', error);
-    throw new Error('Invalid Google token');
+    const errorDetail = error?.response?.data?.error_description || error?.response?.data?.error || error?.message || 'Invalid Google token';
+    console.error('Google token verification error details:', errorDetail, error?.response?.data || error);
+    throw new Error(errorDetail);
   }
 };
 
